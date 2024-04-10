@@ -39,8 +39,8 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "mongodb-memory-server": "^9.1.6",
     "jest": "^29.7.0",
+    "mongodb-memory-server": "^9.1.6",
     "supertest": "^6.3.4"
   }
 }
