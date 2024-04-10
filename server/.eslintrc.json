@@ -1,8 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -31,10 +29,11 @@
     "node/no-process-env": 1,
     "node/no-unsupported-features/es-syntax": [
       "error",
-      { "ignores" : ["modules"] }
+      { "ignores": ["modules"] }
     ],
     "node/no-missing-import": 0,
     "node/no-unpublished-import": 0
+  { "ignores": ["modules"] }
   },
   "settings": {
     "node": {

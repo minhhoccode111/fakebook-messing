@@ -1,11 +1,10 @@
-import moment from 'moment';
-
+import moment from "moment";
 
 // **** Variables **** //
 
-const INVALID_CONSTRUCTOR_PARAM = 'nameOrObj arg must a string or an object ' + 
-  'with the appropriate user keys.';
-
+const INVALID_CONSTRUCTOR_PARAM =
+  "nameOrObj arg must a string or an object " +
+  "with the appropriate user keys.";
 
 // **** Types **** //
 
@@ -15,7 +14,6 @@ export interface IUser {
   email: string;
   created: Date;
 }
-
 
 // **** Functions **** //
 
@@ -29,10 +27,10 @@ function new_(
   id?: number, // id last cause usually set by db
 ): IUser {
   return {
-    id: (id ?? -1),
-    name: (name ?? ''),
-    email: (email ?? ''),
-    created: (created ? new Date(created) : new Date()),
+    id: id ?? -1,
+    name: name ?? "",
+    email: email ?? "",
+    created: created ? new Date(created) : new Date(),
   };
 }
 
@@ -53,14 +51,17 @@ function from(param: object): IUser {
 function isUser(arg: unknown): boolean {
   return (
     !!arg &&
-    typeof arg === 'object' &&
-    'id' in arg && typeof arg.id === 'number' && 
-    'email' in arg && typeof arg.email === 'string' && 
-    'name' in arg && typeof arg.name === 'string' &&
-    'created' in arg && moment(arg.created as string | Date).isValid()
+    typeof arg === "object" &&
+    "id" in arg &&
+    typeof arg.id === "number" &&
+    "email" in arg &&
+    typeof arg.email === "string" &&
+    "name" in arg &&
+    typeof arg.name === "string" &&
+    "created" in arg &&
+    moment(arg.created as string | Date).isValid()
   );
 }
-
 
 // **** Export default **** //
 

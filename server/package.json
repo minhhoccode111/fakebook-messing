@@ -7,6 +7,7 @@
     "lint:tests": "npx eslint --ext .ts spec/",
     "start": "node -r module-alias/register ./dist --env=production",
     "dev": "nodemon",
+    "server": "DEBUG=* npm run dev",
     "test": "nodemon --config ./spec/nodemon.json",
     "test:no-reloading": "npx ts-node --files -r tsconfig-paths/register ./spec"
   },
@@ -43,6 +44,7 @@
     "ts-command-line-args": "^2.5.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/cookie-parser": "^1.4.7",
     "@types/express": "^4.17.21",
     "@types/find": "^0.2.4",
@@ -59,6 +61,7 @@
     "find": "^0.3.0",
     "fs-extra": "^11.2.0",
     "jasmine": "^5.1.0",
+    "mongodb-memory-server": "^9.1.6",
     "nodemon": "^3.1.0",
     "supertest": "^6.3.4",
     "ts-node": "^10.9.2",
