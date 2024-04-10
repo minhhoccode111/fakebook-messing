@@ -1,0 +1,332 @@
+# Documentation
+
+## Assignment
+
+- keep in mind to make things simple
+- don't overthinking about edge cases or some hackers can destroy this app
+- no need to create a Messenger or Discord clone, it will take me years
+- at minimum, should include the following core functionality:
+  - authorization
+  - sending messages to another user
+  - customizing a user profile
+  - extra: testing routes, controllers
+  - extra: testing database operations
+  - extra: typescript
+- think completely through and plan out on the paper will save you days of coding
+  - what will the user interface look like
+  - what will the data model look like
+  - what libraries will you need to use
+- start building core functionality in backend and frontend
+  - **NOTE**:
+    - RESTful API backend cannot handle real time updates. It's request-response so the server can only response to a request
+    - methods for real time server-client updates (particularly when dealing with a split front/backend) have not been taught
+    - so we are not expected to implement any in this app
+- deploy
+- **EXTRA CREDIT**:
+  - allow sending images in chat
+  - add a friends list that users can add other users to and see when someone is online (alternative: "Add a user list to show which users are currently online";)
+  - same thing except maybe a step or two less since it doesn't require adding a friend
+  - allow users to create and send messages in group chats
+
+## Database design
+
+- `User`
+  - username (email)
+  - password
+  - fullname
+  - date of birth
+  - bio
+  - status (manually set because don't have real time update) (online, offline, busy, afk)
+  - avatar (link)
+  - created at
+  - updated at
+  - virtual
+    - created at formatted
+    - created at unix
+    - updated at formatted
+    - updated at unix
+- `Message`
+  - sender (`User ObjectId`)
+  - userReceive (`User ObjectId`) (`null` in group chat)
+  - groupReceive (`Group ObjectId`) (`null` in 1v1 chat)
+  - content
+  - image (link)
+  - created at
+  - virtual
+    - created at formatted
+    - created at unix
+- `Group`
+  - creator (`User ObjectId` who created the group)
+  - name (must be unique to differentiate)
+  - public
+  - bio
+  - avatar (link)
+  - created at
+  - updated at
+  - virtual
+    - created at formatted
+    - created at unix
+    - updated at formatted
+    - updated at unix
+- `GroupMember`
+  - user (`User ObjectId` to retrieve back `User` Schema and find all users in `Group`)
+  - group (`Group ObjectId`)
+  - is creator (whether current user creator of this group, default `false`)
+  - created at (when a user joined group, or when creator create the group (and be the first user))
+  - virtual
+    - created at formatted
+    - created at unix
+
+## API design
+
+- [ ] `/api/v1/auth`
+- [ ] `/api/v1/`
+- [ ] `/api/v1/chat`
+- [x] `POST /login`
+- [x] `POST /signup`
+  - [ ] add user to database
+- [ ] ~~`POST /user` ~~
+  - [ ] NOT IMPLEMENT
+  - [ ] because a user is created by `POST /signup`
+- [x] `GET /user` (get current user's info)
+  - [ ] to load current user's profile for them to read and choose weather they want to update anything
+- [x] `PUT /user` (update current logged user)
+  - [ ] allow update current logged user (whom send the request)
+- [ ] ~~`DELETE /user` (delete current logged user account)~~
+  - [ ] not implement
+  - [ ] because don't want to deal with remove conversations and groups that deleted user engaged and also don't want to deal with remove groups that this user created
+- [x] `GET /chat/users` (all users that current user can chat with)
+  - [ ] should mark something to know user send the request in the response
+  - [ ] ~~block feature ~~
+    - [ ] not implement
+- [x] `GET /chat/users/:userid` (get the chat thread)
+  - [ ] get all `messages` between current logged in user vs. `:userid` to display
+  - [ ] ~~block feature ~~
+    - [ ] not implement
+- [x] `POST /chat/users/:userid` (send new message)
+  - [ ] send a message to `:userid`
+  - [ ] ~~block feature ~~
+    - [ ] not implement
+- [ ] ~~`PUT /chat/users/:userid` (like update `:userid`'s nickname ) ~~
+  - [ ] not implement
+- [ ] ~~`DELETE /chat/users/:userid` (like delete conversation with `:userid`) ~~
+  - [ ] not implement
+- [ ] ~~`PUT /chat/users/:userid/:messageid` (edit a message)~~
+  - [ ] not implement
+- [ ] ~~`DELETE /chat/users/:userid/:messageid` (delete a message)~~
+  - [ ] not implement
+- [x] `GET /chat/groups` (current user get all groups exist)
+  - [ ] all groups and group's creator, and private or public
+- [x] `POST /chat/groups` (current logged user create a new group)
+  - [ ] make current user group's creator
+  - [ ] and also group's member
+- [x] `GET /chat/groups/:groupid` (get the chat thread with current group)
+  - [ ] get all `messages` between current logged in user vs. `:groupid` to display
+  - [ ] `groupMembers` to know all members of the group
+- [x] `POST /chat/groups/:groupid` (post a message to group chat)
+  - [ ] allow if current user is joined the group
+- [x] `DELETE /chat/groups/:groupid` (delete a specific group)
+  - [ ] and delete all group's members
+  - [ ] only allow if current logged in user is group's creator
+- [x] `PUT /chat/groups/:groupid` (update a specific group)
+  - [ ] only allow if current logged in user is group's creator
+  - [ ] actions like update name, image, publicity
+- [x] `GET /chat/groups/:groupid/members`
+  - [ ] only allow to get all members of a group if current logged in user is group's creator or already joined
+- [x] `POST /chat/groups/:groupid/members`
+  - [ ] only allow member to join if group is public
+- [x] `DELETE /chat/groups/:groupid/members/:memberid`
+  - [ ] group's creator kick another user
+  - [ ] or current user which joined the group now leave
+- [ ] ~~`PUT /chat/groups/:groupid/members/:memberid` (edit a user authorization in the group)~~
+  - [ ] not implement
+- [ ] ~~`PUT /chat/groups/:groupid/:messageid` (edit a message)~~
+  - [ ] not implement
+- [ ] ~~`DELETE /chat/groups/:groupid/:messageid` (delete a message)~~
+  - [ ] not implement
+
+## API responses
+
+- `/auth`
+  - `POST /signup`
+    - invalid - `res.status(400).json({ message: 'Data invalid', errors, user })`
+    - valid - `res.status(200).json({ message: 'Success', user, })`
+  - `POST /login`
+    - invalid - `res.status(400).json({ message: 'Wrong username' })`
+    - valid - `res.status(200).json({ message: 'Success', token, user: publicUserInfo, expiresIn, expiresInDate, expiresInDateFormatted, })`
+- `/user`
+  - `GET /`
+    - valid - `res.json(req.user)`
+  - `PUT /`
+    - invalid - `res.status(400).json({ errors })`
+    - valid - `res.json({ newUser })`
+- `/chat`
+  - `GET /users`
+    - valid - `res.json({ users: users, requestedUser: req.user })`
+  - `GET /users/:userid`
+    - invalid - `res.sendStatus(404)`
+    - valid - `res.json({ requestedUser: req.user, receivedUser: user, messages })`
+  - `POST /users/:userid`
+    - invalid - `res.sendStatus(404)` (id)
+    - invalid - `res.sendStatus(400)` (data)
+    - valid - `res.json({ requestedUser: req.user, receivedUser: user, messages, })`
+  - `GET /groups`
+    - valid - `res.json({ requestedUser: req.user, joinedGroups, publicGroups, privateGroups })`
+  - `POST /groups`
+    - invalid - `res.status(400).json({ errors })`
+    - valid - `res.json({ requestedUser: req.user, createdGroup: group })`
+  - `GET /groups/:groupid`
+    - invalid - `res.sendStatus(404)`
+    - valid - `res.status(isMember ? 200 : 403).json({ requestedUser: req.user, receivedGroup: group, groupMessages, isCreator, isMember })`
+  - `POST /groups/:groupid`
+    - invalid - `res.sendStatus(404)` (id)
+    - invalid - `res.sendStatus(400)` (data)
+    - invalid - `res.sendStatus(403)` (authorization)
+    - valid - `res.json({ requestedUser: req.user, receivedGroup: group, groupMessages })`
+  - `DELETE /groups/:groupid`
+    - invalid - `res.sendStatus(404)` (id)
+    - invalid - `res.sendStatus(403)` (authorization)
+    - valid - `res.sendStatus(200)`
+  - `PUT /groups/:groupid`
+    - invalid - `res.sendStatus(404)` (id)
+    - invalid - `res.status(400).json({ errors })` (data)
+    - invalid - `res.sendStatus(403)` (authorization)
+    - valid - `res.json({ requestedUser: req.user, updatedGroup: newGroup })`
+  - `GET /groups/:groupid/members`
+    - invalid - `res.sendStatus(404)` (id)
+    - valid - `res.json({ requestedUser: req.user, groupMembers })`
+  - `POST /groups/:groupid/members`
+    - invalid - `res.sendStatus(404)` (id)
+    - invalid - `res.sendStatus(400)` (user already group's member)
+    - valid - `res.sendStatus(200)`
+  - `DELETE /groups/:groupid/members/:userid`
+    - invalid - `res.sendStatus(404)`
+    - invalid - `res.sendStatus(400)` (don't let group's creator leave, force him to delete the group instead)
+    - valid - `res.sendStatus(200)`
+
+## Some problems I faced
+
+- how to design database models
+  - solved:
+- how to put both client and server to the same repo
+  - solved: actually i shouldn't because i host backend on Glitch and it doesn't specify `root` directory like frontend on `vercel`
+- how to put things to set up this project
+- how to create references between group chat and group members? because mongodb university said that we avoid store array that can possibly scale to infinite long, e.g case 1: if a `Group` Schema has a `members` field which is an array of members then this can impact performant when that array get to 10000 members (for example), case 2: if a `User` Schema has a `groups` field which is an array of groups then this can impact performant when that array get to 10000 groups (for example but this case is harder to happen compare to case 1)
+  - solved: just ignore that and have an array of `groups` in each `User` and an array of `users` in each `Group` since this is a small project and that takes me a lot of time to think about already
+  - hmm a problem arise, this approach doesn't work well (?) because every time we delete a group we have to go to every `User` then find the `Group ObjectId` the the `groups` field array in every user to remove maybe go back the the first approach and we have to retrieve different collections when we want to get all groups of a user or when we want to get all users in a group
+    - so we come back to the first solution that create a new collection `GroupMember` which will have 2 pointers `group` and `user` so when we want to get all groups a user joined we only need to query this collection (query all document has the same `user` field) and also when we want to get all users in a group we only need to to query this collection only (query all document has the same `group` field). and we can solve the infinite array problem at the same time
+    - or we can create 2 git branches to test each one
+- should i divide messages (sharding) (like only fetch 20 messages to display and only continue to fetch again if user want to read really old messages)?
+  - solved: future update
+- should i implement `remove message` feature to allow user to remove their sent messages?
+  - solved: future update
+- should we force `username` to be lower case so that user can't create account's username contain upper case char? or we allow them then add an extra field `username_low` in data model and then can be used to query like `/:userid/update` still find and match the user we want?
+  - maybe another field seem better because adding both frontend and backend validations is a lot of works and i'm suck at regex. so...
+- should we allow users to delete their account?
+  - no. because i will have to deal with messages that user sent in the past. this could be consider in the future update
+- should we test database operations and routes and controllers in the backend?
+  - this project is getting bigger and bigger. i think it's a yes
+- after delete a group (which will has an `users` field) to store its members. should we go to every single user
+- divide data on the site into re-use (keep things sync is not that important) and re-fetch (keep things sync is important)
+  - re-use:
+    - current logged in user's info (we don't want to load this type of data that much because if we update then server will send new data for us to store)
+    - all users that current user can chat with (not so much user be created during current user's session. i guess)
+  - re-fetch:
+    - groups: this changes frequently
+    - messages vs another user or vs group: this changes frequently
+- should `GET /user` get returned `username` and `password`?
+  - since we don't implement password changing now, it makes no sense returning it
+- should we implement another route handler `/chat/groups/:groupid/users` to interact with group's users?
+  - yes. since return all group's users when we only `GET /chat/groups/:groupid` (and `PUT` in that route to update its users like add or delete) make it less flexible for us to scale in the future
+  - so to make more sense we will `GET POST /chat/groups/:groupid/members`
+  - and `DELETE /chat/groups/:groupid/members/:memberid` for a user to leave the group (or get kicked by group's creator)
+- how `GET /chat/groups/:groupid` should behave?
+  - first we should differentiate between `joined` and `guess` users by checking in `GroupMember` collection for references
+    - if `joined` then user can get all group's `messages`
+    - if `guess` then group's `messages` will be `[]`
+  - a `requestedUser` to get info of user make the request
+  - a `receivedGroup` to get info of the group which include:
+  - a `groupMembers` to display all members of the group which include:
+    - their name and `_id`
+  - an extra field to know if current user is group creator? `isCreator`
+  - an extra field to know if current user is member?
+    - no. client should base on `403` to know
+    - actually we make `isMember` to know, easier to use
+- how `POST /chat/groups/:groupid` should behave (post a message to a group chat)
+  - first check for group's existence
+  - then check for authorization
+  - then check for valid message's content (`imageLink` and `content` must not be both empty or provide)
+  - then we actually handle the message to store in db and then response with a `groupMessages`
+- how `POST /chat/groups/:groupid/members` should behave (post a user to a group chat that public and user is not joined yet)
+  - first check for group's existence
+  - then check whether user is already in the group
+  - then create a reference between current logged in user vs the group
+  - what info should we return after a success join ?
+    - should we only return a `200` to specify a success is enough? because the `group` we retrieve in db is minimal and the `GroupMember` reference have nothing meaning to response and we will likely not use the `requestedUser` either
+
+## Realized
+
+- we force username to be lower case (it must still unique), and use that in the URL instead of using `user._id`, because when we display current user's profile in frontend, we want the url be something nice like `http://localhost:3000/cat123` and don't want to use a 32 characters long of `._id` in the url
+- we should update the blog-back project to be `personal-portfolio-back` and add multiple backend apis to it instead of separating to multiple backend because when we host on glitch it has really long wake up time and I don't want to wake like 3 separated backends in this personal portfolio project. 1 is enough and we just have to separate the url of api
+- that to fill in the form with `defaultValue` we first have to add extra field in return data retrieve in database, like `DateTime.fromJSDate(this.dateOfBirth).toISODate()` so that value can be fill in form date input
+- client should handle error response like
+  - `400` allow to send another request
+  - `404` will not allow any more request
+  - `401` and `403` redirect to `/logout` to log them out immediately
+- usually api design like this
+  - `GET`, `POST` with `/somethingplural`
+  - then `GET`, `POST`, `PUT`, `DELETE` with `/somethingplural/:specificid`
+- we remove `isCreator` since this project is separate from blog api project and `usernameUrl` to reduce complexity in frontend, `block` users array to reduce complexity
+- we can use `faker` to create dummy data in database
+- sometime `faker` can give us the same data and made error
+- `A worker process has failed to exit gracefully and has been force exited. This is likely caused by tests leaking due to improper teardown. Try running with --detectOpenHandles to find leaks. Active timers can also cause this, ensure that .unref() was called on them` mean that i shouldn't use `--watch` mode because memory leak and will crash both my terminal and vscode
+- don't know if i am over caution because when we `GET /chat/groups/:groupid` we already response with `isCreator` and `isMember` to determine what client can do. but then when handle `POST /chat/groups/:groupid` i still check for authorization again to make sure that the request is sent from a `member`.
+- unlike my previous apps when after updating something i switch a flag to fetch again to keep things in sync (with a `GET` request again). maybe this app should need a different approach because when we re-fetch all group's messages again with `GET /chat/groups/:groupid` that fetch also get extra information again like group's info and members. so to make things in sync after we make a `POST /chat/groups/:groupid` to a group, the response should return `groupMessages` to update without the need to re-fetch again
+- so the `403` usually happen when things out of sync and frontend should force user to do a reload
+- the `GET /all` should INCLUDE very minimal info like this `'_id fullname'` and the `GET /specific` should EXCLUDE security info only `'-password -username -__v'`
+
+## Frontend how things flow
+
+- [ ] `:userid` (navigate from `Profile` link)
+  - [ ] if not logged in or expired token
+    - [ ] redirect them to `/login`
+  - [ ] if still logged in and still valid token
+    - [ ] display all current user's info
+    - [ ] display update info button click navigate to `:userid/update
+      - [ ] fields to update new data
+      - [ ] and image link preview generate on the fly
+      - [ ] submit button to confirm update
+      - [ ] cancel to redirect to `:userid`
+- [ ] `/chat`
+  - [ ] contact list section
+    - [ ] this is static and will not change or re-fetch till the page reload or user navigate to another route since this is `Layout` component of `/chat` section
+    - [ ] first fetch every conversations that current user can engage to display, which include
+      - [ ] other users
+      - [ ] joined groups (or groups that current user created)
+      - [ ] public groups
+      - [ ] private groups
+    - [ ] new group form to fetch create new group (different name to existed groups)
+  - [ ] chat window section
+    - [ ] when choose any given user
+      - [ ] will load our conversation with that user
+    - [ ] when choose any given joined group
+      - [ ] will load our conversation in that group
+    - [ ] when choose any given public group
+      - [ ] will display nothing
+  - [ ] more options section
+    - [ ] when choose any given user
+      - [ ] will display current user's info (whom we are talking to)
+      - [ ] and a block or unblock button (not implement)
+    - [ ] when choose any given joined group
+      - [ ] will display current group's info
+      - [ ] a list of all group's users, who is creator
+      - [ ] if current user is not group's creator
+        - [ ] a button to leave group
+      - [ ] if current user is group's creator
+        - [ ] a button to delete group
+        - [ ] a button to make it public/private
+        - [ ] a button next to each group's user to kick that user (can't kick ourselves)
+    - [ ] when choose any given public group
+      - [ ] will display current group's info
+      - [ ] a list of all group's users, who is creator
+      - [ ] a button to join group
