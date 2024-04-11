@@ -1,10 +1,10 @@
-import request from "supertest";
-import { describe, expect, test, beforeAll, afterAll } from "bun:test";
-import { faker } from "@faker-js/faker";
-import bcrypt from "bcrypt";
+const request = require("supertest");
+const { describe, expect, test, beforeAll, afterAll } = require("bun:test");
+const { faker } = require("@faker-js/faker");
+const bcrypt = require("bcrypt");
 
 // model
-import User from "./../../models/user";
+const User = require("./../../models/user");
 
 async function userCreate(username, pw) {
   // password still get hashed
@@ -38,7 +38,7 @@ async function createUsers(number, username = "asd") {
 }
 
 // another app because don't want to touch the original
-import app from "./../setup";
+const app = require("./../setup");
 
 describe(`/chat/users`, () => {
   let token;

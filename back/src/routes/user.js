@@ -1,7 +1,7 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
 
-import UserController from "./../controllers/userController";
+const UserController = require("./../controllers/userController");
 
 // get info of current logged usesr
 router.get("/", UserController.user_get);
@@ -12,4 +12,4 @@ router.put("/", UserController.user_put);
 // not implemented
 // router.delete('/', UserController.user_delete);
 
-export default router;
+module.exports = router;

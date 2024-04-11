@@ -1,6 +1,6 @@
-import { DateTime } from "luxon";
+const { DateTime } = require("luxon");
 
-export const formatVietnameseString = (str) => {
+module.exports.formatVietnameseString = (str) => {
   str = str.toLowerCase();
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
   str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
@@ -14,10 +14,10 @@ export const formatVietnameseString = (str) => {
 };
 
 // created by new Date()
-export const formatDate = (jsDateObject) =>
+module.exports.formatDate = (jsDateObject) =>
   DateTime.fromJSDate(jsDateObject).toLocaleString(DateTime.DATE_MED) +
   " - " +
   DateTime.fromJSDate(jsDateObject).toLocaleString(DateTime.TIME_24_SIMPLE);
 
-export const formatDateIso = (jsDateObject) =>
+module.exports.formatDateIso = (jsDateObject) =>
   DateTime.fromJSDate(jsDateObject).toISODate();

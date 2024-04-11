@@ -1,7 +1,7 @@
-import request from "supertest";
-import { describe, test, expect, beforeAll, afterAll } from "bun:test";
+const request = require("supertest");
+const { describe, test, expect, beforeAll, afterAll } = require("bun:test");
 
-import app from "./setup";
+const app = require("./setup");
 
 describe(`POST /signup`, () => {
   test(`valid signup`, async () => {

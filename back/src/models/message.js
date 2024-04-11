@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
-import { formatDate } from "./../methods";
+const { formatDate } = require("./../methods");
 
 const Schema = mongoose.Schema;
 
@@ -51,4 +51,4 @@ MessageSchema.virtual("createdAtUnix").get(function () {
   if (this.createdAt) return this.createdAt.getTime();
 });
 
-export default mongoose.model("Message", MessageSchema);
+module.exports = mongoose.model("Message", MessageSchema);

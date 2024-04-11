@@ -1,7 +1,7 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
 
-import GroupsController from "./../controllers/groupsController";
+const GroupsController = require("./../controllers/groupsController");
 
 router.get("/", GroupsController.getAllGroups);
 
@@ -26,4 +26,4 @@ router.delete(
   GroupsController.deleteGroupMember,
 );
 
-export default router;
+module.exports = router;

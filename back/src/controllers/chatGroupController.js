@@ -1,22 +1,22 @@
 // no need for try...catch block
-import asyncHandler from "express-async-handler";
+const asyncHandler = require("express-async-handler");
 
 // sanitize and validate data
-import { body, validationResult } from "express-validator";
+const { body, validationResult } = require("express-validator");
 
 // mongoose models
-import User from "./../models/user";
-import Message from "./../models/message";
-import Group from "./../models/group";
-import GroupMember from "./../models/groupMember";
+const User = require("./../models/user");
+const Message = require("./../models/message");
+const Group = require("./../models/group");
+const GroupMember = require("./../models/groupMember");
 
 // debug
-// import  debug from "debug"(
+// const  debug = require ( "debug" )(
 //   "============================================================",
 // );
 
 // mongoose to check valid req.params.postid
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 // get all groups that current logged in user can see
 const chat_all_group_get = asyncHandler(async (req, res) => {
@@ -473,7 +473,7 @@ const chat_group_member_delete = asyncHandler(async (req, res) => {
   return res.json(groupMembers);
 });
 
-export default {
+module.exports = {
   chat_all_group_get,
   chat_all_group_post,
   chat_group_get,

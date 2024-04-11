@@ -1,8 +1,8 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
 
-import ChatUserController from "../controllers/chatUserController";
-import ChatGroupController from "../controllers/chatGroupController";
+const ChatUserController = require("../controllers/chatUserController");
+const ChatGroupController = require("../controllers/chatGroupController");
 
 // we are in /api/v1/chat/
 
@@ -66,4 +66,4 @@ router.delete(
 // not implement edit a member in a group (authorization in group)
 // router.put('/groups/:groupid/members/:userid', ChatGroupController.chat_group_member_put);
 
-export default router;
+module.exports = router;

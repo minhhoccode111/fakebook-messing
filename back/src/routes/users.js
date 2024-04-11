@@ -1,7 +1,7 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
 
-import UsersController from "./../controllers/usersController";
+const UsersController = require("./../controllers/usersController");
 
 router.get("/", UsersController.getAllUsers);
 
@@ -32,4 +32,4 @@ router.post(
 // // not implement like a comment
 // router.post("/:userid/posts/:postid/comments/:commentid/likes", postUserPostCommentLikes);
 
-export default router;
+module.exports = router;

@@ -1,13 +1,13 @@
-import request from "supertest";
-import { describe, expect, test, beforeAll, afterAll } from "bun:test";
-import { faker } from "@faker-js/faker";
-import bcrypt from "bcrypt";
+const request = require("supertest");
+const bcrypt = require("bcrypt");
+const { describe, expect, test, beforeAll, afterAll } = require("bun:test");
+const { faker } = require("@faker-js/faker");
 /*
 // models
-import Group from "./../../models/group";
-import GroupMember from "./../../models/groupMember";
-import User from "./../../models/user";
-import Message from "./../../models/message";
+const Group = require ( "./../../models/group" );
+const GroupMember = require ( "./../../models/groupMember" );
+const User = require ( "./../../models/user" );
+const Message = require ( "./../../models/message" );
 */
 
 import app from "./../setup";

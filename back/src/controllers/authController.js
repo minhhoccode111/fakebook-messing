@@ -1,25 +1,25 @@
 // no need for try...catch block
-import asyncHandler from "express-async-handler";
+const asyncHandler = require("express-async-handler");
 
 // sanitize and validate data
-import { body, validationResult } from "express-validator";
+const { body, validationResult } = require("express-validator");
 
 // mongoose models
-import User from "./../models/user";
+const User = require("./../models/user");
 
 // debug
-// import  debug from "debug"(
+// const  debug = require ( "debug" )(
 //   "============================================================",
 // );
 
 // bcrypt to secure password
-import bcrypt from "bcrypt";
+const bcrypt = require("bcrypt");
 
 // will be call jwt.sign() to create a object, and secret and option like algorithm and time expire
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
 // work with date and time
-import { formatDate } from "./../methods";
+const { formatDate } = require("./../methods");
 
 const login_post = [
   body("username").trim().escape(),
@@ -159,7 +159,7 @@ const signup_post = [
   }),
 ];
 
-export default {
+module.exports = {
   login_post,
   signup_post,
 };

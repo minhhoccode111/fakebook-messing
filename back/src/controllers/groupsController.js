@@ -1,17 +1,17 @@
 // no need for try...catch block
-import asyncHandler from "express-async-handler";
+const asyncHandler = require("express-async-handler");
 
 // sanitize and validate data
-import { body, validationResult } from "express-validator";
+const { body, validationResult } = require("express-validator");
 
 // mongoose models
-import User from "./../models/user";
-import Group from "./../models/group";
-import Message from "./../models/message";
-import GroupMember from "./../models/groupMember";
+const User = require("./../models/user");
+const Group = require("./../models/group");
+const Message = require("./../models/message");
+const GroupMember = require("./../models/groupMember");
 
 // debug
-// import  debug from ("debug")(
+// const  debug = require ("debug")(
 //   "============================================================",
 // );
 
@@ -67,7 +67,7 @@ const deleteGroupMember = asyncHandler(async (req, res) => {
   );
 });
 
-const GroupsController = {
+module.exports = {
   getAllGroups,
   postAllGroups,
   getGroup,
@@ -79,5 +79,3 @@ const GroupsController = {
   postGroupMembers,
   deleteGroupMember,
 };
-
-export default GroupsController;

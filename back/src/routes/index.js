@@ -1,12 +1,12 @@
 // modular
 
-import auth from "./auth";
-import users from "./users";
-import groups from "./groups";
+const auth = require("./auth");
+const users = require("./users");
+const groups = require("./groups");
 // import user from "./user";
 // import chat from "./chat";
 
-export default {
+module.exports = {
   auth,
   // user,
   // chat,

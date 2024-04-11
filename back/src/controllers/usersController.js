@@ -1,14 +1,14 @@
 // no need for try...catch block
-import asyncHandler from "express-async-handler";
+const asyncHandler = require("express-async-handler");
 
 // sanitize and validate data
-import { body, validationResult } from "express-validator";
+const { body, validationResult } = require("express-validator");
 
 // mongoose models
-import User from "./../models/user";
+const User = require("./../models/user.js");
 
 // debug
-// import  debug from ("debug")(
+// const  debug = require ("debug")(
 //   "============================================================",
 // );
 
@@ -68,7 +68,7 @@ const postUserPostComments = asyncHandler(async (req, res) => {
   );
 });
 
-const UsersController = {
+module.exports = {
   getAllUsers,
   getUser,
   putUser,
@@ -82,5 +82,3 @@ const UsersController = {
   postUserPostComments,
   // postUserPostCommentLikes,
 };
-
-export default UsersController;

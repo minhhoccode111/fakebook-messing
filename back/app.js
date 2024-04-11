@@ -1,23 +1,24 @@
-import RateLimit from "express-rate-limit";
-import createError from "http-errors";
-import compression from "compression";
-import express from "express";
-import logger from "morgan";
-import helmet from "helmet";
-import path from "path";
-import dotenv from "dotenv";
+const RateLimit = require("express-rate-limit");
+const createError = require("http-errors");
+const compression = require("compression");
+const express = require("express");
+const logger = require("morgan");
+const helmet = require("helmet");
+const path = require("path");
+const dotenv = require("dotenv");
 dotenv.config();
 
 // debug
-import debug from ("debug")(
+const debug = require("debug")(
   "============================================================",
 );
 
 // connect mongo db
-import "./mongoConfig";
+require("./mongoConfig.js");
 
 // db models, for authentication
-import  User from "./src/models/user";
+const User = require("./src/models/user.js");
+debug(`the User belike: `, User);
 
 const app = express();
 
@@ -35,7 +36,7 @@ app.use(compression());
 app.use(helmet());
 
 // setup CORS (Cross-origin Resources Sharing) to allow request from any origin
-import  cors from "cors";
+const cors = require("cors");
 // app.use(cors()); // TODO is used for development
 app.use(
   cors({
@@ -58,8 +59,8 @@ app.use(express.static(path.join(__dirname, "public"))); // server things in pub
 const SECRET = process.env.SECRET;
 
 // passport to authenticate a jwt
-import  passport from "passport" ;
-import passportJwt from "passport-jwt" ;
+const passport = require("passport");
+const passportJwt = require("passport-jwt");
 // a passport strategy to authentication by passport.use(new JwtStrategy(options, verify))
 const JwtStrategy = passportJwt.Strategy;
 // to choose ways to extract json web token from request
@@ -97,7 +98,7 @@ passport.use(
 );
 
 // handle api request
-import  routes from "./src/routes"; // modular
+const routes = require("./src/routes/index"); // modular
 // things about auth
 app.use("/api/v1/auth", routes.auth);
 // things about user, need authenticate
@@ -142,4 +143,4 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500).json({ message: err.message });
 });
 
-export default  app;
+module.exports = app;

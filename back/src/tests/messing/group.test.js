@@ -1,16 +1,16 @@
-import request from "supertest";
-import { faker } from "@faker-js/faker";
-import { describe, expect, test, beforeAll, afterAll } from "bun:test";
-import bcrypt from "bcrypt";
+const request = require("supertest");
+const bcrypt = require("bcrypt");
+const { faker } = require("@faker-js/faker");
+const { describe, expect, test, beforeAll, afterAll } = require("bun:test");
 
 // another app because don't want to touch the original
-import app from "./../setup";
+const app = require("./../setup");
 
 // models
-import Group from "./../../models/group";
-import GroupMember from "./../../models/groupMember";
-import User from "./../../models/user";
-import Message from "./../../models/message";
+const Group = require("./../../models/group");
+const GroupMember = require("./../../models/groupMember");
+const User = require("./../../models/user");
+const Message = require("./../../models/message");
 
 describe(`/chat/groups`, () => {
   let token0;

@@ -1,10 +1,9 @@
-import createError from "http-errors";
-import express from "express";
-import dotenv from "dotenv";
-dotenv.config();
+const createError = require("http-errors");
+const express = require("express");
+require("dotenv").config();
 
 // db models, for authentication
-import User from "./../models/user";
+const User = require("./../models/user");
 
 const app = express();
 
@@ -13,8 +12,8 @@ app.use(express.json()); // parse json to js object
 app.use(express.urlencoded({ extended: false })); //  parse form data
 
 // passport to authenticate a jwt
-import passport from "passport";
-import passportJwt from "passport-jwt";
+const passport = require("passport");
+const passportJwt = require("passport-jwt");
 // a passport strategy to authentication by passport.use(new JwtStrategy(options, verify))
 const JwtStrategy = passportJwt.Strategy;
 // to choose ways to extract json web token from request
@@ -52,14 +51,14 @@ passport.use(
 );
 
 // test with fake database
-import mongo from "./mongoConfigTesting";
+const mongo = require("./mongoConfigTesting");
 mongo();
 
 // test with real development database
-// import ('./../../mongoConfig')
+// require ('./../../mongoConfig')
 
 // handle api request
-import routes from "./../routes"; // modular
+const routes = require("./../routes"); // modular
 // things about auth
 app.use("/api/v1/auth", routes.auth);
 // app.use(
@@ -104,4 +103,4 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500).json({ message: err.message });
 });
 
-export default app;
+module.exports = app;

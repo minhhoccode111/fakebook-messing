@@ -1,14 +1,14 @@
 // no need for try...catch block
-import asyncHandler from "express-async-handler";
+const asyncHandler = require("express-async-handler");
 
 // sanitize and validate data
-import { body, validationResult } from "express-validator";
+const { body, validationResult } = require("express-validator");
 
 // mongoose models
-import User from "./../models/user";
+const User = require("./../models/user");
 
 // debug
-import debug from ("debug")(
+const debug = require("debug")(
   "============================================================",
 );
 
@@ -69,7 +69,7 @@ const user_put = [
   }),
 ];
 
-export default {
+module.exports = {
   user_get,
   user_put,
 };

@@ -1,9 +1,10 @@
-import debug from ("debug")(
+// debug
+const debug = require("debug")(
   "============================================================",
 );
 
 // connect database
-import  mongoose from "mongoose";
+const mongoose = require("mongoose");
 // not throw an error when we try to query the property that not explicitly defined on Schema
 mongoose.set("strictQuery", false);
 

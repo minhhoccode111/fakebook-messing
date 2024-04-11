@@ -1,9 +1,9 @@
-import request from "supertest";
-import { describe, expect, test, beforeAll, afterAll } from "bun:test";
-import { faker } from "@faker-js/faker";
+const request = require("supertest");
+const { describe, expect, test, beforeAll, afterAll } = require("bun:test");
+const { faker } = require("@faker-js/faker");
 
 // another app because don't want to touch the original
-import app from "./setup";
+const app = require("./setup");
 
 describe(`GET PUT /user`, () => {
   let token;

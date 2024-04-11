@@ -1,8 +1,8 @@
 // connect database
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 // fake database on ram
-import { MongoMemoryServer } from "mongodb-memory-server";
+const { MongoMemoryServer } = require("mongodb-memory-server");
 
 async function initializeMongoServer() {
   const mongoServer = await MongoMemoryServer.create();
@@ -24,4 +24,4 @@ async function initializeMongoServer() {
   });
 }
 
-export default initializeMongoServer;
+module.exports = initializeMongoServer;

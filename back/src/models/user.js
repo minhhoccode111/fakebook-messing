@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
-import { formatDate, formatDateIso } from "./../methods";
+const { formatDate, formatDateIso } = require("./../methods");
 
 const Schema = mongoose.Schema;
 
@@ -102,4 +102,4 @@ UserSchema.virtual("dateOfBirthIso").get(function () {
   if (this.dateOfBirth) return formatDateIso(this.dateOfBirth);
 });
 
-export default mongoose.model("User", UserSchema);
+module.exports = mongoose.model("User", UserSchema);

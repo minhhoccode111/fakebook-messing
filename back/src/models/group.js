@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
-import { formatDate } from "./../methods";
+const { formatDate } = require("./../methods");
 
 const Schema = mongoose.Schema;
 
@@ -72,4 +72,4 @@ GroupSchema.virtual("updatedAtUnix").get(function () {
   if (this.updatedAt) return this.updatedAt.getTime();
 });
 
-export default mongoose.model("Group", GroupSchema);
+module.exports = mongoose.model("Group", GroupSchema);
