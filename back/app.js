@@ -101,15 +101,23 @@ import  routes from "./src/routes"; // modular
 // things about auth
 app.use("/api/v1/auth", routes.auth);
 // things about user, need authenticate
+// app.use(
+//   "/api/v1/chat",
+//   passport.authenticate("jwt", { session: false }),
+//   routes.users,
+// );
+// app.use(
+//   "/api/v1/user",
+//   passport.authenticate("jwt", { session: false }),
+//   routes.users,
+// );
 app.use(
-  // "/api/v1/user",
   "/api/v1/users",
   passport.authenticate("jwt", { session: false }),
   routes.users,
 );
 // things about chat, need authenticate
 app.use(
-  // "/api/v1/chat",
   "/api/v1/groups",
   passport.authenticate("jwt", { session: false }),
   routes.groups,
