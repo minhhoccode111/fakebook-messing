@@ -8,9 +8,9 @@ const { body, validationResult } = require("express-validator");
 const User = require("./../models/user.js");
 
 // debug
-// const  debug = require ("debug")(
-//   "============================================================",
-// );
+const debug = require("debug")(
+  "============================================================",
+);
 
 // relationship with current user
 const getAllUsers = asyncHandler(async (req, res) => {

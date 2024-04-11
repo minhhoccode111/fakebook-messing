@@ -20,14 +20,49 @@ async function main() {
   debug("about to connect to database");
   await mongoose.connect(MONGODB);
   debug("about to insert some documents");
-  // first create 20 users
+
+  // how to populate database messing
+  // first create 20 users with random detaild and save indexes
   await createUsers(20, "asd");
-  // then create 40 groups, a random user will be group's creator
+  // then create 40 groups with random detail
+  // and pick a random user to be group's creator
   await createGroups(40);
-  // then create 200 messages, a random user send to another user or group
-  await createMessages(200);
-  // then add every message's sender to a group
+  // then create 2000 messages with random sender
+  // and pick random between userReceived and group received
+  // and pick random between content and imageLink
+  // loop through every group created and force the group's creator to send
+  // at least one message to the group
+  await createMessages(2000);
+  // loop through every group and check every messages being sent to the group
+  // then make every sender to be group's member
   await createGroupMembers();
+
+  // TODO: how to populate database fakebook
+  // first create random connection between users (follower, following, none)
+  // then each user will have a number of random posts created
+  // then each user will have a number of random comments on others' posts
+  // then each user will have a number of random like on others' posts
+  // then each user will have a number of random like on others' comments
+
+  // const numComment = await Comment.countDocuments({}).exec();
+  // debug(`Comment models is having: ${numComment} documents`);
+  // const numFollow = await Follow.countDocuments({}).exec();
+  // debug(`Follow models is having: ${numFollow} documents`);
+  // const numGroup = await Group.countDocuments({}).exec();
+  // debug(`Group models is having: ${numGroup} documents`);
+  // const numGroupMember = await GroupMember.countDocuments({}).exec();
+  // debug(`GroupMember models is having: ${numGroupMember} documents`);
+  // const numLikeComment = await LikeComment.countDocuments({}).exec();
+  // debug(`LikeComment models is having: ${numLikeComment} documents`);
+  // const numLikePost = await LikePost.countDocuments({}).exec();
+  // debug(`LikePost models is having: ${numLikePost} documents`);
+  // const numMessage = await Message.countDocuments({}).exec();
+  // debug(`Message models is having: ${numMessage} documents`);
+  // const numPost = await Post.countDocuments({}).exec();
+  // debug(`Post models is having: ${numPost} documents`);
+  // const numUser = await User.countDocuments({}).exec();
+  // debug(`User models is having: ${numUser} documents`);
+
   debug("finishes insert documents");
   await mongoose.connection.close();
   debug("connection closed");
@@ -42,15 +77,26 @@ const bcrypt = require("bcrypt");
 // to access environment variables
 require("dotenv").config(); // this line cause me 30 mins to deBUG
 
-const User = require("./../src/models/user");
-const Message = require("./../src/models/message");
+// clear database
+const Comment = require("./../src/models/comment");
+const Follow = require("./../src/models/follow");
 const Group = require("./../src/models/group");
 const GroupMember = require("./../src/models/groupMember");
+const LikeComment = require("./../src/models/likeComment");
+const LikePost = require("./../src/models/likePost");
+const Message = require("./../src/models/message");
+const Post = require("./../src/models/post");
+const User = require("./../src/models/user");
 
-const users = [];
-const messages = [];
+const comments = [];
+const follows = [];
 const groups = [];
 const groupMembers = [];
+const likeComments = [];
+const likePosts = [];
+const messages = [];
+const posts = [];
+const users = [];
 
 const PASSWORD = process.env.USERS_PASSWORD; // asd
 const SALT = Number(process.env.SALT); // 10
@@ -75,19 +121,18 @@ async function userCreate(index, username, pw) {
   await user.save();
 
   users[index] = user;
-  debug(`adding user: ${user} with raw password: ${pw} at index: ${index}`);
+  debug(
+    `adding user: ${user.fullname} with raw password: ${pw} at index: ${index}`,
+  );
 }
 
 async function createUsers(number, username = "asd") {
   debug(PASSWORD); // asd
   try {
-    // create 20 users
+    // create number of users
     for (let i = 0; i < number; i++) {
       await userCreate(i, username + i, PASSWORD);
     }
-
-    const count = await User.countDocuments({}).exec();
-    debug(`User models is having: ${count} documents`);
   } catch (error) {
     debug(`the error is: `, error);
     throw error;
@@ -120,7 +165,7 @@ async function messageCreate(
 
 async function createMessages(number) {
   try {
-    // create 200 random messages
+    // create number of random messages
     for (var i = 0; i < number; i++) {
       // get two different users in case sender is the same userReceive
       const twoUsers = faker.helpers.arrayElements(users, 2);
@@ -167,9 +212,6 @@ async function createMessages(number) {
         randomContent ? null : image,
       );
     }
-
-    const count = await Message.countDocuments({}).exec();
-    debug(`Message models is having: ${count} documents`);
   } catch (error) {
     debug(`the error is: `, error);
     throw error;
@@ -197,13 +239,10 @@ async function groupCreate(index) {
 
 async function createGroups(number) {
   try {
-    // create 40 groups
+    // create number of groups
     for (let i = 0; i < number; i++) {
       await groupCreate(i);
     }
-
-    const count = await Group.countDocuments({}).exec();
-    debug(`Group models is having: ${count} documents`);
   } catch (error) {
     debug(`the error is: `, error);
     throw error;
@@ -259,9 +298,6 @@ async function createGroupMembers() {
         }
       }
     }
-
-    const count = await GroupMember.countDocuments({}).exec();
-    debug(`GroupMember models is having: ${count} documents`);
   } catch (error) {
     debug(`the error is: `, error);
     throw error;
