@@ -102,15 +102,17 @@ import  routes from "./src/routes"; // modular
 app.use("/api/v1/auth", routes.auth);
 // things about user, need authenticate
 app.use(
-  "/api/v1/user",
+  // "/api/v1/user",
+  "/api/v1/users",
   passport.authenticate("jwt", { session: false }),
-  routes.user,
+  routes.users,
 );
 // things about chat, need authenticate
 app.use(
-  "/api/v1/chat",
+  // "/api/v1/chat",
+  "/api/v1/groups",
   passport.authenticate("jwt", { session: false }),
-  routes.chat,
+  routes.groups,
 );
 
 // if no route handle the request mean it a 404

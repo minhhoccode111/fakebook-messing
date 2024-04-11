@@ -8,9 +8,9 @@ import { body, validationResult } from "express-validator";
 import User from "./../models/user";
 
 // debug
-// import  debug from "debug"(
-//   "============================================================",
-// );
+import debug from ("debug")(
+  "============================================================",
+);
 
 // get info of current logged user (retrieve db to log in already)
 const user_get = asyncHandler(async (req, res) => {
