@@ -1,52 +1,51 @@
 // to access environment variables
-require('dotenv').config(); // this line cause me 30 mins to deBUG
+require("dotenv").config(); // this line cause me 30 mins to deBUG
 
-const mongoDB = process.argv.slice(2)[0] || process.env.DEVELOPMENT_MONGO;
+const MONGODB = process.argv.slice(2)[0] || process.env.DEVELOPMENT_MONGO;
 
-// const custom = require('debug')('debug-custom');
-const custom = (...str) => {
+const debug = (...str) => {
   for (const s of str) {
     console.log(s);
   }
 };
 
-custom(mongoDB);
+debug(MONGODB);
 
-const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
 
-main().catch((err) => custom(err));
+main().catch((err) => debug(err));
 
 async function main() {
-  custom('about to connect to database');
-  await mongoose.connect(mongoDB);
-  custom('about to insert some documents');
+  debug("about to connect to database");
+  await mongoose.connect(MONGODB);
+  debug("about to insert some documents");
   // first create 20 users
-  await createUsers(20, 'asd');
+  await createUsers(20, "asd");
   // then create 40 groups, a random user will be group's creator
   await createGroups(40);
   // then create 200 messages, a random user send to another user or group
   await createMessages(200);
   // then add every message's sender to a group
   await createGroupMembers();
-  custom('finishes insert documents');
+  debug("finishes insert documents");
   await mongoose.connection.close();
-  custom('connection closed');
+  debug("connection closed");
 }
 
 // fake database documents
-const { faker } = require('@faker-js/faker');
+const { faker } = require("@faker-js/faker");
 
 // add default data in database
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 // to access environment variables
-require('dotenv').config(); // this line cause me 30 mins to deBUG
+require("dotenv").config(); // this line cause me 30 mins to deBUG
 
-const User = require('./../src/models/user');
-const Message = require('./../src/models/message');
-const Group = require('./../src/models/group');
-const GroupMember = require('./../src/models/groupMember');
+const User = require("./../src/models/user");
+const Message = require("./../src/models/message");
+const Group = require("./../src/models/group");
+const GroupMember = require("./../src/models/groupMember");
 
 const users = [];
 const messages = [];
@@ -66,7 +65,7 @@ async function userCreate(index, username, pw) {
     fullname: faker.person.fullName(),
     dateOfBirth: faker.date.past(),
     bio: faker.lorem.paragraph(),
-    status: faker.helpers.arrayElement(['online', 'offline', 'busy', 'afk']),
+    status: faker.helpers.arrayElement(["online", "offline", "busy", "afk"]),
     avatarLink: faker.image.avatar(),
     createdAt: faker.date.recent(),
     updatedAt: faker.date.recent(),
@@ -76,11 +75,11 @@ async function userCreate(index, username, pw) {
   await user.save();
 
   users[index] = user;
-  custom(`adding user: ${user} with raw password: ${pw} at index: ${index}`);
+  debug(`adding user: ${user} with raw password: ${pw} at index: ${index}`);
 }
 
-async function createUsers(number, username = 'asd') {
-  custom(PASSWORD); // asd
+async function createUsers(number, username = "asd") {
+  debug(PASSWORD); // asd
   try {
     // create 20 users
     for (let i = 0; i < number; i++) {
@@ -88,14 +87,21 @@ async function createUsers(number, username = 'asd') {
     }
 
     const count = await User.countDocuments({}).exec();
-    custom(`User models is having: ${count} documents`);
+    debug(`User models is having: ${count} documents`);
   } catch (error) {
-    custom(`the error is: `, error);
+    debug(`the error is: `, error);
     throw error;
   }
 }
 
-async function messageCreate(index, sender, userReceive, groupReceive, content, imageLink) {
+async function messageCreate(
+  index,
+  sender,
+  userReceive,
+  groupReceive,
+  content,
+  imageLink,
+) {
   const messageDetail = {
     sender,
     userReceive,
@@ -109,7 +115,7 @@ async function messageCreate(index, sender, userReceive, groupReceive, content, 
   await message.save();
 
   messages[index] = message;
-  custom(`adding message: ${message}`);
+  debug(`adding message: ${message}`);
 }
 
 async function createMessages(number) {
@@ -135,7 +141,7 @@ async function createMessages(number) {
         randomReceiver ? null : groupReceive,
         // will be text content or image link
         randomContent ? content : null,
-        randomContent ? null : image
+        randomContent ? null : image,
       );
     }
 
@@ -158,14 +164,14 @@ async function createMessages(number) {
         groups[j - i],
         // will be text content or image link
         randomContent ? content : null,
-        randomContent ? null : image
+        randomContent ? null : image,
       );
     }
 
     const count = await Message.countDocuments({}).exec();
-    custom(`Message models is having: ${count} documents`);
+    debug(`Message models is having: ${count} documents`);
   } catch (error) {
-    custom(`the error is: `, error);
+    debug(`the error is: `, error);
     throw error;
   }
 }
@@ -186,7 +192,7 @@ async function groupCreate(index) {
   await group.save();
 
   groups[index] = group;
-  custom(`adding group: ${group}`);
+  debug(`adding group: ${group}`);
 }
 
 async function createGroups(number) {
@@ -197,9 +203,9 @@ async function createGroups(number) {
     }
 
     const count = await Group.countDocuments({}).exec();
-    custom(`Group models is having: ${count} documents`);
+    debug(`Group models is having: ${count} documents`);
   } catch (error) {
-    custom(`the error is: `, error);
+    debug(`the error is: `, error);
     throw error;
   }
 }
@@ -216,7 +222,7 @@ async function groupMemberCreate(index, user, group, isCreator) {
   await groupMember.save();
 
   groupMembers[index] = groupMember;
-  custom(`adding group member: ${groupMember}`);
+  debug(`adding group member: ${groupMember}`);
 }
 
 async function createGroupMembers() {
@@ -232,7 +238,10 @@ async function createGroupMembers() {
       // members that sent messages to this group will be a member
       for (let j = 0, len = messages.length; j < len; j++) {
         // current group is message's groupReceive, and not added yet
-        if (groups[i] === messages[j].groupReceive && !members.has(messages[j].sender)) {
+        if (
+          groups[i] === messages[j].groupReceive &&
+          !members.has(messages[j].sender)
+        ) {
           // add sender to members Set, so we don't add anyone twice
           members.add(messages[j].sender);
 
@@ -245,16 +254,16 @@ async function createGroupMembers() {
             // group will be current group
             groups[i],
             // if current user is the group's creator
-            messages[j].sender._id === creator._id
+            messages[j].sender._id === creator._id,
           );
         }
       }
     }
 
     const count = await GroupMember.countDocuments({}).exec();
-    custom(`GroupMember models is having: ${count} documents`);
+    debug(`GroupMember models is having: ${count} documents`);
   } catch (error) {
-    custom(`the error is: `, error);
+    debug(`the error is: `, error);
     throw error;
   }
 }

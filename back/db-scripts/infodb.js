@@ -1,21 +1,18 @@
 // get database info
-import User from "./../src/models/user";
-import Message from "./../src/models/message";
-import Group from "./../src/models/group";
-import GroupMember from "./../src/models/groupMember";
+/* eslint-disable import/no-commonjs */
+const User = require("./../src/models/user");
+const Message = require("./../src/models/message");
+const Group = require("./../src/models/group");
+const GroupMember = require("./../src/models/groupMember");
 
 // to access environment variables
-import("dotenv").config(); // this line cause me 30 mins to deBUG
+require("dotenv").config(); // this line cause me 30 mins to deBUG
 
-// const debug = require('debug')('custom-debug');
-import debug from ("debug")(
-  "============================================================",
-);
-// const debug = (...str) => {
-//   for (const s of str) {
-//     console.log(s);
-//   }
-// };
+const debug = (...str) => {
+  for (const s of str) {
+    console.log(s);
+  }
+};
 
 const mongoDB = process.argv.slice(2)[0] || process.env.DEVELOPMENT_MONGO;
 

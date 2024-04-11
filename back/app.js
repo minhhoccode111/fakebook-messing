@@ -17,8 +17,7 @@ const debug = require("debug")(
 require("./mongoConfig.js");
 
 // db models, for authentication
-const User = require("./src/models/user.js");
-debug(`the User belike: `, User);
+const User = require("./src/models/user");
 
 const app = express();
 

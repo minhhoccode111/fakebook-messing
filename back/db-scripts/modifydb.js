@@ -1,16 +1,15 @@
 // custom script to interact with database
-const User = require('./../src/models/user');
-const Message = require('./../src/models/message');
-const Group = require('./../src/models/group');
-const GroupMember = require('./../src/models/groupMember');
+const User = require("./../src/models/user");
+const Message = require("./../src/models/message");
+const Group = require("./../src/models/group");
+const GroupMember = require("./../src/models/groupMember");
 
 // to access environment variables
-require('dotenv').config(); // this line cause me 30 mins to deBUG
+require("dotenv").config(); // this line cause me 30 mins to deBUG
 
 // working with password
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
-// const debug = require('debug')('custom-debug');
 const debug = (...str) => {
   for (const s of str) {
     console.log(s);
@@ -19,13 +18,13 @@ const debug = (...str) => {
 
 const mongoDB = process.argv.slice(2)[0] || process.env.DEVELOPMENT_MONGO;
 
-const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
 
-main().catch((err) => debug('some errors occur', err));
+main().catch((err) => debug("some errors occur", err));
 
 async function main() {
-  debug('about to connect to database');
+  debug("about to connect to database");
   await mongoose.connect(mongoDB);
   const userNum = await User.countDocuments({}).exec();
   // const messageNum = await Message.countDocuments({}).exec();
@@ -64,7 +63,7 @@ async function main() {
   // debug(`number of message currently in database: ${messageNum}`);
   // debug(`number of group currently in database: ${groupNum}`);
   // debug(`number of groupMember currently in database: ${groupMemberNum}`);
-  debug('connected');
-  debug('about to disconnect to database');
+  debug("connected");
+  debug("about to disconnect to database");
   await mongoose.connection.close();
 }
