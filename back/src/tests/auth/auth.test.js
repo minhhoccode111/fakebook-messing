@@ -10,7 +10,6 @@ describe(`POST /signup`, () => {
       .type("form")
       .send({
         fullname: "khong dieu kien",
-        //
         username: "cahoihoang@gmail.com",
         password: "Bruh0!0!",
         "confirm-password": "Bruh0!0!",
