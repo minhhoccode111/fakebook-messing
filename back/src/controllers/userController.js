@@ -13,12 +13,12 @@ import User from "./../models/user";
 // );
 
 // get info of current logged user (retrieve db to log in already)
-export const user_get = asyncHandler(async (req, res) => {
+const user_get = asyncHandler(async (req, res) => {
   res.json(req.user);
 });
 
 // update info of current logged user
-export const user_put = [
+const user_put = [
   body("fullname")
     .trim()
     .notEmpty()
@@ -68,3 +68,8 @@ export const user_put = [
     return res.status(400).json({ errors });
   }),
 ];
+
+export default {
+  user_get,
+  user_put,
+};

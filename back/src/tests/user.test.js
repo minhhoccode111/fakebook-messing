@@ -5,7 +5,7 @@ import { faker } from "@faker-js/faker";
 // another app because don't want to touch the original
 import app from "./setup";
 
-describe.skip(`GET PUT /user`, () => {
+describe(`GET PUT /user`, () => {
   let token;
 
   // before all authenticate

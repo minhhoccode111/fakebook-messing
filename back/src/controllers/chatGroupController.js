@@ -19,7 +19,7 @@ import GroupMember from "./../models/groupMember";
 import mongoose from "mongoose";
 
 // get all groups that current logged in user can see
-export const chat_all_group_get = asyncHandler(async (req, res) => {
+const chat_all_group_get = asyncHandler(async (req, res) => {
   // first get all current logged in user joined group references
   let joinedGroups = await GroupMember.find({ user: req.user })
     .sort({ isCreator: -1 })
@@ -63,7 +63,7 @@ export const chat_all_group_get = asyncHandler(async (req, res) => {
 });
 
 // current logged in user create a new group (and be group's creator)
-export const chat_all_group_post = [
+const chat_all_group_post = [
   body(`name`, `Group name should be between 1 and 50 characters.`)
     .isLength({ min: 1, max: 50 })
     .trim()
@@ -116,7 +116,7 @@ export const chat_all_group_post = [
 ];
 
 // get conversation with a specific group
-export const chat_group_get = asyncHandler(async (req, res) => {
+const chat_group_get = asyncHandler(async (req, res) => {
   // check valid mongoose objectid before retrieve db
   const isValidId = mongoose.isValidObjectId(req.params.groupid);
   if (!isValidId) return res.sendStatus(404);
@@ -178,7 +178,7 @@ export const chat_group_get = asyncHandler(async (req, res) => {
 });
 
 // post a message to a specific group
-export const chat_group_post = [
+const chat_group_post = [
   body("content", `Content cannot be over 10000 characters`)
     .trim()
     .isLength({ max: 10000 })
@@ -258,7 +258,7 @@ export const chat_group_post = [
 ];
 
 // delete a specific group (current logged in user is group's creator)
-export const chat_group_delete = asyncHandler(async (req, res) => {
+const chat_group_delete = asyncHandler(async (req, res) => {
   // check valid mongoose objectid before retrieve db
   const isValidId = mongoose.isValidObjectId(req.params.groupid);
   if (!isValidId) return res.sendStatus(404);
@@ -287,7 +287,7 @@ export const chat_group_delete = asyncHandler(async (req, res) => {
 });
 
 // update a specific group (current logged in user is group's creator)
-export const chat_group_put = [
+const chat_group_put = [
   body(`name`, `Group name should be between 1 and 50 characters.`)
     .isLength({ min: 1, max: 50 })
     .trim()
@@ -349,7 +349,7 @@ export const chat_group_put = [
 ];
 
 // get all group's members
-export const chat_group_all_members_get = asyncHandler(async (req, res) => {
+const chat_group_all_members_get = asyncHandler(async (req, res) => {
   // check valid mongoose objectid before retrieve db
   const isValidId = mongoose.isValidObjectId(req.params.groupid);
   if (!isValidId) return res.sendStatus(404);
@@ -373,7 +373,7 @@ export const chat_group_all_members_get = asyncHandler(async (req, res) => {
 });
 
 // post a member to a group
-export const chat_group_all_members_post = asyncHandler(async (req, res) => {
+const chat_group_all_members_post = asyncHandler(async (req, res) => {
   // check valid mongoose objectid before retrieve db
   const isValidId = mongoose.isValidObjectId(req.params.groupid);
   if (!isValidId) return res.sendStatus(404);
@@ -418,7 +418,7 @@ export const chat_group_all_members_post = asyncHandler(async (req, res) => {
 });
 
 // delete a member from a group (leave or get kicked)
-export const chat_group_member_delete = asyncHandler(async (req, res) => {
+const chat_group_member_delete = asyncHandler(async (req, res) => {
   // check valid mongoose objectid before retrieve db of both group and user to delete
   const isValidId =
     mongoose.isValidObjectId(req.params.groupid) &&
@@ -472,3 +472,15 @@ export const chat_group_member_delete = asyncHandler(async (req, res) => {
 
   return res.json(groupMembers);
 });
+
+export default {
+  chat_all_group_get,
+  chat_all_group_post,
+  chat_group_get,
+  chat_group_post,
+  chat_group_delete,
+  chat_group_put,
+  chat_group_all_members_get,
+  chat_group_all_members_post,
+  chat_group_member_delete,
+};

@@ -3,7 +3,7 @@ import { describe, test, expect, beforeAll, afterAll } from "bun:test";
 
 import app from "./setup";
 
-describe.skip(`POST /signup`, () => {
+describe(`POST /signup`, () => {
   test(`valid signup`, async () => {
     const resSignup = await request(app)
       .post("/api/v1/auth/signup")
@@ -11,15 +11,18 @@ describe.skip(`POST /signup`, () => {
       .send({
         fullname: "khong dieu kien",
         //
-        username: "khongdieukien@gmail.com",
+        username: "cahoihoang@gmail.com",
         password: "Bruh0!0!",
         "confirm-password": "Bruh0!0!",
       });
+
+    // console.log(resSignup.body);
+
     expect(resSignup.status).toEqual(200);
     expect(resSignup.headers["content-type"]).toMatch(/json/);
     expect(resSignup.body.message).toMatch(/success/gi);
     expect(resSignup.body.user.fullname).toMatch(/khong dieu kien/gi);
-    expect(resSignup.body.user.username).toMatch(/khongdieukien@gmail.com/gi);
+    expect(resSignup.body.user.username).toMatch(/cahoihoang@gmail.com/gi);
   });
 
   test(`invalid username - short`, async () => {
@@ -101,16 +104,20 @@ describe.skip(`POST /signup`, () => {
   });
 });
 
-describe.skip(`POST /login`, () => {
+describe(`POST /login`, () => {
   test(`valid login`, async () => {
     const res = await request(app)
       .post("/api/v1/auth/login")
       .type("form")
       .send({ username: "khongdieukien@gmail.com", password: "Bruh0!0!" });
+
+    // console.log(`the req.body belike: `, res.body);
+
     expect(res.headers["content-type"]).toMatch(/json/);
     expect(res.status).toBe(200);
     expect(res.body.message).toMatch(/success/gi);
-    expect(res.body.user.fullname).toMatch(/khong dieu kien/gi);
+    // // since each time a random() full name is created using faker
+    // expect(res.body.user.fullname).toMatch(/khong dieu kien/gi);
     expect(res.body.user).toBeTruthy();
 
     // then use the returned token to get authenticated route

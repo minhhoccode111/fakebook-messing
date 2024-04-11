@@ -17,7 +17,7 @@ import Message from "./../models/message";
 import mongoose from "mongoose";
 
 // all users that current logged in user can chat with
-export const chat_all_user_get = asyncHandler(async (req, res) => {
+const chat_all_user_get = asyncHandler(async (req, res) => {
   // include minimal info
   const users = await User.find(
     { _id: { $ne: req.user._id } },
@@ -29,7 +29,7 @@ export const chat_all_user_get = asyncHandler(async (req, res) => {
 });
 
 // get conversation with a specific user
-export const chat_user_get = asyncHandler(async (req, res) => {
+const chat_user_get = asyncHandler(async (req, res) => {
   // check valid mongoose objectid before retrieve db
   const isValidId = mongoose.isValidObjectId(req.params.userid);
   if (!isValidId) return res.sendStatus(404);
@@ -73,7 +73,7 @@ export const chat_user_get = asyncHandler(async (req, res) => {
 });
 
 // post a message with a specific user
-export const chat_user_post = [
+const chat_user_post = [
   body("content", `Content cannot be over 10000 characters`)
     .trim()
     .isLength({ max: 10000 })
@@ -153,3 +153,9 @@ export const chat_user_post = [
     return res.sendStatus(400);
   }),
 ];
+
+export default {
+  chat_all_user_get,
+  chat_user_get,
+  chat_user_post,
+};

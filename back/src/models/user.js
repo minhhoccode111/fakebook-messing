@@ -1,4 +1,4 @@
-import mongoose from "mogoose";
+import mongoose from "mongoose";
 
 import { formatDate, formatDateIso } from "./../methods";
 
