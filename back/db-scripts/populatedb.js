@@ -1,13 +1,12 @@
 // to access environment variables
 require("dotenv").config(); // this line cause me 30 mins to deBUG
 
-const MONGODB = process.argv.slice(2)[0] || process.env.DEVELOPMENT_MONGO;
+// debug
+const debug = require("debug")(
+  "============================================================",
+);
 
-const debug = (...str) => {
-  for (const s of str) {
-    console.log(s);
-  }
-};
+const MONGODB = process.argv.slice(2)[0] || process.env.DEVELOPMENT_MONGO;
 
 debug(MONGODB);
 
@@ -21,28 +20,16 @@ async function main() {
   await mongoose.connect(MONGODB);
   debug("about to insert some documents");
 
-  // how to populate database messing
-  // first create 20 users with random detaild and save indexes
-  await createUsers(20, "asd");
-  // then create 40 groups with random detail
-  // and pick a random user to be group's creator
-  await createGroups(40);
-  // then create 2000 messages with random sender
-  // and pick random between userReceived and group received
-  // and pick random between content and imageLink
-  // loop through every group created and force the group's creator to send
-  // at least one message to the group
-  await createMessages(2000);
-  // loop through every group and check every messages being sent to the group
-  // then make every sender to be group's member
-  await createGroupMembers();
+  await createUsers(20, "asd"); // 20 users
+  // await createGroups(40); // 40 groups
+  // await createMessages(2000); // 2000 messages
+  // await createGroupMembers();
 
-  // TODO: how to populate database fakebook
-  // first create random connection between users (follower, following, none)
-  // then each user will have a number of random posts created
-  // then each user will have a number of random comments on others' posts
-  // then each user will have a number of random like on others' posts
-  // then each user will have a number of random like on others' comments
+  // await createFollows();
+  // await createPosts(30);
+  // await createComments(6000);
+  // await createLikePosts(16000);
+  // await createLikeComments(6000);
 
   // const numComment = await Comment.countDocuments({}).exec();
   // debug(`Comment models is having: ${numComment} documents`);
@@ -91,6 +78,7 @@ const User = require("./../src/models/user");
 const comments = [];
 const follows = [];
 const groups = [];
+const membersEveryGroups = new Map(); // store messages being sent to each group
 const groupMembers = [];
 const likeComments = [];
 const likePosts = [];
@@ -101,37 +89,65 @@ const users = [];
 const PASSWORD = process.env.USERS_PASSWORD; // asd
 const SALT = Number(process.env.SALT); // 10
 
-async function userCreate(index, username, pw) {
-  // password still get hashed
-  const password = await bcrypt.hash(pw, SALT);
-  const userDetail = {
-    // username and password are something that we can control
-    username,
-    password,
-    fullname: faker.person.fullName(),
-    dateOfBirth: faker.date.past(),
-    bio: faker.lorem.paragraph(),
-    status: faker.helpers.arrayElement(["online", "offline", "busy", "afk"]),
-    avatarLink: faker.image.avatar(),
-    createdAt: faker.date.recent(),
-    updatedAt: faker.date.recent(),
-  };
-
-  const user = new User(userDetail);
-  await user.save();
-
-  users[index] = user;
-  debug(
-    `adding user: ${user.fullname} with raw password: ${pw} at index: ${index}`,
-  );
-}
-
 async function createUsers(number, username = "asd") {
   debug(PASSWORD); // asd
   try {
     // create number of users
     for (let i = 0; i < number; i++) {
-      await userCreate(i, username + i, PASSWORD);
+      // password still get hashed
+      const password = await bcrypt.hash(PASSWORD, SALT);
+      const userDetail = {
+        // username and password are something that we can control
+        username: username + i,
+        password,
+        fullname: faker.person.fullName(),
+        dateOfBirth: faker.date.past(),
+        bio: faker.lorem.paragraph(),
+        status: faker.helpers.arrayElement([
+          "online",
+          "offline",
+          "busy",
+          "afk",
+        ]),
+        avatarLink: faker.image.avatar(),
+        createdAt: faker.date.recent(),
+        updatedAt: faker.date.recent(),
+      };
+
+      const user = new User(userDetail);
+      await user.save();
+
+      users[i] = user;
+      debug(
+        `adding user: ${user.fullname} with raw password: ${password} at index: ${i}`,
+      );
+    }
+  } catch (error) {
+    debug(`the error is: `, error);
+    throw error;
+  }
+}
+
+async function createGroups(number) {
+  try {
+    // create number of groups
+    for (let i = 0; i < number; i++) {
+      const groupDetail = {
+        // pick random a user to be group's creator
+        creator: faker.helpers.arrayElement(users),
+        name: faker.person.jobTitle(),
+        public: faker.datatype.boolean(0.5),
+        bio: faker.lorem.paragraph(),
+        avatarLink: faker.image.avatar(),
+        createdAt: faker.date.recent(),
+        updatedAt: faker.date.recent(),
+      };
+
+      const group = new Group(groupDetail);
+      await group.save();
+
+      groups[i] = group;
+      debug(`adding group: ${group}`);
     }
   } catch (error) {
     debug(`the error is: `, error);
@@ -160,6 +176,18 @@ async function messageCreate(
   await message.save();
 
   messages[index] = message;
+
+  // group receive the message is not null
+  if (groupReceive) {
+    // check Map doesn't have this group as a key
+    if (!membersEveryGroups.has(groupReceive)) {
+      // create new Set to store group's members with that group is the key
+      membersEveryGroups.set(groupReceive, new Set());
+    }
+
+    // then add the sender to be the group's member Set
+    membersEveryGroups.get(groupReceive).add(sender);
+  }
   debug(`adding message: ${message}`);
 }
 
@@ -218,88 +246,50 @@ async function createMessages(number) {
   }
 }
 
-async function groupCreate(index) {
-  const groupDetail = {
-    // pick random a user to be group's creator
-    creator: faker.helpers.arrayElement(users),
-    name: faker.person.jobTitle(),
-    public: faker.datatype.boolean(0.5),
-    bio: faker.lorem.paragraph(),
-    avatarLink: faker.image.avatar(),
-    createdAt: faker.date.recent(),
-    updatedAt: faker.date.recent(),
-  };
-
-  const group = new Group(groupDetail);
-  await group.save();
-
-  groups[index] = group;
-  debug(`adding group: ${group}`);
-}
-
-async function createGroups(number) {
-  try {
-    // create number of groups
-    for (let i = 0; i < number; i++) {
-      await groupCreate(i);
-    }
-  } catch (error) {
-    debug(`the error is: `, error);
-    throw error;
-  }
-}
-
-async function groupMemberCreate(index, user, group, isCreator) {
-  const groupMemberDetail = {
-    user,
-    group,
-    isCreator,
-    createdAt: faker.date.recent(),
-  };
-
-  const groupMember = new GroupMember(groupMemberDetail);
-  await groupMember.save();
-
-  groupMembers[index] = groupMember;
-  debug(`adding group member: ${groupMember}`);
-}
-
 async function createGroupMembers() {
   try {
-    // loop through each group to add members to it
-    for (let i = 0; i < groups.length; i++) {
-      // and creator store when group's created is also member
-      const creator = groups[i].creator;
+    // loop through the Map, key is the group, value is a Set of members
+    for (const [key, value] of membersEveryGroups) {
+      // the group's creator
+      const creator = key.creator;
 
-      // a Set to store current group's member
-      const members = new Set();
+      // loop through every sender of the senders Set
+      for (const sender of value) {
+        const groupMemberDetail = {
+          user: sender,
+          group: key,
+          isCreator: sender._id === creator._id,
+          createdAt: faker.date.recent(),
+        };
 
-      // members that sent messages to this group will be a member
-      for (let j = 0, len = messages.length; j < len; j++) {
-        // current group is message's groupReceive, and not added yet
-        if (
-          groups[i] === messages[j].groupReceive &&
-          !members.has(messages[j].sender)
-        ) {
-          // add sender to members Set, so we don't add anyone twice
-          members.add(messages[j].sender);
+        const groupMember = new GroupMember(groupMemberDetail);
+        await groupMember.save();
 
-          // create group member with the sender
-          await groupMemberCreate(
-            // index of this don't matter
-            i + j,
-            // user will be the one who sent message
-            messages[j].sender,
-            // group will be current group
-            groups[i],
-            // if current user is the group's creator
-            messages[j].sender._id === creator._id,
-          );
-        }
+        debug(`adding group member: ${groupMember}`);
       }
     }
-  } catch (error) {
-    debug(`the error is: `, error);
-    throw error;
+  } catch (err) {
+    debug(`the error is: `, err);
+    throw err;
   }
+}
+
+async function createFollows() {
+  //
+}
+
+async function createPosts() {
+  //
+}
+
+async function createComments() {
+  //
+}
+
+async function createLikePosts() {
+  //
+}
+
+async function createLikeComments() {
+  //
 }

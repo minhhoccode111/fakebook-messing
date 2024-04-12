@@ -1,3 +1,14 @@
+// to access environment variables
+// this line cause me 30 mins to deBUG
+// and don't know why we have to place this and debug at the top
+// for so that it can run
+require("dotenv").config();
+
+// debug
+const debug = require("debug")(
+  "============================================================",
+);
+
 // clear database
 const Comment = require("./../src/models/comment");
 const Follow = require("./../src/models/follow");
@@ -8,15 +19,6 @@ const LikePost = require("./../src/models/likePost");
 const Message = require("./../src/models/message");
 const Post = require("./../src/models/post");
 const User = require("./../src/models/user");
-
-// to access environment variables
-require("dotenv").config(); // this line cause me 30 mins to deBUG
-
-const debug = (...str) => {
-  for (const s of str) {
-    console.log(s);
-  }
-};
 
 const MONGODB = process.argv.slice(2)[0] || process.env.DEVELOPMENT_MONGO;
 
