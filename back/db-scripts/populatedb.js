@@ -20,36 +20,37 @@ async function main() {
   await mongoose.connect(MONGODB);
   debug("about to insert some documents");
 
-  // await createUsers(20, "messing"); // messing[0...19] usernames
-  // await createGroups(40); // 40 groups
-  // await createMessages(2000); // 2000 messages
-  // await createGroupMembers(); // base on messages sent to group
+  await createUsers(5); // number of users
+  // await createUsers(5, "messing"); // number of users
+  await createGroups(10); // number of groups
+  await createMessages(100); // number of messages, to other users and groups
+  await createGroupMembers(); // base on users send messages to groups
 
-  await createUsers(20, "fakebook"); // fakebook[0...19] usernames
-  // await createFollows(); // random
-  await createPosts(30); // max 30 posts/user
-  // await createComments(6000);
-  // await createLikePosts(16000);
-  // await createLikeComments(6000);
+  // await createUsers(5, "fakebook"); // number of users
+  await createFollows(0.5); // chance that a user will follow other
+  await createPosts(2); // max number of posts/user
+  await createComments(2); // max number of comments/user/post
+  await createLikePosts(0.5); // chance that a user will like a post
+  await createLikeComments(0.5); // chance that a user will like a comment
 
-  // const numComment = await Comment.countDocuments({}).exec();
-  // debug(`Comment models is having: ${numComment} documents`);
-  // const numFollow = await Follow.countDocuments({}).exec();
-  // debug(`Follow models is having: ${numFollow} documents`);
-  // const numGroup = await Group.countDocuments({}).exec();
-  // debug(`Group models is having: ${numGroup} documents`);
-  // const numGroupMember = await GroupMember.countDocuments({}).exec();
-  // debug(`GroupMember models is having: ${numGroupMember} documents`);
-  // const numLikeComment = await LikeComment.countDocuments({}).exec();
-  // debug(`LikeComment models is having: ${numLikeComment} documents`);
-  // const numLikePost = await LikePost.countDocuments({}).exec();
-  // debug(`LikePost models is having: ${numLikePost} documents`);
-  // const numMessage = await Message.countDocuments({}).exec();
-  // debug(`Message models is having: ${numMessage} documents`);
-  // const numPost = await Post.countDocuments({}).exec();
-  // debug(`Post models is having: ${numPost} documents`);
-  // const numUser = await User.countDocuments({}).exec();
-  // debug(`User models is having: ${numUser} documents`);
+  const numComment = await Comment.countDocuments({}).exec();
+  debug(`Comment models is having: ${numComment} documents`);
+  const numFollow = await Follow.countDocuments({}).exec();
+  debug(`Follow models is having: ${numFollow} documents`);
+  const numGroup = await Group.countDocuments({}).exec();
+  debug(`Group models is having: ${numGroup} documents`);
+  const numGroupMember = await GroupMember.countDocuments({}).exec();
+  debug(`GroupMember models is having: ${numGroupMember} documents`);
+  const numLikeComment = await LikeComment.countDocuments({}).exec();
+  debug(`LikeComment models is having: ${numLikeComment} documents`);
+  const numLikePost = await LikePost.countDocuments({}).exec();
+  debug(`LikePost models is having: ${numLikePost} documents`);
+  const numMessage = await Message.countDocuments({}).exec();
+  debug(`Message models is having: ${numMessage} documents`);
+  const numPost = await Post.countDocuments({}).exec();
+  debug(`Post models is having: ${numPost} documents`);
+  const numUser = await User.countDocuments({}).exec();
+  debug(`User models is having: ${numUser} documents`);
 
   debug("finishes insert documents");
   await mongoose.connection.close();
@@ -277,14 +278,14 @@ async function createGroupMembers() {
   }
 }
 
-async function createFollows() {
+async function createFollows(chance) {
   try {
     // loop through each user
     for (let i = 0, len = users.length; i < len; i++) {
       // loop through other user
       for (let j = 0, len = users.length; j < len; j++) {
         if (i === j) continue; // skip user-self
-        if (faker.datatype.boolean(0.5)) continue; // 50% skip
+        if (faker.datatype.boolean(chance)) continue; // 50% skip
 
         // else follow the user
         const follow = new Follow({
@@ -302,7 +303,7 @@ async function createFollows() {
       }
     }
   } catch (err) {
-    debug(err);
+    debug(`the error belike: `, err);
     throw err;
   }
 }
@@ -329,19 +330,93 @@ async function createPosts(number) {
       }
     }
   } catch (err) {
-    debug(err);
+    debug(`the error belike: `, err);
     throw err;
   }
 }
 
-async function createComments() {
-  //
+async function createComments(number) {
+  try {
+    // each user
+    for (let i = 0, len = users.length; i < len; i++) {
+      // each post
+      for (let j = 0; j < posts.length; j++) {
+        // create maximum number of comments
+        for (let k = 0; k < number; k++) {
+          if (faker.datatype.boolean(0.5)) continue; // 50% skip
+
+          const comment = new Comment({
+            creator: users[i],
+            post: posts[j],
+            content: faker.lorem.paragraph({ min: 1, max: 3 }),
+            createdAt: faker.date.recent(),
+          });
+
+          await comment.save();
+
+          comments.push(comment);
+          debug(
+            `${users[i].fullname} commented on ${posts[j].creator.fullname} post at index: ${comments.length - 1}`,
+          );
+        }
+      }
+    }
+  } catch (err) {
+    debug(`the error belike: `, err);
+    throw err;
+  }
 }
 
-async function createLikePosts() {
-  //
+async function createLikePosts(chance) {
+  try {
+    // each user
+    for (let i = 0, len = users.length; i < len; i++) {
+      // each post
+      for (let j = 0; j < posts.length; j++) {
+        if (faker.datatype.boolean(chance)) continue; // 50% skip
+
+        const likePost = new LikePost({
+          creator: users[i],
+          post: posts[j],
+        });
+
+        await likePost.save();
+        likePosts.push(likePost);
+
+        debug(
+          `${users[i].fullname} liked on ${posts[j].creator.fullname} post at index: ${likePosts.length - 1}`,
+        );
+      }
+    }
+  } catch (err) {
+    debug(`the error belike: `, err);
+    throw err;
+  }
 }
 
-async function createLikeComments() {
-  //
+async function createLikeComments(chance) {
+  try {
+    // each user
+    for (let i = 0, userLen = users.length; i < userLen; i++) {
+      // each comment
+      for (let j = 0, commentLen = comments.length; j < commentLen; j++) {
+        if (faker.datatype.boolean(chance)) continue; // 50% skip
+
+        const likeComment = new LikeComment({
+          creator: users[i],
+          comment: comments[j],
+        });
+
+        await likeComment.save();
+        likeComments.push(likeComment);
+
+        debug(
+          `${users[i].fullname} liked on ${comments[j].creator.fullname} comment at index: ${likeComments.length - 1}`,
+        );
+      }
+    }
+  } catch (err) {
+    debug(`the error belike: `, err);
+    throw err;
+  }
 }

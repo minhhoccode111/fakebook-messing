@@ -10,9 +10,9 @@ const LikeCommentSchema = new Schema(
       required: true,
     },
 
-    post: {
+    comment: {
       type: Schema.Types.ObjectId,
-      ref: "Post",
+      ref: "Comment",
       required: true,
     },
   },
