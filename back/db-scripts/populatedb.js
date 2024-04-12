@@ -20,13 +20,14 @@ async function main() {
   await mongoose.connect(MONGODB);
   debug("about to insert some documents");
 
-  await createUsers(20, "asd"); // 20 users
+  // await createUsers(20, "messing"); // messing[0...19] usernames
   // await createGroups(40); // 40 groups
   // await createMessages(2000); // 2000 messages
-  // await createGroupMembers();
+  // await createGroupMembers(); // base on messages sent to group
 
-  // await createFollows();
-  // await createPosts(30);
+  await createUsers(20, "fakebook"); // fakebook[0...19] usernames
+  // await createFollows(); // random
+  await createPosts(30); // max 30 posts/user
   // await createComments(6000);
   // await createLikePosts(16000);
   // await createLikeComments(6000);
@@ -117,10 +118,8 @@ async function createUsers(number, username = "asd") {
       const user = new User(userDetail);
       await user.save();
 
-      users[i] = user;
-      debug(
-        `adding user: ${user.fullname} with raw password: ${password} at index: ${i}`,
-      );
+      users.push(user);
+      debug(`adding user: ${user.fullname} at index: ${users.length - 1}`);
     }
   } catch (error) {
     debug(`the error is: `, error);
@@ -146,8 +145,8 @@ async function createGroups(number) {
       const group = new Group(groupDetail);
       await group.save();
 
-      groups[i] = group;
-      debug(`adding group: ${group}`);
+      groups.push(group);
+      debug(`adding group: ${group.name} at index: ${groups.length - 1}`);
     }
   } catch (error) {
     debug(`the error is: `, error);
@@ -156,7 +155,6 @@ async function createGroups(number) {
 }
 
 async function messageCreate(
-  index,
   sender,
   userReceive,
   groupReceive,
@@ -175,7 +173,7 @@ async function messageCreate(
   const message = new Message(messageDetail);
   await message.save();
 
-  messages[index] = message;
+  messages.push(message);
 
   // group receive the message is not null
   if (groupReceive) {
@@ -188,7 +186,10 @@ async function messageCreate(
     // then add the sender to be the group's member Set
     membersEveryGroups.get(groupReceive).add(sender);
   }
-  debug(`adding message: ${message}`);
+
+  debug(
+    `adding message: ${message.content ? message.content : message.imageLink} at index: ${messages.length - 1}`,
+  );
 }
 
 async function createMessages(number) {
@@ -207,7 +208,6 @@ async function createMessages(number) {
 
       // sender will always first user
       await messageCreate(
-        i,
         twoUsers[0],
         // will send to another user or group
         randomReceiver ? twoUsers[1] : null,
@@ -228,7 +228,6 @@ async function createMessages(number) {
       const randomContent = faker.datatype.boolean(0.5);
 
       await messageCreate(
-        j,
         // sender will be group's creator
         groups[j - i].creator,
         // null userReceive
@@ -265,7 +264,11 @@ async function createGroupMembers() {
         const groupMember = new GroupMember(groupMemberDetail);
         await groupMember.save();
 
-        debug(`adding group member: ${groupMember}`);
+        groupMembers.push(groupMember);
+
+        debug(
+          `add ${sender.fullname} to ${key.name} at index: ${groupMembers.length - 1}`,
+        );
       }
     }
   } catch (err) {
@@ -275,11 +278,60 @@ async function createGroupMembers() {
 }
 
 async function createFollows() {
-  //
+  try {
+    // loop through each user
+    for (let i = 0, len = users.length; i < len; i++) {
+      // loop through other user
+      for (let j = 0, len = users.length; j < len; j++) {
+        if (i === j) continue; // skip user-self
+        if (faker.datatype.boolean(0.5)) continue; // 50% skip
+
+        // else follow the user
+        const follow = new Follow({
+          follower: users[i],
+          following: users[j],
+          createdAt: faker.date.recent(),
+        });
+
+        await follow.save();
+
+        follows.push(follow);
+        debug(
+          `${users[i].fullname} is following ${users[j].fullname} at index ${follows.length - 1}`,
+        );
+      }
+    }
+  } catch (err) {
+    debug(err);
+    throw err;
+  }
 }
 
-async function createPosts() {
-  //
+async function createPosts(number) {
+  try {
+    // each user will create maximun number of posts
+    for (let i = 0, len = users.length; i < len; i++) {
+      for (let j = 0; j < number; j++) {
+        if (faker.datatype.boolean(0.3)) continue; // 30% skip
+
+        const post = new Post({
+          creator: users[i],
+          content: faker.lorem.paragraphs({ min: 1, max: 3 }),
+          createdAt: faker.date.recent(),
+        });
+
+        await post.save();
+
+        posts.push(post);
+        debug(
+          `${users[i].fullname} created a post at index: ${posts.length - 1}`,
+        );
+      }
+    }
+  } catch (err) {
+    debug(err);
+    throw err;
+  }
 }
 
 async function createComments() {

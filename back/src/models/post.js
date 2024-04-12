@@ -18,6 +18,7 @@ const PostSchema = new Schema(
       length: {
         max: 10000,
       },
+      default: () => `Default post content`,
     },
 
     createdAt: {
