@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const UsersController = require("./../controllers/usersController");
+const UsersController = require("./../controllers/user.controller");
+
+// console.log(UsersController.getAllUsers());
 
 router.get("/", UsersController.getAllUsers);
 
@@ -11,6 +13,8 @@ router.put("/:userid", UsersController.putUser);
 
 // not implemented
 // router.delete('/', deleteUser);
+
+router.post("/:userid/follows", UsersController.postUserFollows);
 
 router.get("/:userid/messages", UsersController.getUserMessages);
 
@@ -29,7 +33,10 @@ router.post(
   UsersController.postUserPostComments,
 );
 
-// // not implement like a comment
-// router.post("/:userid/posts/:postid/comments/:commentid/likes", postUserPostCommentLikes);
+// not implement like a comment
+router.post(
+  "/:userid/posts/:postid/comments/:commentid/likes",
+  UsersController.postUserCommentLikes,
+);
 
 module.exports = router;

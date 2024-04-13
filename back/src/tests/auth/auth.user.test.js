@@ -119,7 +119,7 @@ describe(`POST /signup`, () => {
 describe(`POST /login`, () => {
   beforeAll(async () => {
     // Create account before tests
-    method.createUsers(1, "asd");
+    await method.createUsers(1, "asd");
   });
 
   test(`valid login`, async () => {
@@ -143,7 +143,7 @@ describe(`POST /login`, () => {
     expect(resGetUsers.headers["content-type"]).toMatch(/json/);
 
     const resGetGroups = await request(app)
-      .get("/api/v1/users")
+      .get("/api/v1/groups")
       .set("Authorization", `Bearer ${token}`);
     expect(resGetGroups.status).toBe(200);
     expect(resGetGroups.headers["content-type"]).toMatch(/json/);
