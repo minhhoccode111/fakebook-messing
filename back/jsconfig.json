@@ -1,0 +1,19 @@
+{
+  // "compilerOptions": {
+  //   "module": "CommonJS",
+  //   "target": "ES6", 
+  //   "strict": true,
+  //   "baseUrl": "./",
+  //   "paths": {
+  //     "@src/*": [
+  //       "src/*", 
+  //       // we now can use require('@src/models/users') instead of going up many dir
+  //     ],
+  //   },
+  // },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ], 
+  "include": ["src/**/*"], // if we want this dir only, default to all dir
+}

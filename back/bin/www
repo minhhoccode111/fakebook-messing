@@ -4,15 +4,19 @@
  * Module dependencies.
  */
 
-const app = require("./../src/app");
-const debug = require("./../src/constants/debug");
+const EnvVar = require(`./../src/constants/envvar`);
+const app = require(`./../src/app`);
+
+// Use this approach to make every debug the same
+const debug = require(`./../src/constants/debug`);
+
 const http = require("http");
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || "3000");
+const port = normalizePort(EnvVar.Port || "3000");
 app.set("port", port);
 
 /**
@@ -65,11 +69,11 @@ function onError(error) {
     case "EACCES":
       console.error(bind + " requires elevated privileges");
       process.exit(1);
-      break;
+    // break;
     case "EADDRINUSE":
       console.error(bind + " is already in use");
       process.exit(1);
-      break;
+    // break;
     default:
       throw error;
   }

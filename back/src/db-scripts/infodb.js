@@ -1,26 +1,21 @@
-// to access environment variables
-// this line cause me 30 mins to deBUG
-// and don't know why we have to place this and debug at the top
-// for so that it can run
-require("dotenv").config();
+// environment variables
+const EnvVar = require("./../constants/envvar");
 
-// debug
-const debug = require("debug")(
-  "============================================================",
-);
+// Make every debug the same
+const debug = require("./../constants/debug");
 
-// info database
-const Comment = require("./../src/models/comment");
-const Follow = require("./../src/models/follow");
-const Group = require("./../src/models/group");
-const GroupMember = require("./../src/models/groupMember");
-const LikeComment = require("./../src/models/likeComment");
-const LikePost = require("./../src/models/likePost");
-const Message = require("./../src/models/message");
-const Post = require("./../src/models/post");
-const User = require("./../src/models/user");
+// clear database
+const Comment = require("./../models/comment");
+const Follow = require("./../models/follow");
+const Group = require("./../models/group");
+const GroupMember = require("./../models/groupMember");
+const LikeComment = require("./../models/likeComment");
+const LikePost = require("./../models/likePost");
+const Message = require("./../models/message");
+const Post = require("./../models/post");
+const User = require("./../models/user");
 
-const MONGODB = process.argv.slice(2)[0] || process.env.DEVELOPMENT_MONGO;
+const MONGODB = process.argv.slice(2)[0] || EnvVar.MongoString;
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);

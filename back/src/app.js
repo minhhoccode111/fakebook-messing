@@ -6,19 +6,17 @@ const logger = require("morgan");
 const helmet = require("helmet");
 const path = require("path");
 
-const dotenv = require("dotenv");
-dotenv.config();
+// environment variables
+const EnvVar = require("./constants/envvar");
 
-// debug
-const debug = require("debug")(
-  "============================================================",
-);
+// manually logging
+const debug = require("./constants/debug");
 
 // connect mongo db
 require("./mongoConfig.js");
 
 // db models, for authentication
-const User = require("./src/models/user");
+const User = require("./models/user");
 
 const app = express();
 
@@ -54,9 +52,7 @@ app.use(
 app.use(logger("dev")); // logger
 app.use(express.json()); // parse json to js object
 app.use(express.urlencoded({ extended: false })); //  parse form data
-app.use(express.static(path.join(__dirname, "public"))); // server things in public
-
-const SECRET = process.env.SECRET;
+app.use(express.static(path.join(__dirname, "public"))); // serve things in public
 
 // passport to authenticate a jwt
 const passport = require("passport");
@@ -70,7 +66,7 @@ const options = {
   // extract json web token using Bearer in header
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   // secret
-  secretOrKey: SECRET,
+  secretOrKey: EnvVar.Secret,
 };
 
 // init passport within express application
@@ -98,7 +94,7 @@ passport.use(
 );
 
 // handle api request
-const routes = require("./src/routes/index"); // modular
+const routes = require("./routes/index"); // modular
 // things about auth
 app.use("/api/v1/auth", routes.auth);
 // things about user, need authenticate

@@ -4,11 +4,22 @@
 
 /* eslint-disable node/no-process-env */
 
-module.exports = {
+const dotenv = require("dotenv");
+dotenv.config();
+
+// Make every debug the same
+const debug = require("./debug");
+
+const EnvVar = {
   NodeEnv: process.env.NODE_ENV ?? "",
   Port: process.env.PORT ?? 3000,
-  Mongo: process.env.PRODUCTION_MONGO ?? process.env.DEVELOPMENT_MONGO ?? "",
+  MongoString:
+    process.env.PRODUCTION_MONGO || process.env.DEVELOPMENT_MONGO || "",
   Salt: process.env.SALT ?? "",
   Secret: process.env.SECRET ?? "",
-  // TODO: work on this and refactor structure
+  DummyPassword: process.env.DUMMY_PASSWORD ?? "",
 };
+
+debug(EnvVar);
+
+module.exports = EnvVar;

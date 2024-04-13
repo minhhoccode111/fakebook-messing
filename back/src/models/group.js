@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const { formatDate } = require("./../methods");
+const { formatDate } = require("./../method");
 
 const Schema = mongoose.Schema;
 

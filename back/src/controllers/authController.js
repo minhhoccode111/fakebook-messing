@@ -7,10 +7,11 @@ const { body, validationResult } = require("express-validator");
 // mongoose models
 const User = require("./../models/user");
 
-// debug
-// const  debug = require ( "debug" )(
-//   "============================================================",
-// );
+// environment variables
+const EnvVar = require("./../constants/envvar");
+
+// manually logging
+const debug = require("./../constants/debug");
 
 // bcrypt to secure password
 const bcrypt = require("bcrypt");
@@ -19,7 +20,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 // work with date and time
-const { formatDate } = require("./../methods");
+const { formatDate } = require("./../method");
 
 const login_post = [
   body("username").trim().escape(),
@@ -57,9 +58,10 @@ const login_post = [
       // debug(`expire time belike: `, 60 * 60 * 24 * 7, ` seconds`);
       // debug(`expire time formatted belike: `, expiresInDateFormatted);
 
-      const tmp = user.toJSON();
       // remove password and username
-      const { password, username, ...publicUserInfo } = tmp;
+      const { password, username, ...publicUserInfo } = user.toJSON();
+
+      debug(`the public user info after logging in: `, publicUserInfo);
 
       // return info for client to store on their localStorage and check of expire
       return res.status(200).json({
@@ -129,26 +131,27 @@ const signup_post = [
       });
     }
 
-    // debug(`The error result is: `, errors);
-
     // data valid
     if (errors.length === 0) {
-      const hashedPassword = await bcrypt.hash(
-        password,
-        Number(process.env.SECRET),
-      ); // encode password
+      const hashedPassword = await bcrypt.hash(password, Number(EnvVar.Secret)); // encode password
 
-      await new User({
+      const user = new User({
         ...user,
         password: hashedPassword,
         isCreator: false,
-      }).save();
+      });
+
+      await user.save();
+
+      debug(`the created user is: `, user);
 
       return res.status(200).json({
         message: `Success`,
         user,
       });
     }
+
+    // debug(`The error result is: `, errors);
 
     // data invalid
     return res.status(400).json({

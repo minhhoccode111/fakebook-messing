@@ -1,12 +1,27 @@
-// to access environment variables
-require("dotenv").config(); // this line cause me 30 mins to deBUG
+// environment variables
+const EnvVar = require("./../constants/envvar");
 
-// debug
-const debug = require("debug")(
-  "============================================================",
-);
+// Make every debug the same
+const debug = require("./../constants/debug");
 
-const MONGODB = process.argv.slice(2)[0] || process.env.DEVELOPMENT_MONGO;
+// fake database documents
+const { faker } = require("@faker-js/faker");
+
+// add default data in database
+const bcrypt = require("bcrypt");
+
+// clear database
+const Comment = require("./../models/comment");
+const Follow = require("./../models/follow");
+const Group = require("./../models/group");
+const GroupMember = require("./../models/groupMember");
+const LikeComment = require("./../models/likeComment");
+const LikePost = require("./../models/likePost");
+const Message = require("./../models/message");
+const Post = require("./../models/post");
+const User = require("./../models/user");
+
+const MONGODB = process.argv.slice(2)[0] || EnvVar.MongoString;
 
 debug(MONGODB);
 
@@ -57,26 +72,6 @@ async function main() {
   debug("connection closed");
 }
 
-// fake database documents
-const { faker } = require("@faker-js/faker");
-
-// add default data in database
-const bcrypt = require("bcrypt");
-
-// to access environment variables
-require("dotenv").config(); // this line cause me 30 mins to deBUG
-
-// clear database
-const Comment = require("./../src/models/comment");
-const Follow = require("./../src/models/follow");
-const Group = require("./../src/models/group");
-const GroupMember = require("./../src/models/groupMember");
-const LikeComment = require("./../src/models/likeComment");
-const LikePost = require("./../src/models/likePost");
-const Message = require("./../src/models/message");
-const Post = require("./../src/models/post");
-const User = require("./../src/models/user");
-
 const comments = [];
 const follows = [];
 const groups = [];
@@ -88,8 +83,8 @@ const messages = [];
 const posts = [];
 const users = [];
 
-const PASSWORD = process.env.USERS_PASSWORD; // asd
-const SALT = Number(process.env.SALT); // 10
+const PASSWORD = EnvVar.DummyPassword;
+const SALT = Number(EnvVar.Salt);
 
 async function createUsers(number, username = "asd") {
   debug(PASSWORD); // asd
