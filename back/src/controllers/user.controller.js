@@ -28,6 +28,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
   // first get all users that have connection with us
   const connections = await Follow.find(
     {
+      // self follow others or other follow self
       $or: [{ follower: req.user.id }, { following: req.user.id }],
     },
     "follower following",
@@ -36,28 +37,46 @@ const getAllUsers = asyncHandler(async (req, res) => {
     .populate("following", "-password -username -__v")
     .exec();
 
-  // then mayknow will be the ones with no connection
-  const mayknows = await User.find({
-    // TODO:
-    // first not myself
-    // next not in followers
-    // last not in following
-  }).exec();
-
-  // then extract followers
-  // then extract following
-
   const followers = [];
   const followings = [];
 
   for (let i = 0, len = connections.length; i < len; i++) {
-    // TODO: check logic
     if (connections[i].follower.id === req.user.id) {
+      // if self is follower
       followings.push(connections[i].following);
     } else {
+      // else self is following
       followers.push(connections[i].followers);
     }
   }
+
+  // then mayknow will be the ones with no connection
+  const mayknows = await User.find({
+    $and: [
+      // first not myself
+      {
+        _id: {
+          $not: { $eq: req.user.id },
+        },
+      },
+      // next not in followers
+      {
+        _id: {
+          $nin: followers,
+        },
+      },
+      // last not in following
+      {
+        _id: {
+          $nin: followings,
+        },
+      },
+    ],
+  }).exec();
+
+  // debug(`mayknows belike: `, mayknows);
+  // debug(`followers belike: `, followers);
+  // debug(`followings belike: `, followings);
 
   return res.send({ followers, followings, mayknows });
 });

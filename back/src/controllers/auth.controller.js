@@ -61,7 +61,7 @@ const login_post = [
       // remove password and username
       const { password, username, ...publicUserInfo } = user.toJSON();
 
-      debug(`the public user info after logging in: `, publicUserInfo);
+      // debug(`the public user info after logging in: `, publicUserInfo);
 
       // return info for client to store on their localStorage and check of expire
       return res.status(200).json({
@@ -136,12 +136,12 @@ const signup_post = [
 
       await newUser.save();
 
-      debug(`the created user is: `, newUser);
+      // debug(`the created user is: `, newUser);
 
       return res.sendStatus(200);
     }
 
-    debug(`The error result is: `, errors);
+    // debug(`The error result is: `, errors);
 
     // data invalid
     return res.sendStatus(400);

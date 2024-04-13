@@ -29,7 +29,7 @@ const User = require("./../../models/user");
 //   await createGroupMembers(); // base on users send messages to groups
 //
 //   // await createUsers(5, "fakebook"); // number of users
-//   await createFollows(0.5); // chance that a user will follow other
+// await createFollows(0.5); // chance that a user will follow other
 //   await createPosts(2); // max number of posts/user
 //   await createComments(2); // max number of comments/user/post
 //   await createLikePosts(0.5); // chance that a user will like a post
@@ -73,7 +73,7 @@ module.exports.createUsers = async function createUsers(
   number,
   username = "asd",
 ) {
-  debug(PASSWORD); // asd
+  // debug(PASSWORD); // asd
   try {
     // create number of users
     for (let i = 0; i < number; i++) {
@@ -128,7 +128,7 @@ module.exports.createGroups = async function createGroups(number) {
       await group.save();
 
       groups.push(group);
-      debug(`adding group: ${group.name} at index: ${groups.length - 1}`);
+      // debug(`adding group: ${group.name} at index: ${groups.length - 1}`);
     }
   } catch (error) {
     debug(`the error is: `, error);
@@ -169,9 +169,9 @@ module.exports.messageCreate = async function messageCreate(
     membersEveryGroups.get(groupReceive).add(sender);
   }
 
-  debug(
-    `adding message: ${message.content ? message.content : message.imageLink} at index: ${messages.length - 1}`,
-  );
+  // debug(
+  //   `adding message: ${message.content ? message.content : message.imageLink} at index: ${messages.length - 1}`,
+  // );
 };
 
 module.exports.createMessages = async function createMessages(number) {
@@ -248,9 +248,9 @@ module.exports.createGroupMembers = async function createGroupMembers() {
 
         groupMembers.push(groupMember);
 
-        debug(
-          `add ${sender.fullname} to ${key.name} at index: ${groupMembers.length - 1}`,
-        );
+        // debug(
+        //   `add ${sender.fullname} to ${key.name} at index: ${groupMembers.length - 1}`,
+        // );
       }
     }
   } catch (err) {
@@ -266,7 +266,7 @@ module.exports.createFollows = async function createFollows(chance) {
       // loop through other user
       for (let j = 0, len = users.length; j < len; j++) {
         if (i === j) continue; // skip user-self
-        if (faker.datatype.boolean(chance)) continue; // 50% skip
+        if (faker.datatype.boolean(chance)) continue;
 
         // else follow the user
         const follow = new Follow({
@@ -278,9 +278,9 @@ module.exports.createFollows = async function createFollows(chance) {
         await follow.save();
 
         follows.push(follow);
-        debug(
-          `${users[i].fullname} is following ${users[j].fullname} at index ${follows.length - 1}`,
-        );
+        // debug(
+        //   `${users[i].fullname} is following ${users[j].fullname} at index ${follows.length - 1}`,
+        // );
       }
     }
   } catch (err) {
@@ -305,9 +305,9 @@ module.exports.createPosts = async function createPosts(number) {
         await post.save();
 
         posts.push(post);
-        debug(
-          `${users[i].fullname} created a post at index: ${posts.length - 1}`,
-        );
+        // debug(
+        //   `${users[i].fullname} created a post at index: ${posts.length - 1}`,
+        // );
       }
     }
   } catch (err) {
@@ -336,9 +336,9 @@ module.exports.createComments = async function createComments(number) {
           await comment.save();
 
           comments.push(comment);
-          debug(
-            `${users[i].fullname} commented on ${posts[j].creator.fullname} post at index: ${comments.length - 1}`,
-          );
+          // debug(
+          //   `${users[i].fullname} commented on ${posts[j].creator.fullname} post at index: ${comments.length - 1}`,
+          // );
         }
       }
     }
@@ -364,9 +364,9 @@ module.exports.createLikePosts = async function createLikePosts(chance) {
         await likePost.save();
         likePosts.push(likePost);
 
-        debug(
-          `${users[i].fullname} liked on ${posts[j].creator.fullname} post at index: ${likePosts.length - 1}`,
-        );
+        // debug(
+        //   `${users[i].fullname} liked on ${posts[j].creator.fullname} post at index: ${likePosts.length - 1}`,
+        // );
       }
     }
   } catch (err) {
@@ -391,9 +391,9 @@ module.exports.createLikeComments = async function createLikeComments(chance) {
         await likeComment.save();
         likeComments.push(likeComment);
 
-        debug(
-          `${users[i].fullname} liked on ${comments[j].creator.fullname} comment at index: ${likeComments.length - 1}`,
-        );
+        // debug(
+        //   `${users[i].fullname} liked on ${comments[j].creator.fullname} comment at index: ${likeComments.length - 1}`,
+        // );
       }
     }
   } catch (err) {

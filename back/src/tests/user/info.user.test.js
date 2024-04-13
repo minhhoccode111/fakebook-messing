@@ -1,9 +1,9 @@
 const request = require("supertest");
 const {
   afterAll,
-  afterEach,
+  // afterEach,
   beforeAll,
-  beforeEach,
+  // beforeEach,
   describe,
   expect,
   test,
@@ -33,7 +33,8 @@ describe(`User Info Testing`, () => {
       let qweToken;
       beforeAll(async () => {
         await method.createUsers(2, "asd"); // 2 users 'asd0' and 'asd1'
-        await method.createFollows(1); // 100% chance follow each other
+        // 0 instead of 1, which cause me 2 hours to DE-BUG: this test
+        await method.createFollows(0); // 0% chance skip follow
 
         await method.createUsers(1, "qwe"); // 1 user 'qwe0'
 
@@ -58,7 +59,7 @@ describe(`User Info Testing`, () => {
 
       test(`Setup db work like expect`, async () => {
         const users = await User.find({}).exec();
-        debug(`users belike: `, users);
+        // debug(`users belike: `, users);
 
         expect(users.length).toBe(3);
 
@@ -73,6 +74,7 @@ describe(`User Info Testing`, () => {
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/json/);
 
+        //
         expect(res.body.followers.length).toBe(1); // asd1
         expect(res.body.followings.length).toBe(1); // asd1
         expect(res.body.mayknows.length).toBe(1); // qwe0
@@ -85,6 +87,7 @@ describe(`User Info Testing`, () => {
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/json/);
 
+        //
         expect(res.body.followers.length).toBe(0); //
         expect(res.body.followings.length).toBe(0); //
         expect(res.body.mayknows.length).toBe(2); // asd0, asd1

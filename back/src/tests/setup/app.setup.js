@@ -41,13 +41,13 @@ app.use(passport.initialize());
 passport.use(
   new JwtStrategy(options, async (payload, done) => {
     try {
-      debug(`the payload object in passport.use: `, payload);
+      // debug(`the payload object in passport.use: `, payload);
       const user = await User.findOne(
         { username: payload.username },
         "-password -username -__v",
       ).exec();
 
-      debug(`the user object in passport.use: `, user);
+      // debug(`the user object in passport.use: `, user);
       if (!user) return done(null, false);
 
       // Success login
