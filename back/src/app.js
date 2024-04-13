@@ -13,7 +13,7 @@ const EnvVar = require("./constants/envvar");
 const debug = require("./constants/debug");
 
 // connect mongo db
-require("./mongoConfig.js");
+require("./mongoconfig");
 
 // db models, for authentication
 const User = require("./models/user");

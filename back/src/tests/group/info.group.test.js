@@ -8,20 +8,20 @@ const method = require("./../setup/method.setup");
 // manually logging
 const debug = require("./../../constants/debug");
 
-describe(`User Info Testing`, () => {
-  describe(`GET /users`, () => {
+describe(`Group Info Testing`, () => {
+  describe(`GET /groups/:groupid`, () => {
     test(`something`, async () => {
       //
     });
   });
 
-  describe(`GET /users/:userid`, () => {
+  describe(`PUT /groups/:groupid`, () => {
     test(`something`, async () => {
       //
     });
   });
 
-  describe(`PUT /users/:userid`, () => {
+  describe(`DELETE /groups/:groupid`, () => {
     test(`something`, async () => {
       //
     });

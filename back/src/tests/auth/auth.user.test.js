@@ -1,8 +1,9 @@
 const request = require("supertest");
-const { describe, test, expect, beforeAll, afterAll } = require("bun:test");
+const { describe, test, expect, beforeAll } = require("bun:test");
 
 const app = require("./../setup/app.setup");
-const User = require("./../../models/user");
+
+const method = require("./../setup/method.setup");
 
 // manually logging
 const debug = require("./../../constants/debug");
@@ -118,28 +119,18 @@ describe(`POST /signup`, () => {
 describe(`POST /login`, () => {
   beforeAll(async () => {
     // Create account before tests
-    const res = await request(app)
-      .post("/api/v1/auth/signup")
-      .type("form")
-      .send({
-        fullname: "ngot band",
-        username: "ngotband@gmail.com",
-        password: "Bruh0!0!",
-        "confirm-password": "Bruh0!0!",
-      });
+    method.createUsers(1, "asd");
   });
 
   test(`valid login`, async () => {
     const res = await request(app)
       .post("/api/v1/auth/login")
       .type("form")
-      .send({ username: "ngotband@gmail.com", password: "Bruh0!0!" });
-
-    debug(`the res.body belike: 138`, res.body);
+      .send({ username: "asd0", password: "asd" });
 
     expect(res.headers["content-type"]).toMatch(/json/);
     expect(res.status).toBe(200);
-    expect(res.body.user.fullname).toMatch(/ngot\s?band/);
+    expect(res.body.user.fullname).toBeDefined();
 
     // then use the returned token to get authenticated route
     const token = res.body.token;

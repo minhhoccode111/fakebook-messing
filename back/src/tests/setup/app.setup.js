@@ -63,7 +63,7 @@ const mongo = require("./mongo.setup");
 mongo();
 
 // test with real development database
-// require ('./../../mongoConfig')
+// require ('./../../mongoconfig')
 
 // handle api request
 const routes = require("./../../routes"); // modular
