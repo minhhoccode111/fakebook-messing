@@ -3,7 +3,7 @@ const { describe, expect, test, beforeAll, afterAll } = require("bun:test");
 const { faker } = require("@faker-js/faker");
 
 // another app because don't want to touch the original
-const app = require("./setup");
+const app = require("./../setup/app.setup");
 
 describe(`GET PUT /user`, () => {
   let token;

@@ -4,14 +4,14 @@ const asyncHandler = require("express-async-handler");
 // sanitize and validate data
 const { body, validationResult } = require("express-validator");
 
-// mongoose models
-const User = require("./../models/user");
-
 // environment variables
 const EnvVar = require("./../constants/envvar");
 
 // manually logging
 const debug = require("./../constants/debug");
+
+// mongoose models
+const User = require("./../models/user");
 
 // bcrypt to secure password
 const bcrypt = require("bcrypt");
@@ -32,13 +32,13 @@ const login_post = [
     // check username existed
     const user = await User.findOne({ username: formUsername }, "-__v").exec();
     if (user === null) {
-      return res.status(400).json({ message: "Wrong username" });
+      return res.sendStatus(401);
     } else {
       // check password match
       const valid = await bcrypt.compare(formPassword, user.password);
 
       if (!valid) {
-        return res.status(400).json({ message: "Wrong password" });
+        return res.sendStatus(401);
       }
 
       const expiresIn = 60 * 60 * 24 * 7; // 7 days
@@ -65,7 +65,6 @@ const login_post = [
 
       // return info for client to store on their localStorage and check of expire
       return res.status(200).json({
-        message: "Success",
         token,
         user: publicUserInfo,
         expiresIn,
@@ -122,43 +121,30 @@ const signup_post = [
 
     // check existence of username
     if (checkExistedUsername !== null) {
-      errors.push({
-        msg: `Username is already existed.`,
-        type: "field",
-        value: username,
-        path: "username",
-        location: "body",
-      });
+      return res.sendStatus(409); // conflict
     }
 
     // data valid
     if (errors.length === 0) {
       const hashedPassword = await bcrypt.hash(password, Number(EnvVar.Secret)); // encode password
 
-      const user = new User({
+      const newUser = new User({
         ...user,
         password: hashedPassword,
         isCreator: false,
       });
 
-      await user.save();
+      await newUser.save();
 
-      debug(`the created user is: `, user);
+      debug(`the created user is: `, newUser);
 
-      return res.status(200).json({
-        message: `Success`,
-        user,
-      });
+      return res.sendStatus(200);
     }
 
-    // debug(`The error result is: `, errors);
+    debug(`The error result is: `, errors);
 
     // data invalid
-    return res.status(400).json({
-      message: `Data invalid`,
-      errors,
-      user,
-    });
+    return res.sendStatus(400);
   }),
 ];
 

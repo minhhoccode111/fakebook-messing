@@ -1,11 +1,11 @@
 const createError = require("http-errors");
 const express = require("express");
-require("dotenv").config();
 
-// debug
-const debug = require("debug")(
-  "============================================================",
-);
+// environment variables
+const EnvVar = require("./../../constants/envvar");
+
+// manually logging
+const debug = require("./../../constants/debug");
 
 // db models, for authentication
 const User = require("./../../models/user");
@@ -16,11 +16,12 @@ const app = express();
 app.use(express.json()); // parse json to js object
 app.use(express.urlencoded({ extended: false })); //  parse form data
 
-const SECRET = process.env.SECRET;
+const SECRET = EnvVar.Secret;
 
 // passport to authenticate a jwt
 const passport = require("passport");
 const passportJwt = require("passport-jwt");
+
 // a passport strategy to authentication by passport.use(new JwtStrategy(options, verify))
 const JwtStrategy = passportJwt.Strategy;
 // to choose ways to extract json web token from request
@@ -40,16 +41,16 @@ app.use(passport.initialize());
 passport.use(
   new JwtStrategy(options, async (payload, done) => {
     try {
-      // console.log(`the payload object in passport.use: `, payload);
+      debug(`the payload object in passport.use: `, payload);
       const user = await User.findOne(
         { username: payload.username },
         "-password -username -__v",
       ).exec();
 
-      // console.log(`the user object in passport.use: `, user);
+      debug(`the user object in passport.use: `, user);
       if (!user) return done(null, false);
 
-      // success and make req.user available after passport.authenticate() middlewares chain
+      // Success login
       return done(null, user);
     } catch (err) {
       return done(err, false);
@@ -58,14 +59,14 @@ passport.use(
 );
 
 // test with fake database
-const mongo = require("./mongoConfigTesting");
+const mongo = require("./mongo.setup");
 mongo();
 
 // test with real development database
 // require ('./../../mongoConfig')
 
 // handle api request
-const routes = require("./../routes"); // modular
+const routes = require("./../../routes"); // modular
 // things about auth
 app.use("/api/v1/auth", routes.auth);
 // app.use(
