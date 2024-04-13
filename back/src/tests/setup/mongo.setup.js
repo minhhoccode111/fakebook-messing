@@ -11,7 +11,7 @@ async function initializeMongoServer() {
   const mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
 
-  debug(`the mongoUri belike: `, mongoUri);
+  // debug(`the mongoUri belike: `, mongoUri);
 
   mongoose.connect(mongoUri);
 
@@ -25,7 +25,7 @@ async function initializeMongoServer() {
   });
 
   mongoose.connection.once("open", () => {
-    debug(`mongodb successfully connected to ${mongoUri}`);
+    // debug(`mongodb successfully connected to ${mongoUri}`);
   });
 }
 

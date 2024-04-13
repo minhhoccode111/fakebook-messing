@@ -20,6 +20,6 @@ const EnvVar = {
   DummyPassword: process.env.DUMMY_PASSWORD ?? "",
 };
 
-debug(EnvVar);
+// debug(EnvVar);
 
 module.exports = EnvVar;

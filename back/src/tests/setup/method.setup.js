@@ -101,7 +101,7 @@ module.exports.createUsers = async function createUsers(
       await user.save();
 
       users.push(user);
-      debug(`adding user: ${user.fullname} at index: ${users.length - 1}`);
+      // debug(`adding user: ${user.fullname} at index: ${users.length - 1}`);
     }
   } catch (error) {
     debug(`the error is: `, error);

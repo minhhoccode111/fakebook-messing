@@ -25,11 +25,15 @@ const { formatDate } = require("./../method");
 
 // relationship with current user
 const getAllUsers = asyncHandler(async (req, res) => {
-  // first get all users that have connection with us
+  // all users have connection with self
   const connections = await Follow.find(
     {
-      // self follow others or other follow self
-      $or: [{ follower: req.user.id }, { following: req.user.id }],
+      $or: [
+        // self is follower
+        { follower: req.user.id },
+        // self is following
+        { following: req.user.id },
+      ],
     },
     "follower following",
   )
@@ -53,22 +57,19 @@ const getAllUsers = asyncHandler(async (req, res) => {
   // then mayknow will be the ones with no connection
   const mayknows = await User.find({
     $and: [
-      // first not myself
       {
         _id: {
-          $not: { $eq: req.user.id },
+          $not: { $eq: req.user.id }, // not self
         },
       },
-      // next not in followers
       {
         _id: {
-          $nin: followers,
+          $nin: followers, // not followers
         },
       },
-      // last not in following
       {
         _id: {
-          $nin: followings,
+          $nin: followings, // not followings
         },
       },
     ],
@@ -83,7 +84,12 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 // a specific user
 const getUser = asyncHandler(async (req, res) => {
-  res.json(`getUser - user id: ${req.params.userid} - not yet`);
+  // TODO: validation request, ObjectId, etc...
+  const user = await User.findById(
+    req.params.userid,
+    "-__v -password -username", // security
+  ).exec();
+  return res.json(user);
 });
 
 // update current user
