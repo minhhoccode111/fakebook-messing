@@ -129,13 +129,58 @@ describe(`User Info Testing`, () => {
   });
 
   describe(`PUT /users/:userid`, () => {
+    const newAsdUser = {
+      fullname: "Troi Dat Oi",
+      status: "online",
+      bio: "Co toi thi khong co nang, dua voi toi o trong tam tri nang chuyen gi ma do dang",
+      avatarLink: "Troi Dat Oi khong le anh ke mot cau chuyen chang den dau",
+      dateOfBirth: "2001-01-01",
+    };
+
     describe(`INVALID CASES`, () => {
-      // TODO:
+      // TODO: Add more invalid cases
+      // Fobbiden 403
+      // Update data 400, actually we just use user's old data if user provide invalid ones, since we don't want to send back and forth between client and server just for some invalid data update, it shouldn't happen in the first place
+      // ObjectId 404
+      // etc.
+
+      const invalidCases = [
+        [{ id: "asd", data: newAsdUser }, 404],
+        [{ id: qweBody.user.id, data: newAsdUser }, 403],
+        [{ id: asdBody.user.id.replace("6", "0"), data: newAsdUser }, 404],
+        // [{ id: asdBody.user.id, data: { ...newAsdUser, fullname: "" } }, 400],
+      ];
+
+      test(`Some invalid cases run at once`, async () => {
+        for (const [update, code] of invalidCases) {
+          const res = await request(app)
+            .put(`/api/v1/users/${update.id}`)
+            .set("Authorization", `Bearer ${asdBody.token}`)
+            .type("form")
+            .send(update.data);
+
+          expect(res.status).toBe(code);
+        }
+      });
     });
 
     describe(`VALID CASES`, () => {
-      test(`something`, async () => {
-        //
+      test(`asd PUT /users/:asd.id`, async () => {
+        const res = await request(app)
+          .put(`/api/v1/users/${asdBody.user.id}`)
+          .set("Authorization", `Bearer ${asdBody.token}`)
+          .type("form")
+          .send(newAsdUser);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual(Object.assign(newAsdUser, asdBody.user));
+
+        const resGet = await request(app)
+          .get(`/api/v1/users/${asdBody.user.id}`)
+          .set("Authorization", `Bearer ${asdBody.token}`);
+
+        expect(resGet.status).toBe(200);
+        expect(resGet.body).toEqual(newAsdUser);
       });
     });
   });
