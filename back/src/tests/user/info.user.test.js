@@ -104,7 +104,23 @@ describe(`User Info Testing`, () => {
     // debug(`user asd: `, asd);
     // debug(`user qwe: `, qwe);
     describe(`INVALID CASES`, () => {
-      // TODO: Add some edge cases
+      const invalidCases = [
+        ["asd", 404],
+        [asdBody.user.id.replace("6", "0"), 404],
+      ];
+
+      test(`Some invalid cases run at once`, async () => {
+        for (const [id, code] of invalidCases) {
+          const res = await request(app)
+            .put(`/api/v1/users/${id}`)
+            .set("Authorization", `Bearer ${asdBody.token}`);
+
+          // debug(`search id belike: `, id);
+          // debug(`code belike: `, code);
+
+          expect(res.status).toBe(code);
+        }
+      });
     });
 
     describe(`VALID CASES`, () => {
@@ -138,17 +154,10 @@ describe(`User Info Testing`, () => {
     };
 
     describe(`INVALID CASES`, () => {
-      // TODO: Add more invalid cases
-      // Fobbiden 403
-      // Update data 400, actually we just use user's old data if user provide invalid ones, since we don't want to send back and forth between client and server just for some invalid data update, it shouldn't happen in the first place
-      // ObjectId 404
-      // etc.
-
       const invalidCases = [
         [{ id: "asd", data: newAsdUser }, 404],
-        [{ id: qweBody.user.id, data: newAsdUser }, 403],
-        [{ id: asdBody.user.id.replace("6", "0"), data: newAsdUser }, 404],
-        // [{ id: asdBody.user.id, data: { ...newAsdUser, fullname: "" } }, 400],
+        [{ id: qweBody.user.id, data: newAsdUser }, 404],
+        [{ id: qweBody.user.id.replace("6", "0"), data: newAsdUser }, 404],
       ];
 
       test(`Some invalid cases run at once`, async () => {
@@ -187,10 +196,24 @@ describe(`User Info Testing`, () => {
 
   describe(`POST /users/:userid/follows`, () => {
     describe(`INVALID CASES`, () => {
-      // TODO:
+      const invalidCases = [
+        [{ id: "asd" }, 404],
+        [{ id: qweBody.user.id.replace("6", "0") }, 404],
+      ];
+
+      test(`Some invalid cases run at once`, async () => {
+        for (const [update, code] of invalidCases) {
+          const res = await request(app)
+            .post(`/api/v1/users/${update.id}/follows`)
+            .set("Authorization", `Bearer ${asdBody.token}`);
+
+          expect(res.status).toBe(code);
+        }
+      });
     });
 
     describe(`VALID CASES`, () => {
+      // NOTE: asd0, asd1 follow each other and qwe0 has no connections
       test(`something`, async () => {
         //
       });

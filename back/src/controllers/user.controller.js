@@ -4,6 +4,14 @@ const asyncHandler = require("express-async-handler");
 // sanitize and validate data
 const { body, validationResult } = require("express-validator");
 
+// custom validate middleware
+const {
+  validMongoId,
+  validUser,
+  validAuthUser,
+  validPutUserData,
+} = require("./../middleware");
+
 // environment variables
 const EnvVar = require("./../constants/envvar");
 
@@ -83,42 +91,27 @@ const getAllUsers = asyncHandler(async (req, res) => {
   return res.send({ followers, followings, mayknows });
 });
 
-// a specific user
+// a specific user, include self
 const getUser = asyncHandler(async (req, res) => {
-  // TODO: validation request, ObjectId, etc...
+  // debug(`req.params.userid`, req.params.userid);
   const user = await User.findById(
     req.params.userid,
     "-__v -password -username", // security
   ).exec();
+
   return res.json(user);
 });
 
 // update current user
+const customPutValidate = [
+  validMongoId,
+  validUser,
+  validAuthUser,
+  ...validPutUserData,
+];
 const putUser = [
-  body("fullname").trim().escape(),
-  body("bio").trim().escape(),
-  body("status")
-    .trim()
-    .escape()
-    .custom((val, { req }) => {
-      // invalid status get default value
-      const valid = ["online", "offline", "afk", "busy"];
-      if (!valid.includes(val)) req.body.status = "online";
-    }),
-  body("avatarLink").trim().escape(),
-  body("dateOfBirth", "Invalid Date Of Birth").trim().escape().isDate(),
+  ...customPutValidate,
   asyncHandler(async (req, res) => {
-    // first check valid ObjectId
-    const isValidId = mongoose.isValidObjectId(req.params.userid);
-    if (!isValidId) return res.sendStatus(404);
-
-    // then check user existance
-    const oldUser = await User.findById(req.params.userid).exec();
-    if (!oldUser) return res.sendStatus(404);
-
-    // then check authorization to update project
-    if (req.params.userid !== req.user.id) return res.sendStatus(403);
-
     const errors = validationResult(req).array();
     // Date of birth not valid
     if (errors.length !== 0) {
@@ -128,26 +121,30 @@ const putUser = [
     // Merge update user
     const newUser = Object.assign(
       { _id: req.params.userid }, // target obj, keep the _id
-      req.body, // careful, req.body must go first
-      oldUser.toJSON(),
+      req.body, // req.body must go first
+      req.user.toJSON(), // must make this js obj
     );
 
     await User.findByIdAndUpdate(newUser);
 
     // debug(`newUser belike: `, newUser);
+
     // security
     const { password, username, __v, ...user } = newUser;
 
     // then update profile
-    res.json(user);
+    return res.json(user);
   }),
 ];
 
+const customFollowValidate = [validMongoId, validUser];
 // follow another user
-const postUserFollows = asyncHandler(async (req, res) => {
-  res.json(`postUserFollow - user id: ${req.params.userid} - not yet`);
-});
-
+const postUserFollows = [
+  ...customFollowValidate,
+  asyncHandler(async (req, res) => {
+    res.json(`postUserFollow - user id: ${req.params.userid} - not yet`);
+  }),
+];
 // get all messages with a user
 const getUserMessages = asyncHandler(async (req, res) => {
   res.json(`getUserMessages - user id: ${req.params.userid} - not yet`);
