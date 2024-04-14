@@ -76,8 +76,14 @@ describe(`User Post Testing`, () => {
   });
 
   describe(`GET /users/:userid/posts`, () => {
-    test(`something`, async () => {
-      //
+    describe(`INVALID CASES`, () => {
+      // TODO:Already test the middlewares validate for :userid
+    });
+
+    describe(`VALID CASES`, () => {
+      test(``, async () => {
+        //
+      });
     });
   });
 

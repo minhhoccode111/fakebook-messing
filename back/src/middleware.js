@@ -105,9 +105,9 @@ const validUsername = asyncHandler(async (req, res, next) => {
 // TODO: more models validate, etc.
 
 module.exports = {
-  validUserParam,
-  validPutUserData,
-  // validMongoId,
   validUsername,
+  validUserParam,
+  // validMongoId,
+  validPutUserData,
   validPostSignupData,
 };
