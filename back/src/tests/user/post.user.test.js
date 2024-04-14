@@ -76,13 +76,72 @@ describe(`User Post Testing`, () => {
   });
 
   describe(`GET /users/:userid/posts`, () => {
+    /*
+     * {
+     * creator: don't need since req.userParam can be used
+     * posts: [
+     *  Post{
+     *    content: ...,
+     *    likes: ...,
+     *    comments: [
+     *      Comment{
+     *        author: User{
+     *          fullname: ...,
+     *          id: ...,
+     *          status: ...,
+     *          avatarLink: ...,
+     *        }
+     *        content: ...,
+     *        likes: ...
+     *      },
+     *    ]
+     *  },
+     *  Post{...},
+     *  ...
+     *  ]
+     * }
+     */
+
     describe(`INVALID CASES`, () => {
       // TODO:Already test the middlewares validate for :userid
     });
 
     describe(`VALID CASES`, () => {
-      test(``, async () => {
+      test(`asd GET /users/:qwe.id/posts`, async () => {
+        const res = await request(app)
+          .get(`/api/v1/users/${qweBody.user.id}`)
+          .set("Authorization", `Bearer ${asdBody.token}`);
+
+        expect(res.status).toBe(200);
         //
+        expect(res.body.creator).toEqual(qweBody.user);
+        // 3 posts/user
+        expect(res.body.posts.length).toEqual(3);
+
+        for (const post of res.body.posts) {
+          // 1 like/user/post
+          expect(post.likes).toEqual(2);
+          // 2 comments/user/post
+          expect(post.comments.length).toEqual(4);
+
+          // 1 like/user/comment
+          expect(
+            post.comments.every((comment) => comment.likes.length === 2),
+          ).toBe(true);
+
+          //
+          expect(
+            post.comments.some(
+              (comment) => comment.author.fullname === asdBody.user.fullname,
+            ),
+          ).toBe(true);
+
+          expect(post.content).toBeDefined();
+
+          post.comments.forEach((comment) =>
+            expect(comment.content).toBeDefined(),
+          );
+        }
       });
     });
   });

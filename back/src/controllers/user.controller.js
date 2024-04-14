@@ -157,29 +157,40 @@ const postUserMessages = asyncHandler(async (req, res) => {
 });
 
 // get all user's posts
-const getUserPosts = asyncHandler(async (req, res) => {
-  // TODO: design response data
-  /*
-   * {
-   * creator: don't need since req.userParam can be used
-   * posts: [
-   *  Post{
-   *    content: ...,
-   *    likes: ...,
-   *    comments: [
-   *      Comment{
-   *        content: ...,
-   *        likes: ...
-   *      },
-   *    ]
-   *  },
-   *  Post{...},
-   *  ...
-   *  ]
-   * }
-   */
-  res.json(`getUserPosts - user id: ${req.params.userid} - not yet`);
-});
+const getUserPosts = [
+  validUserParam,
+  asyncHandler(async (req, res) => {
+    // TODO: design response data
+
+    /*
+     * {
+     * creator: don't need since req.userParam can be used
+     * posts: [
+     *  Post{
+     *    content: ...,
+     *    likes: ...,
+     *    comments: [
+     *      Comment{
+     *        author: User{
+     *          fullname: ...,
+     *          id: ...,
+     *          status: ...,
+     *          avatarLink: ...,
+     *        }
+     *        content: ...,
+     *        likes: ...
+     *      },
+     *    ]
+     *  },
+     *  Post{...},
+     *  ...
+     *  ]
+     * }
+     */
+
+    res.json(`getUserPosts - user id: ${req.params.userid} - not yet`);
+  }),
+];
 
 // post a post
 const postUserPosts = asyncHandler(async (req, res) => {
