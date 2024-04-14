@@ -40,7 +40,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
       $or: [
         // self is follower
         { follower: req.user.id },
-        // self is following
+        // self is followed
         { following: req.user.id },
       ],
     },
@@ -59,7 +59,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
       followings.push(connections[i].following);
     } else {
       // else self is following
-      followers.push(connections[i].followers);
+      followers.push(connections[i].follower); // BUG: connections[i].followers
     }
   }
 
@@ -103,14 +103,10 @@ const getUser = asyncHandler(async (req, res) => {
 });
 
 // update current user
-const customPutValidate = [
+const putUser = [
   validMongoId,
-  validUser,
   validAuthUser,
   ...validPutUserData,
-];
-const putUser = [
-  ...customPutValidate,
   asyncHandler(async (req, res) => {
     const errors = validationResult(req).array();
     // Date of birth not valid
@@ -137,13 +133,27 @@ const putUser = [
   }),
 ];
 
-const customFollowValidate = [validMongoId, validUser];
 // follow another user
 const postUserFollows = [
-  ...customFollowValidate,
-  asyncHandler(async (req, res) => {
-    res.json(`postUserFollow - user id: ${req.params.userid} - not yet`);
+  validMongoId,
+  validUser, // mark req.userParam can be used
+  asyncHandler(async (req, res, next) => {
+    const follower = req.user;
+    const following = req.userParam;
+
+    // check already followed
+    const followRef = await Follow.findOne({ follower, following }).exec();
+
+    // then unfollow
+    if (followRef !== null) {
+      await Follow.deleteOne({ following, follower });
+    } else {
+      await new Follow({ following, follower }).save();
+    }
+
+    next();
   }),
+  getAllUsers,
 ];
 // get all messages with a user
 const getUserMessages = asyncHandler(async (req, res) => {

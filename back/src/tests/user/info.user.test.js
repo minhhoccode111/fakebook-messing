@@ -28,8 +28,9 @@ describe(`User Info Testing`, () => {
   // Even when I isolated beforeAll and afterAll
   // in each describe block scope, somehow every
   // test still have the same database state
-  let asdBody;
-  let qweBody;
+  let asdBody0;
+  let qweBody0;
+  let asdBody1;
   beforeAll(async () => {
     // 2 users 'asd0' and 'asd1'
     await method.createUsers(2, "asd");
@@ -39,18 +40,24 @@ describe(`User Info Testing`, () => {
     // 1 user 'qwe0'
     await method.createUsers(1, "qwe");
 
-    // Auth is being tested first
-    const asdRes = await request(app)
+    // Auth is being tested already
+    const asdRes0 = await request(app)
       .post("/api/v1/auth/login")
       .type("form")
       .send({ username: "asd0", password: EnvVar.DummyPassword });
-    asdBody = asdRes.body; // store logged user
+    asdBody0 = asdRes0.body; // store logged user
 
-    const qweRes = await request(app)
+    const asdRes1 = await request(app)
+      .post("/api/v1/auth/login")
+      .type("form")
+      .send({ username: "asd1", password: EnvVar.DummyPassword });
+    asdBody1 = asdRes1.body; // store logged user
+
+    const qweRes0 = await request(app)
       .post("/api/v1/auth/login")
       .type("form")
       .send({ username: "qwe0", password: EnvVar.DummyPassword });
-    qweBody = qweRes.body; // store logged user
+    qweBody0 = qweRes0.body; // store logged user
   });
 
   afterAll(async () => {
@@ -77,7 +84,7 @@ describe(`User Info Testing`, () => {
       test(`asd GET /users`, async () => {
         const res = await request(app)
           .get("/api/v1/users")
-          .set("Authorization", `Bearer ${asdBody.token}`);
+          .set("Authorization", `Bearer ${asdBody0.token}`);
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/json/);
 
@@ -89,7 +96,7 @@ describe(`User Info Testing`, () => {
       test(`qwe GET /users`, async () => {
         const res = await request(app)
           .get("/api/v1/users")
-          .set("Authorization", `Bearer ${qweBody.token}`);
+          .set("Authorization", `Bearer ${qweBody0.token}`);
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/json/);
 
@@ -106,14 +113,14 @@ describe(`User Info Testing`, () => {
     describe(`INVALID CASES`, () => {
       const invalidCases = [
         ["asd", 404],
-        [asdBody.user.id.replace("6", "0"), 404],
+        [asdBody0.user.id.replace("6", "0"), 404],
       ];
 
       test(`Some invalid cases run at once`, async () => {
         for (const [id, code] of invalidCases) {
           const res = await request(app)
             .put(`/api/v1/users/${id}`)
-            .set("Authorization", `Bearer ${asdBody.token}`);
+            .set("Authorization", `Bearer ${asdBody0.token}`);
 
           // debug(`search id belike: `, id);
           // debug(`code belike: `, code);
@@ -126,20 +133,20 @@ describe(`User Info Testing`, () => {
     describe(`VALID CASES`, () => {
       test(`asd GET /users/:qwe.id`, async () => {
         const res = await request(app)
-          .get(`/api/v1/users/${qweBody.user.id}`)
-          .set("Authorization", `Bearer ${asdBody.token}`);
+          .get(`/api/v1/users/${qweBody0.user.id}`)
+          .set("Authorization", `Bearer ${asdBody0.token}`);
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/json/);
-        expect(res.body).toEqual(qweBody.user);
+        expect(res.body).toEqual(qweBody0.user);
       });
 
       test(`qwe GET /users/:asd.id`, async () => {
         const res = await request(app)
-          .get(`/api/v1/users/${asdBody.user.id}`)
-          .set("Authorization", `Bearer ${qweBody.token}`);
+          .get(`/api/v1/users/${asdBody0.user.id}`)
+          .set("Authorization", `Bearer ${qweBody0.token}`);
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/json/);
-        expect(res.body).toEqual(asdBody.user);
+        expect(res.body).toEqual(asdBody0.user);
       });
     });
   });
@@ -156,15 +163,15 @@ describe(`User Info Testing`, () => {
     describe(`INVALID CASES`, () => {
       const invalidCases = [
         [{ id: "asd", data: newAsdUser }, 404],
-        [{ id: qweBody.user.id, data: newAsdUser }, 404],
-        [{ id: qweBody.user.id.replace("6", "0"), data: newAsdUser }, 404],
+        [{ id: qweBody0.user.id, data: newAsdUser }, 404],
+        [{ id: qweBody0.user.id.replace("6", "0"), data: newAsdUser }, 404],
       ];
 
       test(`Some invalid cases run at once`, async () => {
         for (const [update, code] of invalidCases) {
           const res = await request(app)
             .put(`/api/v1/users/${update.id}`)
-            .set("Authorization", `Bearer ${asdBody.token}`)
+            .set("Authorization", `Bearer ${asdBody0.token}`)
             .type("form")
             .send(update.data);
 
@@ -176,17 +183,17 @@ describe(`User Info Testing`, () => {
     describe(`VALID CASES`, () => {
       test(`asd PUT /users/:asd.id`, async () => {
         const res = await request(app)
-          .put(`/api/v1/users/${asdBody.user.id}`)
-          .set("Authorization", `Bearer ${asdBody.token}`)
+          .put(`/api/v1/users/${asdBody0.user.id}`)
+          .set("Authorization", `Bearer ${asdBody0.token}`)
           .type("form")
           .send(newAsdUser);
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(Object.assign(newAsdUser, asdBody.user));
+        expect(res.body).toEqual(Object.assign(newAsdUser, asdBody0.user));
 
         const resGet = await request(app)
-          .get(`/api/v1/users/${asdBody.user.id}`)
-          .set("Authorization", `Bearer ${asdBody.token}`);
+          .get(`/api/v1/users/${asdBody0.user.id}`)
+          .set("Authorization", `Bearer ${asdBody0.token}`);
 
         expect(resGet.status).toBe(200);
         expect(resGet.body).toEqual(newAsdUser);
@@ -198,14 +205,14 @@ describe(`User Info Testing`, () => {
     describe(`INVALID CASES`, () => {
       const invalidCases = [
         [{ id: "asd" }, 404],
-        [{ id: qweBody.user.id.replace("6", "0") }, 404],
+        [{ id: qweBody0.user.id.replace("6", "0") }, 404],
       ];
 
       test(`Some invalid cases run at once`, async () => {
         for (const [update, code] of invalidCases) {
           const res = await request(app)
             .post(`/api/v1/users/${update.id}/follows`)
-            .set("Authorization", `Bearer ${asdBody.token}`);
+            .set("Authorization", `Bearer ${asdBody0.token}`);
 
           expect(res.status).toBe(code);
         }
@@ -214,8 +221,44 @@ describe(`User Info Testing`, () => {
 
     describe(`VALID CASES`, () => {
       // NOTE: asd0, asd1 follow each other and qwe0 has no connections
-      test(`something`, async () => {
-        //
+      test(`asd0 follow qwe0`, async () => {
+        const followRes0 = await request(app)
+          .post(`/api/v1/users/${qweBody0.user.id}/follows`)
+          .set("Authorization", `Bearer ${asdBody0.token}`);
+
+        expect(followRes0.status).toBe(200);
+        expect(followRes0.body.followings.length).toBe(2); // asd1, qwe0
+        expect(followRes0.body.followers.length).toBe(1); // asd1
+        expect(followRes0.body.mayknows.length).toBe(0);
+
+        const qwe0GetAll = await request(app)
+          .get(`/api/v1/users`)
+          .set("Authorization", `Bearer ${qweBody0.token}`);
+
+        expect(qwe0GetAll.status).toBe(200);
+        expect(qwe0GetAll.body.followings.length).toBe(0);
+        expect(qwe0GetAll.body.followers.length).toBe(1); // asd0
+        expect(qwe0GetAll.body.mayknows.length).toBe(1); // asd1
+      });
+
+      test(`asd0 unfollow asd1`, async () => {
+        const followRes0 = await request(app)
+          .post(`/api/v1/users/${asdBody1.user.id}/follows`)
+          .set("Authorization", `Bearer ${asdBody0.token}`);
+
+        expect(followRes0.status).toBe(200);
+        expect(followRes0.body.followings.length).toBe(1); // qwe0
+        expect(followRes0.body.followers.length).toBe(1); // asd1
+        expect(followRes0.body.mayknows.length).toBe(0);
+
+        const asd1GetAll = await request(app)
+          .get(`/api/v1/users`)
+          .set("Authorization", `Bearer ${asdBody1.token}`);
+
+        expect(asd1GetAll.status).toBe(200);
+        expect(asd1GetAll.body.followings.length).toBe(1); // asd0
+        expect(asd1GetAll.body.followers.length).toBe(0);
+        expect(asd1GetAll.body.mayknows.length).toBe(1); // qwe0
       });
     });
   });
