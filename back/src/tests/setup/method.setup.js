@@ -30,7 +30,7 @@ const User = require("./../../models/user");
 //
 //   // await createUsers(5, "fakebook"); // number of users
 // await createFollows(0.5); // chance that a user will follow other
-//   await createPosts(2); // max number of posts/user
+// await createPosts(2, 0.3); // max number of posts/user
 //   await createComments(2); // max number of comments/user/post
 //   await createLikePosts(0.5); // chance that a user will like a post
 //   await createLikeComments(0.5); // chance that a user will like a comment
@@ -259,14 +259,14 @@ module.exports.createGroupMembers = async function createGroupMembers() {
   }
 };
 
-module.exports.createFollows = async function createFollows(chance) {
+module.exports.createFollows = async function createFollows(chanceSkip = 0) {
   try {
     // loop through each user
     for (let i = 0, len = users.length; i < len; i++) {
       // loop through other user
       for (let j = 0, len = users.length; j < len; j++) {
         if (i === j) continue; // skip user-self
-        if (faker.datatype.boolean(chance)) continue;
+        if (faker.datatype.boolean(chanceSkip)) continue;
 
         // else follow the user
         const follow = new Follow({
@@ -289,12 +289,15 @@ module.exports.createFollows = async function createFollows(chance) {
   }
 };
 
-module.exports.createPosts = async function createPosts(number) {
+module.exports.createPosts = async function createPosts(
+  number,
+  chanceSkip = 0,
+) {
   try {
     // each user will create maximun number of posts
     for (let i = 0, len = users.length; i < len; i++) {
       for (let j = 0; j < number; j++) {
-        if (faker.datatype.boolean(0.3)) continue; // 30% skip
+        if (faker.datatype.boolean(chanceSkip)) continue;
 
         const post = new Post({
           creator: users[i],
@@ -316,7 +319,10 @@ module.exports.createPosts = async function createPosts(number) {
   }
 };
 
-module.exports.createComments = async function createComments(number) {
+module.exports.createComments = async function createComments(
+  number,
+  chanceSkip = 0,
+) {
   try {
     // each user
     for (let i = 0, len = users.length; i < len; i++) {
@@ -324,7 +330,7 @@ module.exports.createComments = async function createComments(number) {
       for (let j = 0; j < posts.length; j++) {
         // create maximum number of comments
         for (let k = 0; k < number; k++) {
-          if (faker.datatype.boolean(0.5)) continue; // 50% skip
+          if (faker.datatype.boolean(chanceSkip)) continue;
 
           const comment = new Comment({
             creator: users[i],
@@ -348,13 +354,15 @@ module.exports.createComments = async function createComments(number) {
   }
 };
 
-module.exports.createLikePosts = async function createLikePosts(chance) {
+module.exports.createLikePosts = async function createLikePosts(
+  chanceSkip = 0,
+) {
   try {
     // each user
     for (let i = 0, len = users.length; i < len; i++) {
       // each post
       for (let j = 0; j < posts.length; j++) {
-        if (faker.datatype.boolean(chance)) continue; // 50% skip
+        if (faker.datatype.boolean(chanceSkip)) continue;
 
         const likePost = new LikePost({
           creator: users[i],
@@ -375,13 +383,15 @@ module.exports.createLikePosts = async function createLikePosts(chance) {
   }
 };
 
-module.exports.createLikeComments = async function createLikeComments(chance) {
+module.exports.createLikeComments = async function createLikeComments(
+  chanceSkip = 0,
+) {
   try {
     // each user
     for (let i = 0, userLen = users.length; i < userLen; i++) {
       // each comment
       for (let j = 0, commentLen = comments.length; j < commentLen; j++) {
-        if (faker.datatype.boolean(chance)) continue; // 50% skip
+        if (faker.datatype.boolean(chanceSkip)) continue;
 
         const likeComment = new LikeComment({
           creator: users[i],

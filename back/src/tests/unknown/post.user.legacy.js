@@ -5,7 +5,7 @@ const { faker } = require("@faker-js/faker");
 // another app because don't want to touch the original
 const app = require("./../setup/app.setup");
 
-describe(`GET PUT /user`, () => {
+describe.skip(`GET PUT /user`, () => {
   let token;
 
   // before all authenticate

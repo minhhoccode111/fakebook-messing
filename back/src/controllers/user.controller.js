@@ -5,12 +5,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 // custom validate middleware
-const {
-  validMongoId,
-  validUser,
-  validAuthUser,
-  validPutUserData,
-} = require("./../middleware");
+const { validUserParam, validPutUserData } = require("./../middleware");
 
 // environment variables
 const EnvVar = require("./../constants/envvar");
@@ -92,27 +87,19 @@ const getAllUsers = asyncHandler(async (req, res) => {
 });
 
 // a specific user, include self
-const getUser = asyncHandler(async (req, res) => {
-  // debug(`req.params.userid`, req.params.userid);
-  const user = await User.findById(
-    req.params.userid,
-    "-__v -password -username", // security
-  ).exec();
-
-  return res.json(user);
-});
+const getUser = [
+  validUserParam, // validate and mark req.params.userid on req.userParam
+  async (req, res) => {
+    return res.json(req.userParam);
+  },
+];
 
 // update current user
 const putUser = [
-  validMongoId,
-  validAuthUser,
-  ...validPutUserData,
+  validPutUserData,
   asyncHandler(async (req, res) => {
-    const errors = validationResult(req).array();
-    // Date of birth not valid
-    if (errors.length !== 0) {
-      req.body.dateOfBirth = undefined;
-    }
+    // not allow anything but self.id
+    if (req.params.userid !== req.user.id) return res.sendStatus(404);
 
     // Merge update user
     const newUser = Object.assign(
@@ -135,8 +122,7 @@ const putUser = [
 
 // follow another user
 const postUserFollows = [
-  validMongoId,
-  validUser, // mark req.userParam can be used
+  validUserParam, // validate and mark req.params.userid on req.userParam
   asyncHandler(async (req, res, next) => {
     const follower = req.user;
     const following = req.userParam;
@@ -144,17 +130,22 @@ const postUserFollows = [
     // check already followed
     const followRef = await Follow.findOne({ follower, following }).exec();
 
-    // then unfollow
+    // unfollow
     if (followRef !== null) {
       await Follow.deleteOne({ following, follower });
-    } else {
+    }
+    // follow
+    else {
       await new Follow({ following, follower }).save();
     }
 
     next();
   }),
+
+  // return GET /users data
   getAllUsers,
 ];
+
 // get all messages with a user
 const getUserMessages = asyncHandler(async (req, res) => {
   res.json(`getUserMessages - user id: ${req.params.userid} - not yet`);

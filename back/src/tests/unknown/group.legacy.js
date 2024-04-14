@@ -12,7 +12,7 @@ const GroupMember = require("./../../models/groupMember");
 const User = require("./../../models/user");
 const Message = require("./../../models/message");
 
-describe(`/chat/groups`, () => {
+describe.skip(`/chat/groups`, () => {
   let token0;
   let token1;
   const users = {};

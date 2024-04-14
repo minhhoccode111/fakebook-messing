@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 // sanitize and validate data
 const { body, validationResult } = require("express-validator");
 
-const { validPostSignup, validUsername } = require("./../middleware");
+const { validPostSignupData, validUsername } = require("./../middleware");
 
 // environment variables
 const EnvVar = require("./../constants/envvar");
@@ -78,11 +78,9 @@ const login_post = [
 ];
 
 const signup_post = [
-  validPostSignup,
+  validPostSignupData,
   validUsername,
   asyncHandler(async (req, res) => {
-    let errors = validationResult(req).array();
-
     const { fullname, username, password } = req.body;
 
     // encode password

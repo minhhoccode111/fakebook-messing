@@ -8,6 +8,9 @@ const method = require("./../setup/method.setup");
 // manually logging
 const debug = require("./../../constants/debug");
 
+// WARN: ISOLATE AND RUN EACH TEST FILE
+// SO THAT THE DATABASE DON'T POPULATE EACH OTHERS
+
 describe(`POST /signup`, () => {
   test(`valid signup`, async () => {
     const res = await request(app)

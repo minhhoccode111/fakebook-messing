@@ -7,7 +7,7 @@
     "node": "21.x"
   },
   "scripts": {
-    "test": "bun test ./src/tests/user/info.user.test.js --watch --timeout 300",
+    "test": "bun test ./src/tests/user/post.user.test.js --watch --timeout 300",
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "server": "DEBUG=* npm run dev"

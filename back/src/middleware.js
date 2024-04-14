@@ -12,28 +12,29 @@ const User = require("./models/user");
 const { body, validationResult } = require("express-validator");
 
 // Before doind any database retrieve
-module.exports.validMongoId = (req, res, next) => {
+const validMongoId = (req, res, next) => {
   const isValidId = mongoose.isValidObjectId(req.params.userid);
   if (!isValidId) return res.sendStatus(404);
   next();
 };
 
 // Make sure the user existed and mark on req
-module.exports.validUser = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.params.userid).exec();
-  if (!user) return res.sendStatus(404);
-  req.userParam = user; // mark on req
-  next();
-});
-
-// Make sure req.params.userid is self
-module.exports.validAuthUser = (req, res, next) => {
-  if (req.params.userid !== req.user.id) return res.sendStatus(404);
-  next();
-};
+const validUserParam = [
+  // these 2 always go together
+  validMongoId,
+  asyncHandler(async (req, res, next) => {
+    const user = await User.findById(
+      req.params.userid,
+      "-__v -password -username", // security
+    ).exec();
+    if (!user) return res.sendStatus(404);
+    req.userParam = user; // mark on req
+    next();
+  }),
+];
 
 // Sanitize and validate update user data
-module.exports.validPutUserData = [
+const validPutUserData = [
   body("fullname").trim().escape(),
   body("bio").trim().escape(),
   body("status")
@@ -46,9 +47,15 @@ module.exports.validPutUserData = [
     }),
   body("avatarLink").trim().escape(),
   body("dateOfBirth", "Invalid Date Of Birth").trim().escape().isDate(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req).array();
+    if (errors.length !== 0) req.body.dateOfBirth = undefined;
+    next();
+  }),
 ];
 
-module.exports.validPostSignup = [
+const validPostSignupData = [
   body("fullname")
     .trim()
     .notEmpty()
@@ -83,7 +90,7 @@ module.exports.validPostSignup = [
   }),
 ];
 
-module.exports.validUsername = asyncHandler(async (req, res, next) => {
+const validUsername = asyncHandler(async (req, res, next) => {
   const checkExistedUsername = await User.findOne(
     { username: req.body.username },
     "username",
@@ -96,3 +103,11 @@ module.exports.validUsername = asyncHandler(async (req, res, next) => {
 });
 
 // TODO: more models validate, etc.
+
+module.exports = {
+  validUserParam,
+  validPutUserData,
+  // validMongoId,
+  validUsername,
+  validPostSignupData,
+};

@@ -20,6 +20,10 @@ const EnvVar = require("./../../constants/envvar");
 const debug = require("./../../constants/debug");
 
 const User = require("./../../models/user");
+const Follow = require("./../../models/user");
+
+// WARN: ISOLATE AND RUN EACH TEST FILE
+// SO THAT THE DATABASE DON'T POPULATE EACH OTHERS
 
 describe(`User Info Testing`, () => {
   // These will be use global for every tests
@@ -63,6 +67,7 @@ describe(`User Info Testing`, () => {
   afterAll(async () => {
     // clear db, many don't need since this is in-memory db
     await User.deleteMany({});
+    await Follow.deleteMany({});
   });
 
   test(`Setup db work like expect`, async () => {

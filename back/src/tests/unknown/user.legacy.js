@@ -40,7 +40,7 @@ async function createUsers(number, username = "asd") {
 // another app because don't want to touch the original
 const app = require("./../setup");
 
-describe(`GET PUT /user`, () => {
+describe.skip(`GET PUT /user`, () => {
   let token;
 
   // before all authenticate
@@ -178,7 +178,7 @@ describe(`GET PUT /user`, () => {
   });
 });
 
-describe(`/chat/users`, () => {
+describe.skip(`/chat/users`, () => {
   let token;
   let user;
   let users;
