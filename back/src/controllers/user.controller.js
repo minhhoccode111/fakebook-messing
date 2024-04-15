@@ -8,6 +8,7 @@ const { body, validationResult } = require("express-validator");
 const {
   validUserAuth,
   validUserParam,
+  validPostParam,
   validPutUserData,
   validPostPostData,
 } = require("./../middleware");
@@ -245,6 +246,7 @@ const postUserPosts = [
     await post.save();
 
     // for the GET /users/:userid/posts below to use
+    // without calling validUserParam
     req.userParam = req.user;
     next();
   }),
@@ -254,11 +256,17 @@ const postUserPosts = [
 ];
 
 // delete a post
-const deleteUserPost = asyncHandler(async (req, res) => {
-  res.json(
-    `deleteUserPost - user id: ${req.params.userid} - post id: ${req.params.postid} - not yet`,
-  );
-});
+const deleteUserPost = [
+  // because when it comes to a specific post (like delete or edit)
+  // we want to make sure that the user have authorization on it
+  validUserAuth,
+  validPostParam,
+  asyncHandler(async (req, res) => {
+    res.json(
+      `deleteUserPost - user id: ${req.params.userid} - post id: ${req.params.postid} - not yet`,
+    );
+  }),
+];
 
 // like a post
 const postUserPostLikes = asyncHandler(async (req, res) => {

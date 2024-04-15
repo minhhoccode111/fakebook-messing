@@ -7,6 +7,7 @@ const asyncHandler = require("express-async-handler");
 // mongoose
 const mongoose = require("mongoose");
 const User = require("./models/user");
+const Post = require("./models/post");
 
 // sanitize and validate data
 const { body, validationResult } = require("express-validator");
@@ -35,6 +36,23 @@ const validUserParam = [
     ).exec();
     if (!user) return res.sendStatus(404);
     req.userParam = user; // mark on req
+    next();
+  }),
+];
+
+// Make sure the post existed and mark on req
+// This first created to be used on DELETE
+// so the retrieve data can be less
+const validPostParam = [
+  // these 2 always go together
+  validMongoId,
+  asyncHandler(async (req, res, next) => {
+    const post = await Post.findById(
+      { _id: req.params.postid, creator: req.user },
+      "_id",
+    ).exec();
+    if (!post) return res.sendStatus(404);
+    req.postParam = post; // mark on req
     next();
   }),
 ];
@@ -119,11 +137,14 @@ const validPostPostData = [
 ];
 
 // TODO: more models validate, etc.
+// validPostParam (the :postid)
+// validPostAuth (the :postid belong to the :userid)
 
 module.exports = {
   validUsername,
   validUserAuth,
   validUserParam,
+  validPostParam,
   // validMongoId,
 
   // about data

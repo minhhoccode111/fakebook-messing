@@ -156,10 +156,6 @@ describe(`User Post Testing`, () => {
 
   describe(`POST /users/:userid/posts`, () => {
     describe(`INVALID CASES`, () => {
-      // TODO: add something
-      // like authorization
-      // like data validation
-
       const cases = [
         [{ id: asdBody.user.id, content: "" }, 400],
         [{ id: qweBody.user.id, content: "Some dummy data" }, 404],
@@ -200,8 +196,43 @@ describe(`User Post Testing`, () => {
   });
 
   describe(`DELETE /users/:userid/posts/:postid`, () => {
-    test(`something`, async () => {
-      //
+    describe(`INVALID CASES`, () => {
+      test(`some invalid cases`, async () => {
+        const asdPost = await Post.findOne(
+          { creator: asdBody.user.id },
+          "_id",
+        ).exec();
+        const qwePost = await Post.findOne(
+          { creator: qweBody.user.id },
+          "_id",
+        ).exec();
+
+        // debug(asdPost, qwePost);
+
+        const cases = [
+          [{ userid: asdBody.user.id, postid: "somerandomstring" }, 404],
+          [{ userid: asdBody.user.id, postid: qwePost.id }, 404],
+          [{ userid: qweBody.user.id, postid: qwePost.id }, 404],
+          // TODO: this should not be 404
+          [{ userid: asdBody.user.id, postid: asdPost.id }, 200],
+        ];
+
+        // debug(`cases belike: `, cases);
+
+        for (const [info, code] of cases) {
+          const res = await request(app)
+            .delete(`/api/v1/users/${info.id}/posts/${info.postid}`)
+            .set("Authorization", `Bearer ${asdBody.token}`);
+
+          expect(res.status).toBe(code);
+        }
+      });
+    });
+
+    describe(`VALID CASES`, () => {
+      test(`something`, async () => {
+        //
+      });
     });
   });
 });
