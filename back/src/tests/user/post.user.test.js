@@ -109,30 +109,34 @@ describe(`User Post Testing`, () => {
     describe(`VALID CASES`, () => {
       test(`asd GET /users/:qwe.id/posts`, async () => {
         const res = await request(app)
-          .get(`/api/v1/users/${qweBody.user.id}`)
+          .get(`/api/v1/users/${qweBody.user.id}/posts`)
           .set("Authorization", `Bearer ${asdBody.token}`);
 
         expect(res.status).toBe(200);
-        //
         expect(res.body.creator).toEqual(qweBody.user);
         // 3 posts/user
         expect(res.body.posts.length).toEqual(3);
 
-        for (const post of res.body.posts) {
+        // debug(`the res.body.posts belike: `, res.body.posts);
+
+        for await (const post of res.body.posts) {
           // 1 like/user/post
+          // debug(`the post in for...of test`, post);
           expect(post.likes).toEqual(2);
           // 2 comments/user/post
           expect(post.comments.length).toEqual(4);
 
           // 1 like/user/comment
-          expect(
-            post.comments.every((comment) => comment.likes.length === 2),
-          ).toBe(true);
+          // debug(post.comments);
+          expect(post.comments.every((comment) => comment.likes === 2)).toBe(
+            true,
+          );
 
           //
+          // debug(post.comments);
           expect(
             post.comments.some(
-              (comment) => comment.author.fullname === asdBody.user.fullname,
+              (comment) => comment.creator.fullname === qweBody.user.fullname,
             ),
           ).toBe(true);
 

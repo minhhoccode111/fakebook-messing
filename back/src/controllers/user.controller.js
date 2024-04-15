@@ -17,6 +17,10 @@ const debug = require("./../constants/debug");
 const mongoose = require("mongoose");
 const User = require("./../models/user");
 const Follow = require("./../models/follow");
+const Post = require("./../models/post");
+const Comment = require("./../models/comment");
+const LikePost = require("./../models/likePost");
+const LikeComment = require("./../models/likeComment");
 
 // bcrypt to secure password
 const bcrypt = require("bcrypt");
@@ -157,38 +161,74 @@ const postUserMessages = asyncHandler(async (req, res) => {
 });
 
 // get all user's posts
+// TODO: design response data
+/*
+ * {
+ * creator: don't need since req.userParam can be used
+ * posts: [
+ *  Post{
+ *    content: ...,
+ *    likes: ...,
+ *    comments: [
+ *      Comment{
+ *        author: User{
+ *          fullname: ...,
+ *          id: ...,
+ *          status: ...,
+ *          avatarLink: ...,
+ *        }
+ *        content: ...,
+ *        likes: ...
+ *      },
+ *    ]
+ *  },
+ *  Post{...},
+ *  ...
+ *  ]
+ * }
+ */
+
 const getUserPosts = [
   validUserParam,
   asyncHandler(async (req, res) => {
-    // TODO: design response data
+    const creator = req.userParam;
 
-    /*
-     * {
-     * creator: don't need since req.userParam can be used
-     * posts: [
-     *  Post{
-     *    content: ...,
-     *    likes: ...,
-     *    comments: [
-     *      Comment{
-     *        author: User{
-     *          fullname: ...,
-     *          id: ...,
-     *          status: ...,
-     *          avatarLink: ...,
-     *        }
-     *        content: ...,
-     *        likes: ...
-     *      },
-     *    ]
-     *  },
-     *  Post{...},
-     *  ...
-     *  ]
-     * }
-     */
+    const userPosts = await Post.find({ creator }, "-creator -__v").exec();
 
-    res.json(`getUserPosts - user id: ${req.params.userid} - not yet`);
+    // debug(`the posts after retrieve database belike: `, userPosts);
+
+    // NOTE: this could be done with a simple `for...loop`
+    // but for learning purpose a reduce with promises is good
+    const posts = await userPosts.reduce(async (totalPosts, post) => {
+      const [postComments, postLikes] = await Promise.all([
+        Comment.find({ post }, "-post -__v")
+          .populate("creator", "_id fullname status avatarLink") // security
+          .exec(),
+        LikePost.countDocuments({ post }).exec(),
+      ]);
+
+      const comments = await postComments.reduce(
+        async (totalComments, comment) => {
+          const commentLikes = await LikeComment.countDocuments({
+            comment,
+          }).exec();
+
+          const total = await totalComments;
+
+          return [...total, { ...comment.toJSON(), likes: commentLikes }];
+        },
+        Promise.resolve([]),
+      );
+
+      const total = await totalPosts;
+
+      return [...total, { ...post.toJSON(), comments, likes: postLikes }];
+    }, Promise.resolve([]));
+
+    // debug(`the posts after map: `, posts);
+
+    // debug({ creator, posts });
+    return res.json({ creator, posts });
   }),
 ];
 
