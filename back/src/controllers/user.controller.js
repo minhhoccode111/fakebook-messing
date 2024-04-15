@@ -279,11 +279,11 @@ const deleteUserPost = [
 // TODO: get a post detail and relation this is support middleware since
 // we don't implement GET a specific post route handling
 // we just want to reuse this after interaction with a post
-const getUserPost = asyncHandler(async (req, res, next) => {
+const getUserPostHelper = asyncHandler(async (req, res, next) => {
   // No validation needed since this will be called after everything is done
   const post = req.postParam;
   const likes = await LikePost.countDocuments({ post }).exec();
-  const comments = await Comment.find(
+  const postComments = await Comment.find(
     {
       post,
     },
@@ -291,26 +291,36 @@ const getUserPost = asyncHandler(async (req, res, next) => {
   )
     .populate("creator", "_id fullname status avatarLink")
     // TODO: add sorting
-    .exec()
-    // manually add a comment likes count
-    .reduce(async (allComments, comment) => {
-      const likes = await LikeComment.countDocuments({ comment }).exec();
+    .exec();
 
-      const total = await allComments;
+  // debug(`the postComments belike: `, postComments);
+  // manually add a comment likes count
+  const comments = await postComments.reduce(async (allComments, comment) => {
+    const likes = await LikeComment.countDocuments({ comment }).exec();
 
-      return [...total, { ...comment.toJSON(), likes }];
-    }, Promise.resolve([]));
+    const total = await allComments;
+
+    return [...total, { ...comment.toJSON(), likes }];
+  }, Promise.resolve([]));
+
+  // debug(`the comments belike: `, comments);
 
   return res.json({ ...post.toJSON(), likes, comments });
 });
 
 // like a post TODO:
 const postUserPostLikes = [
-  validPostParam,
-  asyncHandler(async (req, res) => {
-    // check the likes of the post to see whether to add or remove like
+  validPostParam, // no need to own the post for this action
+  asyncHandler(async (req, res, next) => {
+    const creator = req.user;
+    const post = req.postParam;
+    const likePost = new LikePost({ creator, post });
+    await likePost.save();
+
+    next();
   }),
-  getUserPost,
+
+  getUserPostHelper,
 ];
 
 // comment on a post
