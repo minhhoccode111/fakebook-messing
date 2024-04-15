@@ -18,6 +18,12 @@ const validMongoId = (req, res, next) => {
   next();
 };
 
+//
+const validUserAuth = (req, res, next) => {
+  if (req.params.userid !== req.user.id) return res.sendStatus(404);
+  next();
+};
+
 // Make sure the user existed and mark on req
 const validUserParam = [
   // these 2 always go together
@@ -29,28 +35,6 @@ const validUserParam = [
     ).exec();
     if (!user) return res.sendStatus(404);
     req.userParam = user; // mark on req
-    next();
-  }),
-];
-
-// Sanitize and validate update user data
-const validPutUserData = [
-  body("fullname").trim().escape(),
-  body("bio").trim().escape(),
-  body("status")
-    .trim()
-    .escape()
-    .custom((val, { req }) => {
-      // invalid status get default value
-      const valid = ["online", "offline", "afk", "busy"];
-      if (!valid.includes(val)) req.body.status = "online";
-    }),
-  body("avatarLink").trim().escape(),
-  body("dateOfBirth", "Invalid Date Of Birth").trim().escape().isDate(),
-
-  asyncHandler(async (req, res, next) => {
-    const errors = validationResult(req).array();
-    if (errors.length !== 0) req.body.dateOfBirth = undefined;
     next();
   }),
 ];
@@ -102,12 +86,48 @@ const validUsername = asyncHandler(async (req, res, next) => {
   next();
 });
 
+// Sanitize and validate update user data
+const validPutUserData = [
+  body("fullname").trim().escape(),
+  body("bio").trim().escape(),
+  body("status")
+    .trim()
+    .escape()
+    .custom((val, { req }) => {
+      // invalid status get default value
+      const valid = ["online", "offline", "afk", "busy"];
+      if (!valid.includes(val)) req.body.status = "online";
+    }),
+  body("avatarLink").trim().escape(),
+  body("dateOfBirth", "Invalid Date Of Birth").trim().escape().isDate(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req).array();
+    if (errors.length !== 0) req.body.dateOfBirth = undefined;
+    next();
+  }),
+];
+
+// Sanitize and validate posts data
+const validPostPostData = [
+  body(`content`, `Post content cannot be empty.`).trim().notEmpty().escape(),
+  (req, res, next) => {
+    const errors = validationResult(req).array();
+    if (errors.length !== 0) return res.sendStatus(400);
+    next();
+  },
+];
+
 // TODO: more models validate, etc.
 
 module.exports = {
   validUsername,
+  validUserAuth,
   validUserParam,
   // validMongoId,
+
+  // about data
   validPutUserData,
+  validPostPostData,
   validPostSignupData,
 };

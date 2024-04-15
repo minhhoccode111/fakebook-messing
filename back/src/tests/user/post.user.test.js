@@ -68,11 +68,15 @@ describe(`User Post Testing`, () => {
     // debug(`users belike: `, users);
     // debug(`posts belike: `, posts);
 
-    expect(users.length).toBe(2);
-    expect(posts.length).toBe(6); // 3 posts/user
-    expect(comments.length).toBe(24); // 2 comments/user/post
-    expect(likePosts.length).toBe(12); // 1 like/user/post
-    expect(likeComments.length).toBe(48); // 1 like/user/comment
+    // WARN:
+    // This could be fail because the test runner run every `request(app)`
+    // before running any `test()` or `expect()` which make the database's
+    // states change
+    // expect(users.length).toBe(2);
+    // expect(posts.length).toBe(6); // 3 posts/user
+    // expect(comments.length).toBe(24); // 2 comments/user/post
+    // expect(likePosts.length).toBe(12); // 1 like/user/post
+    // expect(likeComments.length).toBe(48); // 1 like/user/comment
   });
 
   describe(`GET /users/:userid/posts`, () => {
@@ -151,8 +155,47 @@ describe(`User Post Testing`, () => {
   });
 
   describe(`POST /users/:userid/posts`, () => {
-    test(`something`, async () => {
-      //
+    describe(`INVALID CASES`, () => {
+      // TODO: add something
+      // like authorization
+      // like data validation
+
+      const cases = [
+        [{ id: asdBody.user.id, content: "" }, 400],
+        [{ id: qweBody.user.id, content: "Some dummy data" }, 404],
+      ];
+
+      test(`some invalid cases`, async () => {
+        for (const [update, code] of cases) {
+          const res = await request(app)
+            .post(`/api/v1/users/${update.id}/posts`)
+            .set("Authorization", `Bearer ${asdBody.token}`)
+            .type("form")
+            .send({ content: update.content });
+
+          expect(res.status).toBe(code);
+        }
+      });
+    });
+
+    describe(`VALID CASES`, () => {
+      const content = "This is a dummy post content";
+      test(`asd POST /users`, async () => {
+        const res = await request(app)
+          .post(`/api/v1/users/${asdBody.user.id}/posts`)
+          .set("Authorization", `Bearer ${asdBody.token}`)
+          .type("form")
+          .send({ content });
+
+        expect(res.status).toBe(200);
+        // no need to test the res.body returned because
+        // it will reuse GET /users/:userid/posts
+
+        const { posts, creator } = res.body;
+        expect(posts.length).toBe(4);
+        expect(posts.some((post) => post.content === content)).toBe(true);
+        expect(creator.fullname).toBe(asdBody.user.fullname);
+      });
     });
   });
 

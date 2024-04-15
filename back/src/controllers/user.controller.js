@@ -5,7 +5,12 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
 // custom validate middleware
-const { validUserParam, validPutUserData } = require("./../middleware");
+const {
+  validUserAuth,
+  validUserParam,
+  validPutUserData,
+  validPostPostData,
+} = require("./../middleware");
 
 // environment variables
 const EnvVar = require("./../constants/envvar");
@@ -58,7 +63,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
       followings.push(connections[i].following);
     } else {
       // else self is following
-      followers.push(connections[i].follower); // BUG: connections[i].followers
+      followers.push(connections[i].follower);
+      // BUG: connections[i].followers
     }
   }
 
@@ -100,11 +106,9 @@ const getUser = [
 
 // update current user
 const putUser = [
+  validUserAuth,
   validPutUserData,
   asyncHandler(async (req, res) => {
-    // not allow anything but self.id
-    if (req.params.userid !== req.user.id) return res.sendStatus(404);
-
     // Merge update user
     const newUser = Object.assign(
       { _id: req.params.userid }, // target obj, keep the _id
@@ -233,9 +237,21 @@ const getUserPosts = [
 ];
 
 // post a post
-const postUserPosts = asyncHandler(async (req, res) => {
-  res.json(`postUserPosts - user id: ${req.params.userid} - not yet`);
-});
+const postUserPosts = [
+  validUserAuth,
+  validPostPostData,
+  asyncHandler(async (req, res, next) => {
+    const post = new Post({ content: req.body.content, creator: req.user });
+    await post.save();
+
+    // for the GET /users/:userid/posts below to use
+    req.userParam = req.user;
+    next();
+  }),
+  // WARN: we don't need to call validUserParam again
+  // since validUserAuth already get the job done
+  getUserPosts[1],
+];
 
 // delete a post
 const deleteUserPost = asyncHandler(async (req, res) => {
