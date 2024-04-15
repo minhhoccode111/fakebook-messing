@@ -71,7 +71,7 @@ describe(`User Post Testing`, () => {
     // WARN:
     // This could be fail because the test runner run every `request(app)`
     // before running any `test()` or `expect()` which make the database's
-    // states change
+    // states change? Myth
     // expect(users.length).toBe(2);
     // expect(posts.length).toBe(6); // 3 posts/user
     // expect(comments.length).toBe(24); // 2 comments/user/post
@@ -235,7 +235,7 @@ describe(`User Post Testing`, () => {
     });
 
     describe(`VALID CASES`, () => {
-      test(`something`, async () => {
+      test(`asd DELETE /users/:userid/posts/:postid`, async () => {
         const asdPosts = await Post.find(
           { creator: asdBody.user.id },
           "_id content",

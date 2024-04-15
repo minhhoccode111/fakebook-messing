@@ -47,23 +47,32 @@ const validUserParam = [
   }),
 ];
 
-// Make sure the post existed and mark on req
-// This first created to be used on DELETE
-// so the retrieve data can be less
+// Make sure the postid existed and mark on req
 const validPostParam = [
   // these 2 always go together
   validMongoIdPost,
   asyncHandler(async (req, res, next) => {
     const post = await Post.findOne(
       // make sure the post belong to the request user
-      { _id: req.params.postid, creator: req.user.id },
-      "_id",
-    ).exec();
+      { _id: req.params.postid },
+      "-__v",
+    )
+      .populate("creator", "_id")
+      .exec();
 
     if (!post) return res.sendStatus(404);
     req.postParam = post; // mark on req
     next();
   }),
+];
+
+// include validPostParam but check extra :userid authorization with :postid
+const validPostAuth = [
+  validPostParam, // to check and mark req.postParam
+  (req, res, next) => {
+    if (req.postParam.creator.id !== req.user.id) return res.sendStatus(404);
+    next();
+  },
 ];
 
 const validPostSignupData = [
@@ -154,6 +163,7 @@ module.exports = {
   validUserAuth,
   validUserParam,
   validPostParam,
+  validPostAuth,
   // validMongoIdUser,
 
   // about data

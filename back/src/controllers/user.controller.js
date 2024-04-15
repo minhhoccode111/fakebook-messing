@@ -9,6 +9,7 @@ const {
   validUserAuth,
   validUserParam,
   validPostParam,
+  validPostAuth,
   validPutUserData,
   validPostPostData,
 } = require("./../middleware");
@@ -260,7 +261,7 @@ const deleteUserPost = [
   // first make sure req.params.userid match req.user.id
   validUserAuth,
   // then make sure req.params.postid existed in db and owned by req.user
-  validPostParam,
+  validPostAuth,
   asyncHandler(async (req, res, next) => {
     await Post.findByIdAndDelete(req.params.postid);
 
@@ -275,10 +276,47 @@ const deleteUserPost = [
   getUserPosts[1],
 ];
 
-// like a post
-const postUserPostLikes = asyncHandler(async (req, res) => {
+// TODO: get a post detail and relation this is support middleware since
+// we don't implement GET a specific post route handling
+// we just want to reuse this after interaction with a post
+const getUserPost = asyncHandler(async (req, res, next) => {
+  // No validation needed since this will be called after everything is done
+  const post = req.postParam;
+  const likes = await LikePost.countDocuments({ post }).exec();
+  const comments = await Comment.find(
+    {
+      post,
+    },
+    "-__v",
+  )
+    .populate("creator", "_id fullname status avatarLink")
+    // TODO: add sorting
+    .exec()
+    // manually add a comment likes count
+    .reduce(async (allComments, comment) => {
+      const likes = await LikeComment.countDocuments({ comment }).exec();
+
+      const total = await allComments;
+
+      return [...total, { ...comment.toJSON(), likes }];
+    }, Promise.resolve([]));
+
+  return res.json({ ...post.toJSON(), likes, comments });
+});
+
+// like a post TODO:
+const postUserPostLikes = [
+  validPostParam,
+  asyncHandler(async (req, res) => {
+    // check the likes of the post to see whether to add or remove like
+  }),
+  getUserPost,
+];
+
+// comment on a post
+const postUserPostComments = asyncHandler(async (req, res) => {
   res.json(
-    `postUserPostLikes - user id: ${req.params.userid} - post id: ${req.params.postid} - not yet`,
+    `postUserPostComments - user id: ${req.params.userid} - post id: ${req.params.postid} - not yet`,
   );
 });
 
@@ -286,13 +324,6 @@ const postUserPostLikes = asyncHandler(async (req, res) => {
 const postUserCommentLikes = asyncHandler(async (req, res) => {
   res.json(
     `postUserCommentLikes - user id: ${req.params.userid} - comment id: ${req.params.commentid} - not yet`,
-  );
-});
-
-// comment on a post
-const postUserPostComments = asyncHandler(async (req, res) => {
-  res.json(
-    `postUserPostComments - user id: ${req.params.userid} - post id: ${req.params.postid} - not yet`,
   );
 });
 
