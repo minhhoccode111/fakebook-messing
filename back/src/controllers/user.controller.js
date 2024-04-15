@@ -257,15 +257,22 @@ const postUserPosts = [
 
 // delete a post
 const deleteUserPost = [
-  // because when it comes to a specific post (like delete or edit)
-  // we want to make sure that the user have authorization on it
+  // first make sure req.params.userid match req.user.id
   validUserAuth,
+  // then make sure req.params.postid existed in db and owned by req.user
   validPostParam,
-  asyncHandler(async (req, res) => {
-    res.json(
-      `deleteUserPost - user id: ${req.params.userid} - post id: ${req.params.postid} - not yet`,
-    );
+  asyncHandler(async (req, res, next) => {
+    await Post.findByIdAndDelete(req.params.postid);
+
+    // for the GET /users/:userid/posts below to use
+    // without calling validUserParam
+    req.userParam = req.user;
+    next();
   }),
+
+  // WARN: we don't need to call validUserParam again
+  // since validUserAuth already get the job done
+  getUserPosts[1],
 ];
 
 // like a post

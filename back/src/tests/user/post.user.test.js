@@ -210,18 +210,23 @@ describe(`User Post Testing`, () => {
         // debug(asdPost, qwePost);
 
         const cases = [
+          // asd try to delete not valid mongodb id
           [{ userid: asdBody.user.id, postid: "somerandomstring" }, 404],
+          [{ userid: "somerandomstring", postid: qwePost.id }, 404],
+          // asd try to delete a valid postid but not own
           [{ userid: asdBody.user.id, postid: qwePost.id }, 404],
+          // asd try to delete a post of qwe user
           [{ userid: qweBody.user.id, postid: qwePost.id }, 404],
+
           // TODO: this should not be 404
-          [{ userid: asdBody.user.id, postid: asdPost.id }, 200],
+          // [{ userid: asdBody.user.id, postid: asdPost.id }, 200],
         ];
 
         // debug(`cases belike: `, cases);
 
         for (const [info, code] of cases) {
           const res = await request(app)
-            .delete(`/api/v1/users/${info.id}/posts/${info.postid}`)
+            .delete(`/api/v1/users/${info.userid}/posts/${info.postid}`)
             .set("Authorization", `Bearer ${asdBody.token}`);
 
           expect(res.status).toBe(code);
@@ -231,7 +236,26 @@ describe(`User Post Testing`, () => {
 
     describe(`VALID CASES`, () => {
       test(`something`, async () => {
-        //
+        const asdPosts = await Post.find(
+          { creator: asdBody.user.id },
+          "_id content",
+        ).exec(); // should be 4
+
+        expect(asdPosts.length).toBe(4);
+
+        // debug(`asdPosts belike: `, asdPosts);
+
+        const res = await request(app)
+          .delete(`/api/v1/users/${asdBody.user.id}/posts/${asdPosts[0].id}`)
+          .set("Authorization", `Bearer ${asdBody.token}`);
+
+        // also reuse GET /users/:userid/posts after deletion
+        expect(res.status).toBe(200);
+        expect(res.body.creator.fullname).toBe(asdBody.user.fullname);
+        expect(res.body.posts.length).toBe(asdPosts.length - 1);
+
+        // debug(`the res.body.post: `, res.body.posts);
+        // debug(`the asdPosts: `, asdPosts);
       });
     });
   });

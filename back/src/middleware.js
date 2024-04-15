@@ -13,8 +13,15 @@ const Post = require("./models/post");
 const { body, validationResult } = require("express-validator");
 
 // Before doind any database retrieve
-const validMongoId = (req, res, next) => {
+const validMongoIdUser = (req, res, next) => {
   const isValidId = mongoose.isValidObjectId(req.params.userid);
+  if (!isValidId) return res.sendStatus(404);
+  next();
+};
+
+// Before doind any database retrieve
+const validMongoIdPost = (req, res, next) => {
+  const isValidId = mongoose.isValidObjectId(req.params.postid);
   if (!isValidId) return res.sendStatus(404);
   next();
 };
@@ -28,7 +35,7 @@ const validUserAuth = (req, res, next) => {
 // Make sure the user existed and mark on req
 const validUserParam = [
   // these 2 always go together
-  validMongoId,
+  validMongoIdUser,
   asyncHandler(async (req, res, next) => {
     const user = await User.findById(
       req.params.userid,
@@ -45,12 +52,14 @@ const validUserParam = [
 // so the retrieve data can be less
 const validPostParam = [
   // these 2 always go together
-  validMongoId,
+  validMongoIdPost,
   asyncHandler(async (req, res, next) => {
-    const post = await Post.findById(
-      { _id: req.params.postid, creator: req.user },
+    const post = await Post.findOne(
+      // make sure the post belong to the request user
+      { _id: req.params.postid, creator: req.user.id },
       "_id",
     ).exec();
+
     if (!post) return res.sendStatus(404);
     req.postParam = post; // mark on req
     next();
@@ -145,7 +154,7 @@ module.exports = {
   validUserAuth,
   validUserParam,
   validPostParam,
-  // validMongoId,
+  // validMongoIdUser,
 
   // about data
   validPutUserData,
