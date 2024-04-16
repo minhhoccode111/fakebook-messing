@@ -7,7 +7,11 @@
     "node": "21.x"
   },
   "scripts": {
-    "test": "bun test ./src/tests/user/interact.post.user.test.js --watch --timeout 300",
+    "test:info": "./src/tests/user/info.user.test.js",
+    "test:post": "./src/tests/user/post.user.test.js",
+    "test:interact": "./src/tests/user/interact.post.user.test.js",
+    "test:auth": "./src/tests/auth/auth.user.test.js",
+    "test": "bun test --watch --timeout 300 ./src/tests/user/interact.post.user.test.js",
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "server": "DEBUG=* npm run dev"

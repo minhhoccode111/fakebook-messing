@@ -8,6 +8,7 @@ const asyncHandler = require("express-async-handler");
 const mongoose = require("mongoose");
 const User = require("./models/user");
 const Post = require("./models/post");
+const Comment = require("./models/comment");
 
 // sanitize and validate data
 const { body, validationResult } = require("express-validator");
@@ -22,6 +23,13 @@ const validMongoIdUser = (req, res, next) => {
 // Check valid mongoose id
 const validMongoIdPost = (req, res, next) => {
   const isValidId = mongoose.isValidObjectId(req.params.postid);
+  if (!isValidId) return res.sendStatus(404);
+  next();
+};
+
+// Check valid mongoose id
+const validMongoIdComment = (req, res, next) => {
+  const isValidId = mongoose.isValidObjectId(req.params.commentid);
   if (!isValidId) return res.sendStatus(404);
   next();
 };
@@ -58,6 +66,24 @@ const validPostParam = asyncHandler(async (req, res, next) => {
 
   if (!post) return res.sendStatus(404);
   req.postParam = post;
+  next();
+});
+
+// check commentid existed and belong to postid
+// then mark on req.commentParam
+const validCommentParam = asyncHandler(async (req, res, next) => {
+  const comment = await Comment.findOne(
+    {
+      _id: req.params.commentid,
+      post: req.params.postid,
+    },
+    "-__v",
+  )
+    .populate("creator", "_id fullname status avatarLink")
+    .exec();
+
+  if (!comment) return res.sendStatus(404);
+  req.commentParam = comment;
   next();
 });
 
@@ -162,9 +188,11 @@ module.exports = {
   validUserOwn,
   validUsername,
   validUserParam,
+  validCommentParam,
   validPostParam,
-  validMongoIdPost,
   validMongoIdUser,
+  validMongoIdPost,
+  validMongoIdComment,
 
   // about data
   validPutUserData,

@@ -247,7 +247,13 @@ describe(`User Post Interaction Testing`, () => {
           )
           .set("Authorization", `Bearer ${c.token}`);
 
-        expect(res.body.likes).toBe(likes);
+        // debug(`the likes belike: `, c.likes);
+        expect(
+          res.body.comments.some(
+            (comment) =>
+              comment.id === c.commentid && comment.likes === c.likes,
+          ),
+        ).toBe(true);
       }
     });
   });

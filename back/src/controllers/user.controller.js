@@ -14,9 +14,12 @@ const {
   validUserParam,
   // check postid and mark on req.postParam
   validPostParam,
+  // check commentid and mark on req.commentParam
+  validCommentParam,
   // check valid mongo object id
   validMongoIdPost,
   validMongoIdUser,
+  validMongoIdComment,
 
   // about data
 
@@ -42,9 +45,6 @@ const Post = require("./../models/post");
 const Comment = require("./../models/comment");
 const LikePost = require("./../models/likePost");
 const LikeComment = require("./../models/likeComment");
-
-// work with date and time
-const { formatDate } = require("./../method");
 
 // GET /users
 const getAllUsers = asyncHandler(async (req, res) => {
@@ -83,7 +83,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
     $and: [
       {
         _id: {
-          $not: { $eq: req.user.id }, // not self
+          $ne: req.user.id, // not self
         },
       },
       {
@@ -253,8 +253,10 @@ const postUserPosts = [
   validUserOwn,
   validPostPostData,
   asyncHandler(async (req, res, next) => {
-    const post = new Post({ content: req.body.content, creator: req.user });
-    await post.save();
+    const creator = req.user;
+    const content = req.body.content;
+
+    await new Post({ content, creator }).save();
 
     // instead of calling validUserParam for GET /users/:userid/posts
     req.userParam = req.user;
@@ -326,8 +328,7 @@ const postUserPostLikes = [
 
     if (likePost === null) {
       // add like
-      const likePost = new LikePost({ creator, post });
-      await likePost.save();
+      await new LikePost({ creator, post }).save();
     } else {
       // delete like
       await LikePost.deleteOne({ creator, post });
@@ -350,21 +351,49 @@ const postUserPostComments = [
     const post = req.postParam;
     const creator = req.user;
 
-    const comment = new Comment({ content, post, creator });
-    comment.save();
+    await new Comment({ content, post, creator }).save();
     next();
   }),
 
   getUserPostHelper,
 ];
 
-// TODO: write validCommentParam middleware
 // POST /users/:userid/posts/:postid/comments/:commentid/likes
-const postUserCommentLikes = asyncHandler(async (req, res) => {
-  res.json(
-    `postUserCommentLikes - user id: ${req.params.userid} - comment id: ${req.params.commentid} - not yet`,
-  );
-});
+const postUserCommentLikes = [
+  validMongoIdUser,
+  validMongoIdPost,
+  validMongoIdComment,
+  // userid will be validated in validPostParam
+  // to make sure the postid belong to userid
+  // validUserParam,
+  validPostParam,
+  validCommentParam,
+
+  asyncHandler(async (req, res, next) => {
+    const creator = req.user;
+    const comment = req.commentParam;
+
+    const likeComment = await LikeComment.findOne(
+      {
+        creator,
+        comment,
+      },
+      "_id",
+    ).exec();
+
+    if (likeComment === null) {
+      // create like
+      await new LikeComment({ creator, comment }).save();
+    } else {
+      // delete like
+      await LikeComment.deleteOne({ creator, comment });
+    }
+
+    next();
+  }),
+
+  getUserPostHelper,
+];
 
 module.exports = {
   getAllUsers,
