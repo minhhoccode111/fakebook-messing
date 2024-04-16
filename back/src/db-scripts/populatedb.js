@@ -35,18 +35,44 @@ async function main() {
   await mongoose.connect(MONGODB);
   debug("about to insert some documents");
 
-  await createUsers(5); // number of users
+  await createUsers(15, "asd"); // number of users
   // await createUsers(5, "messing"); // number of users
-  await createGroups(10); // number of groups
-  await createMessages(100); // number of messages, to other users and groups
-  await createGroupMembers(); // base on users send messages to groups
+  await createGroups(30); // number of groups
+  await createMessages(1500); // number of messages, to other users and groups
+  // base on users send messages to groups
+  // 50% messages will be sent to groups
+  await createGroupMembers();
 
   // await createUsers(5, "fakebook"); // number of users
-  await createFollows(0.5); // chance that a user will follow other
-  await createPosts(2, 0.3); // max number of posts/user, chance
+  await createFollows(0.3); // chance that a user will follow other
+  await createPosts(5, 0.3); // max number of posts/user, chance
   await createComments(2, 0.3); // max number of comments/user/post, chance
-  await createLikePosts(0.5); // chance that a user will like a post
-  await createLikeComments(0.5); // chance that a user will like a comment
+  await createLikePosts(0.3); // chance that a user will like a post
+  await createLikeComments(0.1); // chance that a user will like a comment
+
+  // Total documents
+  // messing
+  // 100% users (users)
+  // 100% groups (groups)
+  // 100% messages + 100% groups (messages)
+  // ~ 100% groups + (50% messages / (100% groups / 100% users))
+  // // ~375 (group member ref)
+  // fakebook
+  // (100% users) ** 2 * followChance (follows)
+  // (100% users) * (postNum * postChance) (posts)
+  // (100% users) * (postNum * postChance) * (100% users * likePostChance) (likePosts)
+  // (100% users) * (postNum * postChance) * (commentNum * commentChance) (comments)
+  // (100% users) * (postNum * postChance) * (commentNum * commentChance) * (100% users * likeCommentChance) (likeComments)
+
+  // Comment models is having: 1136 documents +78ms
+  // Follow models is having: 143 documents +74ms
+  // Group models is having: 30 documents +74ms
+  // GroupMember models is having: 374 documents +75ms
+  // LikeComment models is having: 15365 documents +87ms
+  // LikePost models is having: 548 documents +75ms
+  // Message models is having: 1530 documents +75ms
+  // Post models is having: 54 documents +77ms
+  // User models is having: 15 documents +75ms
 
   const numComment = await Comment.countDocuments({}).exec();
   debug(`Comment models is having: ${numComment} documents`);
