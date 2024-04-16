@@ -162,8 +162,93 @@ describe(`User Post Interaction Testing`, () => {
     });
 
     describe(`VALID CASES`, () => {});
-    test(`something`, async () => {
-      //
+    test(`asd POST /users/:userid/posts/:postid/comments/:commentid/likes`, async () => {
+      // 1 asd post, 4 comments, 0 post like, 0 comment likes
+      const asdPost = await Post.findOne({ creator: asdBody.user.id }).exec();
+
+      // 1 asd comment
+      const asdComment = await Comment.findOne({
+        creator: asdBody.user.id,
+        post: asdPost.id,
+      }).exec();
+      // 1 qwe comment
+      const qweComment = await Comment.findOne({
+        creator: qweBody.user.id,
+        post: asdPost.id,
+      }).exec();
+
+      const cases = [
+        // increase on asdComment
+        {
+          token: asdBody.token,
+          userid: asdBody.user.id,
+          postid: asdPost.id,
+          commentid: asdComment.id,
+          likes: 1,
+        },
+        {
+          token: qweBody.token,
+          userid: asdBody.user.id,
+          postid: asdPost.id,
+          commentid: asdComment.id,
+          likes: 2,
+        },
+        // decrease on asdComment
+        {
+          token: asdBody.token,
+          userid: asdBody.user.id,
+          postid: asdPost.id,
+          commentid: asdComment.id,
+          likes: 1,
+        },
+        {
+          token: qweBody.token,
+          userid: asdBody.user.id,
+          postid: asdPost.id,
+          commentid: asdComment.id,
+          likes: 0,
+        },
+        // increase on qweComment
+        {
+          token: asdBody.token,
+          userid: asdBody.user.id,
+          postid: asdPost.id,
+          commentid: qweComment.id,
+          likes: 1,
+        },
+        {
+          token: qweBody.token,
+          userid: asdBody.user.id,
+          postid: asdPost.id,
+          commentid: qweComment.id,
+          likes: 2,
+        },
+        // decrease on qweComment
+        {
+          token: asdBody.token,
+          userid: asdBody.user.id,
+          postid: asdPost.id,
+          commentid: qweComment.id,
+          likes: 1,
+        },
+        {
+          token: qweBody.token,
+          userid: asdBody.user.id,
+          postid: asdPost.id,
+          commentid: qweComment.id,
+          likes: 0,
+        },
+      ];
+
+      for (const c of cases) {
+        const res = await request(app)
+          .post(
+            `/api/v1/users/${c.userid}/posts/${c.postid}/comments/${c.commentid}/likes`,
+          )
+          .set("Authorization", `Bearer ${c.token}`);
+
+        expect(res.body.likes).toBe(likes);
+      }
     });
   });
 });

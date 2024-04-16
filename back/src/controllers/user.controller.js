@@ -358,6 +358,7 @@ const postUserPostComments = [
   getUserPostHelper,
 ];
 
+// TODO: write validCommentParam middleware
 // POST /users/:userid/posts/:postid/comments/:commentid/likes
 const postUserCommentLikes = asyncHandler(async (req, res) => {
   res.json(
@@ -373,10 +374,15 @@ module.exports = {
   postUserFollows,
   getUserMessages,
   postUserMessages,
+  // putUserMessage
+  // deleteUserMessage
   getUserPosts,
   postUserPosts,
   deleteUserPost,
+  // putUserPost
   postUserPostLikes,
   postUserPostComments,
+  // putUserPostComment
+  // deleteUserPostComment
   postUserCommentLikes,
 };
