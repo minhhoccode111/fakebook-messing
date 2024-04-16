@@ -144,8 +144,8 @@ describe(`User Post Interaction Testing`, () => {
 
           expect(res.status).toBe(200);
           // keep
-          expect(res.body.post.content).toBe(post.content);
-          expect(res.body.post.likes).toBe(0);
+          expect(res.body.content).toBe(post.content);
+          expect(res.body.likes).toBe(0);
           // change
           expect(res.body.comments.length).toBe(5);
           expect(

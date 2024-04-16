@@ -283,7 +283,7 @@ const deleteUserPost = [
 
 // we don't implement GET a specific post route handling
 // we just want to reuse this after interaction with a post
-const getUserPostHelper = asyncHandler(async (req, res, next) => {
+const getUserPostHelper = asyncHandler(async (req, res) => {
   // No validation needed since this will be called after everything is done
   const post = req.postParam;
   const likes = await LikePost.countDocuments({ post }).exec();
@@ -345,11 +345,17 @@ const postUserPostComments = [
   validMongoIdPost,
   validPostParam,
   validPostCommentData,
-  asyncHandler(async (req, res) => {
-    res.json(
-      `postUserPostComments - user id: ${req.params.userid} - post id: ${req.params.postid} - not yet`,
-    );
+  asyncHandler(async (req, res, next) => {
+    const content = req.body.content;
+    const post = req.postParam;
+    const creator = req.user;
+
+    const comment = new Comment({ content, post, creator });
+    comment.save();
+    next();
   }),
+
+  getUserPostHelper,
 ];
 
 // POST /users/:userid/posts/:postid/comments/:commentid/likes
