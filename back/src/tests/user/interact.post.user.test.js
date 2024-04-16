@@ -89,14 +89,25 @@ describe(`User Post Interaction Testing`, () => {
         // 4 comments, 0 post like, 0 comment likes
         const post = await Post.findOne({}).exec();
 
-        const res = await request(app)
+        const inc = await request(app)
           .post(`/api/v1/users/${asdBody.user.id}/posts/${post.id}/likes`)
           .set("Authorization", `Bearer ${asdBody.token}`);
 
-        // kept
-        expect(res.body.content).toBe(post.content);
-        expect(res.body.comments.length).toBe(4);
-        expect(res.body.likes).toBe(1);
+        // same
+        expect(inc.body.content).toBe(post.content);
+        expect(inc.body.comments.length).toBe(4);
+        // increase
+        expect(inc.body.likes).toBe(1);
+
+        const dec = await request(app)
+          .post(`/api/v1/users/${asdBody.user.id}/posts/${post.id}/likes`)
+          .set("Authorization", `Bearer ${asdBody.token}`);
+
+        // same
+        expect(dec.body.content).toBe(post.content);
+        expect(dec.body.comments.length).toBe(4);
+        // decrease
+        expect(dec.body.likes).toBe(0);
       });
     });
   });

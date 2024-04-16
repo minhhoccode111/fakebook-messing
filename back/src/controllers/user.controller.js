@@ -314,8 +314,17 @@ const postUserPostLikes = [
   asyncHandler(async (req, res, next) => {
     const creator = req.user;
     const post = req.postParam;
-    const likePost = new LikePost({ creator, post });
-    await likePost.save();
+
+    // first check existence
+    const likePost = await LikePost.findOne({ creator, post }, "_id").exec();
+    if (likePost === null) {
+      // add like
+      const likePost = new LikePost({ creator, post });
+      await likePost.save();
+    } else {
+      // delete like
+      await LikePost.deleteOne({ creator, post });
+    }
 
     next();
   }),
