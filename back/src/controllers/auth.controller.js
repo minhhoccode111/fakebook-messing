@@ -4,7 +4,30 @@ const asyncHandler = require("express-async-handler");
 // sanitize and validate data
 const { body, validationResult } = require("express-validator");
 
-const { validPostSignupData, validUsername } = require("./../middleware");
+const {
+  // check userid is self
+  validUserOwn,
+  // check username already existed
+  validUsername,
+  // check userid and mark on req.userParam
+  validUserParam,
+  // check postid and mark on req.postParam
+  validPostParam,
+  // check valid mongo object id
+  validMongoIdPost,
+  validMongoIdUser,
+
+  // about data
+
+  // sanitize and validate update user info
+  validPutUserData,
+  // sanitize and validate post a post data
+  validPostPostData,
+  // sanitize and validate signup user data
+  validPostSignupData,
+  // sanitize login data
+  validPostLoginData,
+} = require("./../middleware");
 
 // environment variables
 const EnvVar = require("./../constants/envvar");
@@ -25,8 +48,7 @@ const jwt = require("jsonwebtoken");
 const { formatDate } = require("./../method");
 
 const login_post = [
-  body("username").trim().escape(),
-  body("password").trim().escape(),
+  validPostLoginData,
   asyncHandler(async (req, res) => {
     // extract data from form
     const formUsername = req.body.username;

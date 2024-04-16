@@ -6,12 +6,26 @@ const { body, validationResult } = require("express-validator");
 
 // custom validate middleware
 const {
-  validUserAuth,
+  // check userid is self
+  validUserOwn,
+  // check username already existed
+  // validUsername,
+  // check userid and mark on req.userParam
   validUserParam,
+  // check postid and mark on req.postParam
   validPostParam,
-  validPostAuth,
+  // check valid mongo object id
+  validMongoIdPost,
+  validMongoIdUser,
+
+  // about data
+
+  // sanitize and validate update user info
   validPutUserData,
+  // sanitize and validate post a post data
   validPostPostData,
+  // sanitize and validate post a comment data
+  validPostCommentData,
 } = require("./../middleware");
 
 // environment variables
@@ -29,16 +43,10 @@ const Comment = require("./../models/comment");
 const LikePost = require("./../models/likePost");
 const LikeComment = require("./../models/likeComment");
 
-// bcrypt to secure password
-const bcrypt = require("bcrypt");
-
-// will be call jwt.sign() to create a object, and secret and option like algorithm and time expire
-const jwt = require("jsonwebtoken");
-
 // work with date and time
 const { formatDate } = require("./../method");
 
-// relationship with current user
+// GET /users
 const getAllUsers = asyncHandler(async (req, res) => {
   // all users have connection with self
   const connections = await Follow.find(
@@ -65,8 +73,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
       followings.push(connections[i].following);
     } else {
       // else self is following
-      followers.push(connections[i].follower);
       // BUG: connections[i].followers
+      followers.push(connections[i].follower);
     }
   }
 
@@ -98,17 +106,18 @@ const getAllUsers = asyncHandler(async (req, res) => {
   return res.send({ followers, followings, mayknows });
 });
 
-// a specific user, include self
+// GET /users/:userid
 const getUser = [
-  validUserParam, // validate and mark req.params.userid on req.userParam
+  validMongoIdUser,
+  validUserParam,
   async (req, res) => {
     return res.json(req.userParam);
   },
 ];
 
-// update current user
+// PUT /users/:userid
 const putUser = [
-  validUserAuth,
+  validUserOwn,
   validPutUserData,
   asyncHandler(async (req, res) => {
     // Merge update user
@@ -130,9 +139,10 @@ const putUser = [
   }),
 ];
 
-// follow another user
+// POST /users/:userid/follows
 const postUserFollows = [
-  validUserParam, // validate and mark req.params.userid on req.userParam
+  validMongoIdUser,
+  validUserParam,
   asyncHandler(async (req, res, next) => {
     const follower = req.user;
     const following = req.userParam;
@@ -142,33 +152,32 @@ const postUserFollows = [
 
     // unfollow
     if (followRef !== null) {
-      await Follow.deleteOne({ following, follower });
+      await Follow.deleteOne({ follower, following });
     }
     // follow
     else {
-      await new Follow({ following, follower }).save();
+      await new Follow({ follower, following }).save();
     }
 
     next();
   }),
 
-  // return GET /users data
+  // Return self GET /users
   getAllUsers,
 ];
 
-// get all messages with a user
+// GET /users/:userid/messages
 const getUserMessages = asyncHandler(async (req, res) => {
   res.json(`getUserMessages - user id: ${req.params.userid} - not yet`);
 });
 
-// send a message to a user
+// POST /users/:userid/messages
 const postUserMessages = asyncHandler(async (req, res) => {
   res.json(`postUserMessages - user id: ${req.params.userid} - not yet`);
 });
 
-// get all user's posts
-// TODO: design response data
 /*
+TODO: design response data
  * {
  * creator: don't need since req.userParam can be used
  * posts: [
@@ -193,8 +202,9 @@ const postUserMessages = asyncHandler(async (req, res) => {
  *  ]
  * }
  */
-
+// GET /users/:userid/posts
 const getUserPosts = [
+  validMongoIdUser,
   validUserParam,
   asyncHandler(async (req, res) => {
     const creator = req.userParam;
@@ -238,45 +248,39 @@ const getUserPosts = [
   }),
 ];
 
-// post a post
+// POST /users/:userid/posts
 const postUserPosts = [
-  validUserAuth,
+  validUserOwn,
   validPostPostData,
   asyncHandler(async (req, res, next) => {
     const post = new Post({ content: req.body.content, creator: req.user });
     await post.save();
 
-    // for the GET /users/:userid/posts below to use
-    // without calling validUserParam
+    // instead of calling validUserParam for GET /users/:userid/posts
     req.userParam = req.user;
+
     next();
   }),
-  // WARN: we don't need to call validUserParam again
-  // since validUserAuth already get the job done
-  getUserPosts[1],
+  // no validation needed, just the handler implementation
+  getUserPosts[2],
 ];
 
-// delete a post
+// DELETE /users/:userid/posts/:postid
 const deleteUserPost = [
-  // first make sure req.params.userid match req.user.id
-  validUserAuth,
-  // then make sure req.params.postid existed in db and owned by req.user
-  validPostAuth,
+  validUserOwn,
+  validMongoIdPost,
+  validPostParam,
   asyncHandler(async (req, res, next) => {
     await Post.findByIdAndDelete(req.params.postid);
 
-    // for the GET /users/:userid/posts below to use
-    // without calling validUserParam
+    // instead of calling validUserParam for GET /users/:userid/posts
     req.userParam = req.user;
     next();
   }),
-
-  // WARN: we don't need to call validUserParam again
-  // since validUserAuth already get the job done
-  getUserPosts[1],
+  // no validation needed, just the handler implementation
+  getUserPosts[2],
 ];
 
-// TODO: get a post detail and relation this is support middleware since
 // we don't implement GET a specific post route handling
 // we just want to reuse this after interaction with a post
 const getUserPostHelper = asyncHandler(async (req, res, next) => {
@@ -308,15 +312,18 @@ const getUserPostHelper = asyncHandler(async (req, res, next) => {
   return res.json({ ...post.toJSON(), likes, comments });
 });
 
-// like a post TODO:
+// POST /users/:userid/posts/:postid/likes
 const postUserPostLikes = [
-  validPostParam, // no need to own the post for this action
+  validMongoIdUser,
+  validMongoIdPost,
+  validPostParam,
   asyncHandler(async (req, res, next) => {
     const creator = req.user;
     const post = req.postParam;
 
-    // first check existence
+    // check existence
     const likePost = await LikePost.findOne({ creator, post }, "_id").exec();
+
     if (likePost === null) {
       // add like
       const likePost = new LikePost({ creator, post });
@@ -332,14 +339,20 @@ const postUserPostLikes = [
   getUserPostHelper,
 ];
 
-// comment on a post
-const postUserPostComments = asyncHandler(async (req, res) => {
-  res.json(
-    `postUserPostComments - user id: ${req.params.userid} - post id: ${req.params.postid} - not yet`,
-  );
-});
+// POST /users/:userid/posts/:postid/comments
+const postUserPostComments = [
+  validMongoIdUser,
+  validMongoIdPost,
+  validPostParam,
+  validPostCommentData,
+  asyncHandler(async (req, res) => {
+    res.json(
+      `postUserPostComments - user id: ${req.params.userid} - post id: ${req.params.postid} - not yet`,
+    );
+  }),
+];
 
-// like a comment
+// POST /users/:userid/posts/:postid/comments/:commentid/likes
 const postUserCommentLikes = asyncHandler(async (req, res) => {
   res.json(
     `postUserCommentLikes - user id: ${req.params.userid} - comment id: ${req.params.commentid} - not yet`,

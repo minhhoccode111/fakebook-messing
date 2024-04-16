@@ -24,6 +24,7 @@ const CommentSchema = new Schema(
       length: {
         max: 10000,
       },
+      default: () => `This is default comment`,
     },
 
     createdAt: {

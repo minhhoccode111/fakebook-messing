@@ -87,68 +87,71 @@ describe(`User Post Interaction Testing`, () => {
     describe(`VALID CASES`, () => {
       test(`asd POST /users/:userid/posts/:postid/likes`, async () => {
         // 4 comments, 0 post like, 0 comment likes
-        const post = await Post.findOne({}).exec();
+        const asdPost = await Post.findOne({ creator: asdBody.user.id }).exec();
+        const qwePost = await Post.findOne({ creator: qweBody.user.id }).exec();
 
-        const inc = await request(app)
-          .post(`/api/v1/users/${asdBody.user.id}/posts/${post.id}/likes`)
-          .set("Authorization", `Bearer ${asdBody.token}`);
+        const cases = [
+          // add likes
+          [asdBody.token, asdBody.user.id, asdPost.id, 1],
+          [qweBody.token, asdBody.user.id, asdPost.id, 2],
+          [asdBody.token, qweBody.user.id, qwePost.id, 1],
+          [qweBody.token, qweBody.user.id, qwePost.id, 2],
+          // remove likes
+          [asdBody.token, asdBody.user.id, asdPost.id, 1],
+          [qweBody.token, asdBody.user.id, asdPost.id, 0],
+          [asdBody.token, qweBody.user.id, qwePost.id, 1],
+          [qweBody.token, qweBody.user.id, qwePost.id, 0],
+          // [qweBody.token, "somerandomstring", qwePost.id, 0],
+        ];
 
-        // same
-        expect(inc.body.content).toBe(post.content);
-        expect(inc.body.comments.length).toBe(4);
-        // increase
-        expect(inc.body.likes).toBe(1);
+        for (const [token, userid, postid, likes] of cases) {
+          const res = await request(app)
+            .post(`/api/v1/users/${userid}/posts/${postid}/likes`)
+            .set("Authorization", `Bearer ${token}`);
 
-        const dec = await request(app)
-          .post(`/api/v1/users/${asdBody.user.id}/posts/${post.id}/likes`)
-          .set("Authorization", `Bearer ${asdBody.token}`);
-
-        // same
-        expect(dec.body.content).toBe(post.content);
-        expect(dec.body.comments.length).toBe(4);
-        // decrease
-        expect(dec.body.likes).toBe(0);
+          expect(res.body.likes).toBe(likes);
+        }
       });
     });
   });
 
-  describe.skip(`POST /users/:userid/posts/:postid/comments`, () => {
+  describe(`POST /users/:userid/posts/:postid/comments`, () => {
     describe(`INVALID CASES`, () => {
       // TODO: add some invalid cases
-      // authorization
-      // data
-
-      test(`some invalid cases`, async () => {
-        const post = await Post.findOne({})
-          .populate("creator", "_id fullname")
-          .exec();
-
-        const res = await request(app)
-          .post(`/api/v1/users/${asdBody.user.id}/posts/${post.id}/comments`)
-          .set("Authorization", `Bearer ${asdBody.token}`)
-          .type("form")
-          .send({
-            content: "Hey this pretty good",
-          });
-      });
+      // invalid userid
+      // invalid postid
+      // invalid data
     });
 
     describe(`VALID CASES`, () => {
       test(`asd comment on all posts`, async () => {
-        // Get any post
-        // 4 comments, 0 post like, 0 comment like
+        // Get all posts
+        // each has 4 comments, 0 post like, 0 comment like
+        // above reset likes to 0
+        const posts = await Post.find({}).populate("creator", "_id").exec();
+        const token = asdBody.token;
 
-        const post = await Post.findOne({})
-          .populate("creator", "_id fullname")
-          .exec();
+        for (let i = 0, len = posts.length; i < len; i++) {
+          const post = posts[i];
+          const content = `This is dummy comment ${i}`;
+          const res = await request(app)
+            .post(`/api/v1/users/${post.creator.id}/posts/${post.id}/comments`)
+            .set("Authorization", `Bearer ${token}`)
+            .type("form")
+            .send({
+              content,
+            });
 
-        const res = await request(app)
-          .post(`/api/v1/users/${asdBody.user.id}/posts/${post.id}/comments`)
-          .set("Authorization", `Bearer ${asdBody.token}`)
-          .type("form")
-          .send({
-            content: "Hey this pretty good",
-          });
+          expect(res.status).toBe(200);
+          // keep
+          expect(res.body.post.content).toBe(post.content);
+          expect(res.body.post.likes).toBe(0);
+          // change
+          expect(res.body.comments.length).toBe(5);
+          expect(
+            res.body.comments.some((comment) => comment.content === content),
+          ).toBe(true);
+        }
       });
     });
   });

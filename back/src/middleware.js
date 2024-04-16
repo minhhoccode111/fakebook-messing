@@ -12,67 +12,58 @@ const Post = require("./models/post");
 // sanitize and validate data
 const { body, validationResult } = require("express-validator");
 
-// Before doind any database retrieve
+// Check valid mongoose id
 const validMongoIdUser = (req, res, next) => {
   const isValidId = mongoose.isValidObjectId(req.params.userid);
   if (!isValidId) return res.sendStatus(404);
   next();
 };
 
-// Before doind any database retrieve
+// Check valid mongoose id
 const validMongoIdPost = (req, res, next) => {
   const isValidId = mongoose.isValidObjectId(req.params.postid);
   if (!isValidId) return res.sendStatus(404);
   next();
 };
 
-//
-const validUserAuth = (req, res, next) => {
+// check userid === self
+const validUserOwn = (req, res, next) => {
   if (req.params.userid !== req.user.id) return res.sendStatus(404);
   next();
 };
 
-// Make sure the user existed and mark on req
-const validUserParam = [
-  // these 2 always go together
-  validMongoIdUser,
-  asyncHandler(async (req, res, next) => {
-    const user = await User.findById(
-      req.params.userid,
-      "-__v -password -username", // security
-    ).exec();
-    if (!user) return res.sendStatus(404);
-    req.userParam = user; // mark on req
-    next();
-  }),
-];
+// check userid existed, mark on req.userParam
+const validUserParam = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(
+    req.params.userid,
+    "-__v -password -username", // security
+  ).exec();
+  if (!user) return res.sendStatus(404);
+  req.userParam = user; // mark on req
+  next();
+});
 
-// Make sure the postid existed and mark on req
-const validPostParam = [
-  // these 2 always go together
-  validMongoIdPost,
-  asyncHandler(async (req, res, next) => {
-    const post = await Post.findOne(
-      // make sure the post belong to the request user
-      { _id: req.params.postid },
-      "-__v",
-    )
-      .populate("creator", "_id")
-      .exec();
+// check postid existed and belong to userid
+// then mark on req.postParam
+const validPostParam = asyncHandler(async (req, res, next) => {
+  const post = await Post.findOne(
+    {
+      _id: req.params.postid,
+      creator: req.params.userid,
+    },
+    // if we want to know post's creator,
+    // call validUserParam and user it
+    "-__v -creator",
+  ).exec();
 
-    if (!post) return res.sendStatus(404);
-    req.postParam = post; // mark on req
-    next();
-  }),
-];
+  if (!post) return res.sendStatus(404);
+  req.postParam = post;
+  next();
+});
 
-// include validPostParam but check extra :userid authorization with :postid
-const validPostAuth = [
-  validPostParam, // to check and mark req.postParam
-  (req, res, next) => {
-    if (req.postParam.creator.id !== req.user.id) return res.sendStatus(404);
-    next();
-  },
+const validPostLoginData = [
+  body(`username`).trim().escape(),
+  body(`password`).trim().escape(),
 ];
 
 const validPostSignupData = [
@@ -137,11 +128,11 @@ const validPutUserData = [
   body("avatarLink").trim().escape(),
   body("dateOfBirth", "Invalid Date Of Birth").trim().escape().isDate(),
 
-  asyncHandler(async (req, res, next) => {
+  (req, res, next) => {
     const errors = validationResult(req).array();
     if (errors.length !== 0) req.body.dateOfBirth = undefined;
     next();
-  }),
+  },
 ];
 
 // Sanitize and validate posts data
@@ -154,20 +145,31 @@ const validPostPostData = [
   },
 ];
 
-// TODO: more models validate, etc.
-// validPostParam (the :postid)
-// validPostAuth (the :postid belong to the :userid)
+// Sanitize and validate comments data
+const validPostCommentData = [
+  body(`content`, `Comment content cannot be empty.`)
+    .trim()
+    .notEmpty()
+    .escape(),
+  (req, res, next) => {
+    const errors = validationResult(req).array();
+    if (errors.length !== 0) return res.sendStatus(400);
+    next();
+  },
+];
 
 module.exports = {
+  validUserOwn,
   validUsername,
-  validUserAuth,
   validUserParam,
   validPostParam,
-  validPostAuth,
-  // validMongoIdUser,
+  validMongoIdPost,
+  validMongoIdUser,
 
   // about data
   validPutUserData,
   validPostPostData,
+  validPostCommentData,
+  validPostLoginData,
   validPostSignupData,
 };
