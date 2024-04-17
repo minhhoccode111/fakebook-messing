@@ -29,6 +29,8 @@ const {
   validPostPostData,
   // sanitize and validate post a comment data
   validPostCommentData,
+  // sanitize and validate post a message data
+  validPostMessageData,
 } = require("./../middleware");
 
 // environment variables
@@ -45,6 +47,10 @@ const Post = require("./../models/post");
 const Comment = require("./../models/comment");
 const LikePost = require("./../models/likePost");
 const LikeComment = require("./../models/likeComment");
+
+const Message = require("./../models/message");
+const Group = require("./../models/group");
+const GroupMember = require("./../models/groupMember");
 
 // GET /users
 const getAllUsers = asyncHandler(async (req, res) => {
@@ -167,14 +173,64 @@ const postUserFollows = [
 ];
 
 // GET /users/:userid/messages
-const getUserMessages = asyncHandler(async (req, res) => {
-  res.json(`getUserMessages - user id: ${req.params.userid} - not yet`);
-});
+const getUserMessages = [
+  validMongoIdUser,
+  validUserParam,
+  asyncHandler(async (req, res) => {
+    let messages = await Message.find(
+      {
+        $or: [
+          { sender: req.user, userReceive: req.userParam },
+          { sender: req.userParam, userReceive: req.user },
+        ],
+      },
+      "-__v",
+    )
+      // TODO: check to remove this and use the req.userParam instead
+      .populate("sender", "_id avatarLink")
+      .sort({ createdAt: 1 })
+      .exec();
+
+    // mark owned messages to display properly
+    messages = messages.map((mess) => {
+      let owned;
+      if (mess.sender.id === req.user.id) owned = true;
+      else owned = false;
+      return { ...mess.toJSON(), owned };
+    });
+
+    // debug(`the messages belike: `, messages);
+
+    res.json({
+      requestedUser: req.user,
+      receivedUser: req.userParam,
+      messages,
+    });
+  }),
+];
 
 // POST /users/:userid/messages
-const postUserMessages = asyncHandler(async (req, res) => {
-  res.json(`postUserMessages - user id: ${req.params.userid} - not yet`);
-});
+const postUserMessages = [
+  validMongoIdUser,
+  validUserParam,
+  validPostMessageData,
+  asyncHandler(async (req, res, next) => {
+    const { imageLink, content } = req.body;
+
+    const message = new Message({
+      sender: req.user,
+      userReceive: req.userParam,
+      group: null,
+      content,
+      imageLink,
+    });
+
+    await message.save();
+    next();
+  }),
+
+  getUserMessages[2],
+];
 
 /*
 TODO: design response data

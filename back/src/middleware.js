@@ -161,6 +161,28 @@ const validPutUserData = [
   },
 ];
 
+const validPostMessageData = [
+  body("content", `Content cannot be over 10000 characters`)
+    .trim()
+    .isLength({ max: 10000 })
+    .escape(),
+  body("imageLink")
+    .trim()
+    .escape()
+    .custom((value, { req }) => {
+      if (req.body.content && value)
+        throw new Error(`Content and imageLink cannot be both existed`);
+      if (!req.body.content && !value)
+        throw new Error(`Content and imageLink cannot be both undefined`);
+      return true;
+    }),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (errors.length !== 0) return res.sendStatus(400);
+    next();
+  },
+];
+
 // Sanitize and validate posts data
 const validPostPostData = [
   body(`content`, `Post content cannot be empty.`).trim().notEmpty().escape(),
@@ -200,4 +222,5 @@ module.exports = {
   validPostCommentData,
   validPostLoginData,
   validPostSignupData,
+  validPostMessageData,
 };

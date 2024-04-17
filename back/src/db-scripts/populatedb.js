@@ -44,11 +44,11 @@ async function main() {
   await createGroupMembers();
 
   // await createUsers(5, "fakebook"); // number of users
-  await createFollows(0.3); // chance that a user will follow other
-  await createPosts(5, 0.3); // max number of posts/user, chance
-  await createComments(2, 0.3); // max number of comments/user/post, chance
-  await createLikePosts(0.3); // chance that a user will like a post
-  await createLikeComments(0.1); // chance that a user will like a comment
+  await createFollows(0.7); // chance that a user will follow other
+  await createPosts(5, 0.7); // max number of posts/user, chance
+  await createComments(2, 0.7); // max number of comments/user/post, chance
+  await createLikePosts(0.7); // chance that a user will like a post
+  await createLikeComments(0.95); // chance that a user will like a comment
 
   // Total documents
   // messing
