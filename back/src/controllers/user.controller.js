@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 //
 const valid = require("./../middleware/valid");
 const param = require("./../middleware/param");
-const mongoid = require("./../middleware/mongoid");
+const mongo = require("./../middleware/mongoid");
 const authorize = require("./../middleware/authorize");
 
 // environment variables
@@ -87,7 +87,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 // GET /users/:userid
 const getUser = [
-  mongoid.userid,
+  mongo.userid,
   param.userid,
   async (req, res) => {
     return res.json(req.userParam);
@@ -120,7 +120,7 @@ const putUser = [
 
 // POST /users/:userid/follows
 const postUserFollows = [
-  mongoid.userid,
+  mongo.userid,
   param.userid,
   asyncHandler(async (req, res, next) => {
     const follower = req.user;
@@ -147,7 +147,7 @@ const postUserFollows = [
 
 // GET /users/:userid/messages
 const getUserMessages = [
-  mongoid.userid,
+  mongo.userid,
   param.userid,
   asyncHandler(async (req, res) => {
     let messages = await Message.find(
@@ -160,7 +160,7 @@ const getUserMessages = [
       "-__v",
     )
       // TODO: check to remove this and use the req.userParam instead
-      .populate("sender", "_id avatarLink")
+      // .populate("sender", "_id avatarLink")
       .sort({ createdAt: 1 })
       .exec();
 
@@ -169,7 +169,10 @@ const getUserMessages = [
       let owned;
       if (mess.sender.id === req.user.id) owned = true;
       else owned = false;
-      return { ...mess.toJSON(), owned };
+      // WARN: update this see notice how this impact
+      mess = mess.toJSON();
+      mess.sender = req.userParam;
+      return { ...mess, owned };
     });
 
     // debug(`the messages belike: `, messages);
@@ -184,21 +187,20 @@ const getUserMessages = [
 
 // POST /users/:userid/messages
 const postUserMessages = [
-  mongoid.userid,
+  mongo.userid,
   param.userid,
   valid.message,
   asyncHandler(async (req, res, next) => {
     const { imageLink, content } = req.body;
 
-    const message = new Message({
+    await new Message({
       sender: req.user,
       userReceive: req.userParam,
       group: null,
       content,
       imageLink,
-    });
+    }).save();
 
-    await message.save();
     next();
   }),
 
@@ -233,7 +235,7 @@ TODO: design response data
  */
 // GET /users/:userid/posts
 const getUserPosts = [
-  mongoid.userid,
+  mongo.userid,
   param.userid,
   asyncHandler(async (req, res) => {
     const creator = req.userParam;
@@ -299,7 +301,7 @@ const postUserPosts = [
 // DELETE /users/:userid/posts/:postid
 const deleteUserPost = [
   authorize.userid,
-  mongoid.postid,
+  mongo.postid,
   param.postid,
   asyncHandler(async (req, res, next) => {
     await Post.findByIdAndDelete(req.params.postid);
@@ -345,8 +347,8 @@ const getUserPostHelper = asyncHandler(async (req, res) => {
 
 // POST /users/:userid/posts/:postid/likes
 const postUserPostLikes = [
-  mongoid.userid,
-  mongoid.postid,
+  mongo.userid,
+  mongo.postid,
   param.postid,
   asyncHandler(async (req, res, next) => {
     const creator = req.user;
@@ -371,8 +373,8 @@ const postUserPostLikes = [
 
 // POST /users/:userid/posts/:postid/comments
 const postUserPostComments = [
-  mongoid.userid,
-  mongoid.postid,
+  mongo.userid,
+  mongo.postid,
   param.postid,
   valid.comment,
   asyncHandler(async (req, res, next) => {
@@ -389,9 +391,9 @@ const postUserPostComments = [
 
 // POST /users/:userid/posts/:postid/comments/:commentid/likes
 const postUserCommentLikes = [
-  mongoid.userid,
-  mongoid.postid,
-  mongoid.commentid,
+  mongo.userid,
+  mongo.postid,
+  mongo.commentid,
   param.postid,
   param.commentid,
   asyncHandler(async (req, res, next) => {
