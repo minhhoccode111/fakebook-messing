@@ -12,7 +12,7 @@
     "test:post": "./src/tests/user/post.user.test.js",
     "test:interact": "./src/tests/user/interact.post.user.test.js",
     "test:messing": "./src/tests/user/messing.user.test.js",
-    "test": "bun test --watch --timeout 300 ./src/tests/user/interact.post.user.test.js",
+    "test": "bun test --watch --timeout 300 ./src/tests/auth/auth.user.test.js",
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "server": "DEBUG=* npm run dev"

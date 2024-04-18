@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 //
 const valid = require("./../middleware/valid");
 const param = require("./../middleware/param");
-const mongo = require("./../middleware/mongoid");
+const mongo = require("./../middleware/mongo");
 const authorize = require("./../middleware/authorize");
 
 // environment variables

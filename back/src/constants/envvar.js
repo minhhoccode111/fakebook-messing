@@ -17,7 +17,7 @@ const EnvVar = {
     process.env.PRODUCTION_MONGO || process.env.DEVELOPMENT_MONGO || "",
   Salt: process.env.SALT ?? "",
   Secret: process.env.SECRET ?? "",
-  DummyPassword: process.env.DUMMY_PASSWORD ?? "",
+  DummyPassword: process.env.PASSWORD ?? "",
 };
 
 // debug(EnvVar);

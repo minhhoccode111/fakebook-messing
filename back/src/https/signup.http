@@ -1,0 +1,8 @@
+POST http://localhost:3000/api/v1/auth/signup
+Content-Type: application/json
+{
+  "fullname": "khong dieu kien",
+  "username": "mhc11@gmail.com",
+  "password": "Bruh0!0!",
+  "confirm-password": "Bruh0!0!"
+}

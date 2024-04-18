@@ -11,10 +11,8 @@ const userid = asyncHandler(async (req, res, next) => {
     req.params.userid,
     "-__v -password -username", // security
   ).exec();
-
   if (!user) return res.sendStatus(404);
   req.userParam = user; // mark on req
-
   next();
 });
 
@@ -28,7 +26,6 @@ const postid = asyncHandler(async (req, res, next) => {
     },
     "-__v -creator",
   ).exec();
-
   if (!post) return res.sendStatus(404);
   req.postParam = post;
   next();
@@ -46,10 +43,8 @@ const commentid = asyncHandler(async (req, res, next) => {
   )
     .populate("creator", "_id fullname status avatarLink")
     .exec();
-
   if (!comment) return res.sendStatus(404);
   req.commentParam = comment;
-
   next();
 });
 

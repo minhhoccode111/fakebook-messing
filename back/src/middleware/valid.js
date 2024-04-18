@@ -6,10 +6,13 @@ const User = require("./../models/user");
 // no need for try...catch block
 const asyncHandler = require("express-async-handler");
 
+const EnvVar = require("./../constants/envvar");
+// const debug = require("./../constants/debug");
+
 // Used to send a 400 str8 back to client
 const validResult = async (req, res, next) => {
   const errors = validationResult(req).array();
-  if (errors.length !== 0) return res.sendStatus(400);
+  if (errors.length !== 0) return res.status(400).json(errors);
   next();
 };
 
@@ -62,10 +65,8 @@ const signupUsername = asyncHandler(async (req, res, next) => {
     { username: req.body.username },
     "username",
   ).exec();
-
   // check existence of username
   if (user !== null) return res.sendStatus(409); // conflict
-
   next();
 });
 

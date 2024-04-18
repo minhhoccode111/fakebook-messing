@@ -1,0 +1,16 @@
+{
+  "_comment": "This is used to format json in http files",
+  "__comment": "Just in case we make some typos",
+  "signup": {
+    "__comment": "This is a really valid signup data",
+    "fullname": "khong dieu kien",
+    "username": "mhc11@gmail.com",
+    "password": "Bruh0!0!",
+    "confirm-password": "Bruh0!0!"
+  },
+  "login": {
+    "__comment": "This user is created using populate script",
+    "username": "asd0",
+    "password": "asd"
+  }
+}
