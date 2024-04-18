@@ -1,37 +1,11 @@
 // no need for try...catch block
 const asyncHandler = require("express-async-handler");
 
-// sanitize and validate data
-const { body, validationResult } = require("express-validator");
-
-// custom validate middleware
-const {
-  // check userid is self
-  validUserOwn,
-  // check username already existed
-  // validUsername,
-  // check userid and mark on req.userParam
-  validUserParam,
-  // check postid and mark on req.postParam
-  validPostParam,
-  // check commentid and mark on req.commentParam
-  validCommentParam,
-  // check valid mongo object id
-  validMongoIdPost,
-  validMongoIdUser,
-  validMongoIdComment,
-
-  // about data
-
-  // sanitize and validate update user info
-  validPutUserData,
-  // sanitize and validate post a post data
-  validPostPostData,
-  // sanitize and validate post a comment data
-  validPostCommentData,
-  // sanitize and validate post a message data
-  validPostMessageData,
-} = require("./../middleware");
+//
+const valid = require("./../middleware/valid");
+const param = require("./../middleware/param");
+const mongoid = require("./../middleware/mongoid");
+const authorize = require("./../middleware/authorize");
 
 // environment variables
 const EnvVar = require("./../constants/envvar");
@@ -40,7 +14,6 @@ const EnvVar = require("./../constants/envvar");
 const debug = require("./../constants/debug");
 
 // mongoose models
-const mongoose = require("mongoose");
 const User = require("./../models/user");
 const Follow = require("./../models/follow");
 const Post = require("./../models/post");
@@ -114,8 +87,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 // GET /users/:userid
 const getUser = [
-  validMongoIdUser,
-  validUserParam,
+  mongoid.userid,
+  param.userid,
   async (req, res) => {
     return res.json(req.userParam);
   },
@@ -123,8 +96,8 @@ const getUser = [
 
 // PUT /users/:userid
 const putUser = [
-  validUserOwn,
-  validPutUserData,
+  authorize.userid,
+  valid.userUpdate,
   asyncHandler(async (req, res) => {
     // Merge update user
     const newUser = Object.assign(
@@ -147,8 +120,8 @@ const putUser = [
 
 // POST /users/:userid/follows
 const postUserFollows = [
-  validMongoIdUser,
-  validUserParam,
+  mongoid.userid,
+  param.userid,
   asyncHandler(async (req, res, next) => {
     const follower = req.user;
     const following = req.userParam;
@@ -174,8 +147,8 @@ const postUserFollows = [
 
 // GET /users/:userid/messages
 const getUserMessages = [
-  validMongoIdUser,
-  validUserParam,
+  mongoid.userid,
+  param.userid,
   asyncHandler(async (req, res) => {
     let messages = await Message.find(
       {
@@ -211,9 +184,9 @@ const getUserMessages = [
 
 // POST /users/:userid/messages
 const postUserMessages = [
-  validMongoIdUser,
-  validUserParam,
-  validPostMessageData,
+  mongoid.userid,
+  param.userid,
+  valid.message,
   asyncHandler(async (req, res, next) => {
     const { imageLink, content } = req.body;
 
@@ -260,8 +233,8 @@ TODO: design response data
  */
 // GET /users/:userid/posts
 const getUserPosts = [
-  validMongoIdUser,
-  validUserParam,
+  mongoid.userid,
+  param.userid,
   asyncHandler(async (req, res) => {
     const creator = req.userParam;
 
@@ -306,8 +279,8 @@ const getUserPosts = [
 
 // POST /users/:userid/posts
 const postUserPosts = [
-  validUserOwn,
-  validPostPostData,
+  authorize.userid,
+  valid.post,
   asyncHandler(async (req, res, next) => {
     const creator = req.user;
     const content = req.body.content;
@@ -325,9 +298,9 @@ const postUserPosts = [
 
 // DELETE /users/:userid/posts/:postid
 const deleteUserPost = [
-  validUserOwn,
-  validMongoIdPost,
-  validPostParam,
+  authorize.userid,
+  mongoid.postid,
+  param.postid,
   asyncHandler(async (req, res, next) => {
     await Post.findByIdAndDelete(req.params.postid);
 
@@ -372,9 +345,9 @@ const getUserPostHelper = asyncHandler(async (req, res) => {
 
 // POST /users/:userid/posts/:postid/likes
 const postUserPostLikes = [
-  validMongoIdUser,
-  validMongoIdPost,
-  validPostParam,
+  mongoid.userid,
+  mongoid.postid,
+  param.postid,
   asyncHandler(async (req, res, next) => {
     const creator = req.user;
     const post = req.postParam;
@@ -398,10 +371,10 @@ const postUserPostLikes = [
 
 // POST /users/:userid/posts/:postid/comments
 const postUserPostComments = [
-  validMongoIdUser,
-  validMongoIdPost,
-  validPostParam,
-  validPostCommentData,
+  mongoid.userid,
+  mongoid.postid,
+  param.postid,
+  valid.comment,
   asyncHandler(async (req, res, next) => {
     const content = req.body.content;
     const post = req.postParam;
@@ -416,15 +389,11 @@ const postUserPostComments = [
 
 // POST /users/:userid/posts/:postid/comments/:commentid/likes
 const postUserCommentLikes = [
-  validMongoIdUser,
-  validMongoIdPost,
-  validMongoIdComment,
-  // userid will be validated in validPostParam
-  // to make sure the postid belong to userid
-  // validUserParam,
-  validPostParam,
-  validCommentParam,
-
+  mongoid.userid,
+  mongoid.postid,
+  mongoid.commentid,
+  param.postid,
+  param.commentid,
   asyncHandler(async (req, res, next) => {
     const creator = req.user;
     const comment = req.commentParam;
