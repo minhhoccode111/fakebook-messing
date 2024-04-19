@@ -2,6 +2,9 @@ POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 {
   "username": "asd0",
+  "_fullname": "Blanche Steuber",
+  "_username": "asd1",
+  "_fullname": "Doreen Prohaska",
   "password": "asd"
 }
 

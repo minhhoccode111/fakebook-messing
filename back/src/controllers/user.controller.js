@@ -159,27 +159,25 @@ const getUserMessages = [
       },
       "-__v",
     )
-      // TODO: check to remove this and use the req.userParam instead
-      // .populate("sender", "_id avatarLink")
       .sort({ createdAt: 1 })
       .exec();
 
     // mark owned messages to display properly
     messages = messages.map((mess) => {
       let owned;
-      if (mess.sender.id === req.user.id) owned = true;
+      // not populate sender for performance consideration
+      // self own the message
+      if (mess.sender.toString() === req.user.id) owned = true;
       else owned = false;
-      // WARN: update this see notice how this impact
       mess = mess.toJSON();
-      mess.sender = req.userParam;
       return { ...mess, owned };
     });
 
     // debug(`the messages belike: `, messages);
 
     res.json({
-      requestedUser: req.user,
-      receivedUser: req.userParam,
+      selfUser: req.user,
+      paramUser: req.userParam,
       messages,
     });
   }),
