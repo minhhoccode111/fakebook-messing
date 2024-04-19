@@ -65,12 +65,12 @@ const chat_all_group_get = asyncHandler(async (req, res) => {
 // current logged in user create a new group (and be group's creator)
 const chat_all_group_post = [
   body(`name`, `Group name should be between 1 and 50 characters.`)
-    .isLength({ min: 1, max: 50 })
     .trim()
+    .isLength({ min: 1, max: 50 })
     .escape(),
   body(`bio`, `Group bio should be less than 250 characters.`)
-    .isLength({ max: 250 })
     .trim()
+    .isLength({ max: 250 })
     .escape(),
   body(`avatarLink`).trim().escape(),
   asyncHandler(async (req, res) => {

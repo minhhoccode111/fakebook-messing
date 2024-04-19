@@ -12,5 +12,17 @@
     "__comment": "This user is created using populate script",
     "username": "asd0",
     "password": "asd"
+  },
+  "newGroup": {
+    "name": "some dummy name",
+    "public": "true",
+    "bio": "",
+    "avatarLink": ""
+  },
+  "newMessage": {
+    "content": "Khong dieu kien",
+    "imageLink": "",
+    "_content": "",
+    "_imageLink": "khong dieu kien"
   }
 }

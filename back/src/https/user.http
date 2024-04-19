@@ -1,0 +1,55 @@
+# "username": "asd0",
+# "_fullname": "Blanche Steuber",
+# "_username": "asd1",
+# "_fullname": "Doreen Prohaska",
+# "password": "asd"
+
+GET {{url}}/users
+Authorization: {{asdToken0}}
+
+GET {{url}}/users/{{asdId1}}
+Authorization: {{asdToken0}}
+
+POST {{url}}/users/{{asdId1}}/follows
+Authorization: {{asdToken0}}
+
+GET {{url}}/users/{{asdId1}}/messages
+Authorization: {{asdToken0}}
+
+POST {{url}}/users/{{asdId1}}/messages
+Authorization: {{asdToken0}}
+Content-Type: application/json
+{
+    "content": "Khong dieu kien",
+    "imageLink": "",
+    "_content": "",
+    "_imageLink": "khong dieu kien"
+}
+
+GET {{url}}/users/{{asdId1}}/posts
+Authorization: {{asdToken0}}
+
+POST {{url}}/users/{{asdId0}}/posts
+Authorization: {{asdToken0}}
+Content-Type: application/json
+{
+    "content": "Khong dieu kien",
+    "_content": ""
+}
+
+########################################
+
+GET {{url}}/users
+Authorization: {{asdToken1}}
+
+GET {{url}}/users/{{asdId1}}
+Authorization: {{asdToken1}}
+
+POST {{url}}/users/{{asdId0}}/follows
+Authorization: {{asdToken1}}
+
+GET {{url}}/users/{{asdId0}}/messages
+Authorization: {{asdToken1}}
+
+GET {{url}}/users/{{asdId0}}/posts
+Authorization: {{asdToken1}}

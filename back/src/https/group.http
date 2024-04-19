@@ -1,0 +1,26 @@
+# "username": "asd0",
+# "_fullname": "Blanche Steuber",
+# "_username": "asd1",
+# "_fullname": "Doreen Prohaska",
+# "password": "asd"
+
+GET {{url}}/groups
+Authorization: {{asdToken0}}
+
+POST {{url}}/groups
+Authorization: {{asdToken0}}
+Content-Type: application/json
+{
+    "name": "some dummy name",
+    "public": "true",
+    "bio": "",
+    "avatarLink": ""
+}
+
+########################################
+
+GET {{url}}/groups
+Authorization: {{asdToken1}}
+
+# GET {{url}}/users/{{asdId0}}/posts
+# Authorization: {{asdToken0}}

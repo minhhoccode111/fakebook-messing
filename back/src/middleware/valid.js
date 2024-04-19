@@ -86,8 +86,29 @@ const userUpdate = [
   body("dateOfBirth", "Invalid Date Of Birth").trim().escape().isDate(),
 ];
 
+const groupCreate = [
+  body(`name`, `Group name should be between 1 and 50 characters.`)
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .escape(),
+  body(`bio`, `Group bio should be less than 250 characters.`)
+    .trim()
+    .isLength({ max: 250 })
+    .escape(),
+  body(`avatarLink`).trim().escape(),
+
+  validResult,
+];
+
+const groupName = asyncHandler(async (req, res, next) => {
+  const group = await Group.findOne({ name: req.body.name }, "name").exec();
+  if (group !== null) return res.sendStatus(409); // conflict
+
+  next();
+});
+
 // validation message data
-const message = [
+const messageCreate = [
   body("content", `Content cannot be over 10000 characters`)
     .trim()
     .isLength({ max: 10000 })
@@ -107,14 +128,14 @@ const message = [
 ];
 
 // Sanitize and validate posts data
-const post = [
+const postCreate = [
   body(`content`, `Post content cannot be empty.`).trim().notEmpty().escape(),
 
   validResult,
 ];
 
 // validation comment data
-const comment = [
+const commentCreate = [
   body(`content`, `Comment content cannot be empty.`)
     .trim()
     .notEmpty()
@@ -128,7 +149,9 @@ module.exports = {
   signup,
   signupUsername,
   userUpdate,
-  message,
-  comment,
-  post,
+  groupCreate,
+  groupName,
+  messageCreate,
+  commentCreate,
+  postCreate,
 };

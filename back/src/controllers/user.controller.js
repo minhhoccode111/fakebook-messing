@@ -187,7 +187,7 @@ const getUserMessages = [
 const postUserMessages = [
   mongo.userid,
   param.userid,
-  valid.message,
+  valid.messageCreate,
   asyncHandler(async (req, res, next) => {
     const { imageLink, content } = req.body;
 
@@ -280,7 +280,7 @@ const getUserPosts = [
 // POST /users/:userid/posts
 const postUserPosts = [
   authorize.userid,
-  valid.post,
+  valid.postCreate,
   asyncHandler(async (req, res, next) => {
     const creator = req.user;
     const content = req.body.content;
@@ -374,7 +374,7 @@ const postUserPostComments = [
   mongo.userid,
   mongo.postid,
   param.postid,
-  valid.comment,
+  valid.commentCreate,
   asyncHandler(async (req, res, next) => {
     const content = req.body.content;
     const post = req.postParam;
