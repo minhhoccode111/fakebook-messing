@@ -69,26 +69,32 @@ const postAllGroups = [
   asyncHandler(async (req, res, next) => {
     const { name, bio, avatarLink } = req.body;
 
-    await new Group({
+    const group = new Group({
       name,
       // bio and avatarLink can use default if provide empty string
       bio: bio || undefined,
       avatarLink: avatarLink || undefined,
       public: req.body.public === "true",
       creator: req.user,
-    }).save();
+    });
+    await group.save();
 
     // ref of group's creator
     await new GroupMember({ user: req.user, group, isCreator: true }).save();
     next();
   }),
+
   getAllGroups,
 ];
 
-// a specific group
-const getGroup = asyncHandler(async (req, res) => {
-  res.json(`getGroup - group id: ${req.params.groupid} - not yet`);
-});
+// GET /groups/:groupid
+const getGroup = [
+  mongo.groupid,
+  param.groupid,
+  asyncHandler(async (req, res) => {
+    res.json(`getGroup - group id: ${req.params.groupid} - not yet`);
+  }),
+];
 
 // update current group
 const putGroup = asyncHandler(async (req, res) => {

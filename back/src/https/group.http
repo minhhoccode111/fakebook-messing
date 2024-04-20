@@ -11,15 +11,31 @@ POST {{url}}/groups
 Authorization: {{asdToken0}}
 Content-Type: application/json
 {
-    "name": "some dummy name",
+    "name": "asd0 created this group",
     "public": "true",
     "bio": "",
     "avatarLink": ""
 }
 
+GET {{url}}/groups/{{asdGroup0}}
+Authorization: {{asdToken0}}
+
 ########################################
 
 GET {{url}}/groups
+Authorization: {{asdToken1}}
+
+POST {{url}}/groups
+Authorization: {{asdToken1}}
+Content-Type: application/json
+{
+    "name": "asd1 created this group",
+    "public": "true",
+    "bio": "",
+    "avatarLink": ""
+}
+
+GET {{url}}/groups/{{asdGroup1}}
 Authorization: {{asdToken1}}
 
 # GET {{url}}/users/{{asdId0}}/posts
