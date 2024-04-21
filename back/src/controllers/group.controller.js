@@ -106,20 +106,17 @@ const putGroup = [
   asyncHandler(async (req, res, next) => {
     const { name, bio, avatarLink } = req.body;
 
-    // forbidden current logged in user try to update group not owned
-    if (oldGroup.creator.id !== req.user.id) return res.sendStatus(403);
+    const oldGroup = req.groupParam;
 
-    // TODO: do object.assign to merge
-    const newGroup = new Group({
-      name,
-      bio: bio || undefined,
-      avatarLink: avatarLink || undefined,
-      public: req.body.public === "true",
-      creator: req.user,
-      updatedAt: new Date(),
-      createdAt: oldGroup.createdAt, // keep
-      _id: oldGroup._id, // keep
-    });
+    debug(`oldGroup belike: `, oldGroup);
+
+    const newGroup = Object.assign(
+      {
+        _id: req.params.groupid,
+      },
+      { ...req.body, public: req.body.public === "true" },
+      { ...req.groupParam.toJSON() },
+    );
 
     // update the group
     await Group.findByIdAndUpdate(req.params.groupid, newGroup);

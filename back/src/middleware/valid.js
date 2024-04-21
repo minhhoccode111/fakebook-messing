@@ -8,7 +8,7 @@ const Group = require("./../models/group");
 const asyncHandler = require("express-async-handler");
 
 const EnvVar = require("./../constants/envvar");
-// const debug = require("./../constants/debug");
+const debug = require("./../constants/debug");
 
 // Used to send a 400 str8 back to client
 const validResult = async (req, res, next) => {
@@ -87,6 +87,7 @@ const userUpdate = [
   body("dateOfBirth", "Invalid Date Of Birth").trim().escape().isDate(),
 ];
 
+// Should be called after groupParam is marked on req.groupParam
 const groupInfo = [
   body(`name`, `Group name should be between 1 and 50 characters.`)
     .trim()
@@ -101,8 +102,16 @@ const groupInfo = [
   validResult,
 ];
 
+// Should be called after groupParam is marked on req.groupParam
 const groupName = asyncHandler(async (req, res, next) => {
+  // skip if the name is the same as the old one
+  debug(`groupParam.name belike: `, req.groupParam.name);
+  debug(`body.name belike: `, req.body.name);
+  if (req.groupParam.name === req.body.name) return next();
+
+  // else change name and that name already exists
   const group = await Group.findOne({ name: req.body.name }, "name").exec();
+
   if (group !== null) return res.sendStatus(409); // conflict
   next();
 });

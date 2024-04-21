@@ -20,6 +20,17 @@ Content-Type: application/json
 GET {{url}}/groups/{{asdGroup0}}
 Authorization: {{asdToken0}}
 
+PUT {{url}}/groups/{{asdGroup0}}
+Authorization: {{asdToken0}}
+Content-Type: application/json
+{
+    "name": "asd0 created this group3",
+    "public": "true",
+    "bio": "",
+    "avatarLink": ""
+}
+
+
 ########################################
 
 GET {{url}}/groups
@@ -37,6 +48,17 @@ Content-Type: application/json
 
 GET {{url}}/groups/{{asdGroup1}}
 Authorization: {{asdToken1}}
+
+PUT {{url}}/groups/{{asdGroup1}}
+Authorization: {{asdToken1}}
+Content-Type: application/json
+{
+    "name": "asd1 created this group0",
+    "public": "true",
+    "bio": "",
+    "avatarLink": ""
+}
+
 
 # GET {{url}}/users/{{asdId0}}/posts
 # Authorization: {{asdToken0}}
