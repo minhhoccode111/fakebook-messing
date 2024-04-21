@@ -87,7 +87,7 @@ const userUpdate = [
   body("dateOfBirth", "Invalid Date Of Birth").trim().escape().isDate(),
 ];
 
-const groupCreate = [
+const groupInfo = [
   body(`name`, `Group name should be between 1 and 50 characters.`)
     .trim()
     .isLength({ min: 1, max: 50 })
@@ -104,7 +104,6 @@ const groupCreate = [
 const groupName = asyncHandler(async (req, res, next) => {
   const group = await Group.findOne({ name: req.body.name }, "name").exec();
   if (group !== null) return res.sendStatus(409); // conflict
-
   next();
 });
 
@@ -150,7 +149,7 @@ module.exports = {
   signup,
   signupUsername,
   userUpdate,
-  groupCreate,
+  groupInfo,
   groupName,
   messageCreate,
   commentCreate,

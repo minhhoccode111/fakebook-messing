@@ -64,7 +64,7 @@ const getAllGroups = asyncHandler(async (req, res) => {
 
 // POST /groups
 const postAllGroups = [
-  valid.groupCreate,
+  valid.groupInfo,
   valid.groupName,
   asyncHandler(async (req, res, next) => {
     const { name, bio, avatarLink } = req.body;
@@ -91,20 +91,51 @@ const postAllGroups = [
 const getGroup = [
   mongo.groupid,
   param.groupid,
+
   asyncHandler(async (req, res) => {
-    res.json(`getGroup - group id: ${req.params.groupid} - not yet`);
+    return res.json(req.groupParam);
   }),
 ];
 
 // update current group
-const putGroup = asyncHandler(async (req, res) => {
-  res.json(`putGroup - group id: ${req.params.groupid} - not yet`);
-});
+const putGroup = [
+  mongo.groupid,
+  param.groupid,
+  valid.groupName,
+  valid.groupInfo,
+  asyncHandler(async (req, res, next) => {
+    const { name, bio, avatarLink } = req.body;
+
+    // forbidden current logged in user try to update group not owned
+    if (oldGroup.creator.id !== req.user.id) return res.sendStatus(403);
+
+    // TODO: do object.assign to merge
+    const newGroup = new Group({
+      name,
+      bio: bio || undefined,
+      avatarLink: avatarLink || undefined,
+      public: req.body.public === "true",
+      creator: req.user,
+      updatedAt: new Date(),
+      createdAt: oldGroup.createdAt, // keep
+      _id: oldGroup._id, // keep
+    });
+
+    // update the group
+    await Group.findByIdAndUpdate(req.params.groupid, newGroup);
+
+    next();
+  }),
+
+  getAllGroups,
+];
 
 // update current group
-const deleteGroup = asyncHandler(async (req, res) => {
-  res.json(`deleteGroup - group id: ${req.params.groupid} - not yet`);
-});
+const deleteGroup = [
+  asyncHandler(async (req, res) => {
+    res.json(`deleteGroup - group id: ${req.params.groupid} - not yet`);
+  }),
+];
 
 // get all messages with a group
 const getGroupMessages = asyncHandler(async (req, res) => {

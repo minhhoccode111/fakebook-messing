@@ -53,14 +53,13 @@ const groupid = asyncHandler(async (req, res, next) => {
   const group = await Group.findOne(
     {
       _id: req.params.groupid,
-      post: req.params.,
     },
     "-__v",
   )
     .populate("creator", "_id fullname status avatarLink")
     .exec();
-  if (!comment) return res.sendStatus(404);
-  req.commentParam = comment;
+  if (!group) return res.sendStatus(404);
+  req.groupParam = group;
   next();
 });
 
