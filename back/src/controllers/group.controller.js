@@ -107,24 +107,22 @@ const putGroup = [
   param.groupid,
   valid.groupInfo,
   valid.groupNamePut,
-  authorize.groupid,
+  authorize.ownedGroupid,
   asyncHandler(async (req, res, next) => {
     const oldGroup = req.groupParam;
-    const { name, bio, avatarLink } = req.body;
 
     // debug(`oldGroup belike: `, oldGroup);
 
+    // Object.assign "target will be overwritten by source if have the same key"
     const newGroup = new Group(
-      Object.assign(
-        {
-          _id: req.params.groupid,
-          updatedAt: new Date(),
-          public: req.body.public === "true",
-        },
-        req.body,
-        oldGroup,
-      ),
+      Object.assign(oldGroup.toJSON(), {
+        ...req.body,
+        public: req.body.public === "true",
+        updatedAt: new Date(),
+      }),
     );
+
+    // debug(`newGroup belike: `, newGroup);
 
     // update the group
     await Group.findByIdAndUpdate(req.params.groupid, newGroup);
@@ -139,7 +137,7 @@ const putGroup = [
 const deleteGroup = [
   mongo.groupid,
   param.groupid,
-  authorize.groupid,
+  authorize.ownedGroupid,
   asyncHandler(async (req, res) => {
     await Group.findByIdAndDelete(req.params.groupid);
     return res.sendStatus(200);

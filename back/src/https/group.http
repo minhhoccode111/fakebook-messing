@@ -24,10 +24,10 @@ PUT {{url}}/groups/{{asdGroup0}}
 Authorization: {{asdToken0}}
 Content-Type: application/json
 {
-    "name": "Lead Accounts Designer Updated...",
-    "public": "true",
-    "bio": "",
-    "avatarLink": ""
+    "name": "Lead Accounts Designer", 
+    "public": "false",
+    "bio": "khong dieu kien",
+    "avatarLink": "tai vi sao"
 }
 
 DELETE {{url}}/groups/{{asdGroup0}}

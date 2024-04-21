@@ -100,11 +100,7 @@ const putUser = [
   valid.userUpdate,
   asyncHandler(async (req, res) => {
     // Merge update user
-    const newUser = Object.assign(
-      { _id: req.params.userid }, // target obj, keep the _id
-      req.body, // req.body must go first
-      req.user.toJSON(), // must make this js obj
-    );
+    const newUser = Object.assign(req.user.toJSON(), req.body);
 
     await User.findByIdAndUpdate(newUser);
 

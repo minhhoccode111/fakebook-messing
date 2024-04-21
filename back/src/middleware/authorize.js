@@ -11,12 +11,19 @@ const userid = (req, res, next) => {
 };
 
 // check group belong to self
-const groupid = (req, res, next) => {
+const ownedGroupid = (req, res, next) => {
+  if (req.user.id !== req.groupParam.creator.id) return res.sendStatus(404);
+  next();
+};
+
+// check group belong to self
+const joinedGroupid = (req, res, next) => {
   if (req.user.id !== req.groupParam.creator.id) return res.sendStatus(404);
   next();
 };
 
 module.exports = {
   userid,
-  groupid,
+  ownedGroupid,
+  joinedGroupid,
 };
