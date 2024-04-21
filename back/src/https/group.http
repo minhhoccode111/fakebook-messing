@@ -40,6 +40,27 @@ Authorization: {{asdToken0}}
 GET {{url}}/groups/{{asdGroup1}}/messages
 Authorization: {{asdToken0}}
 
+# NOTE: not member group
+POST {{url}}/groups/6624d27e8ebc73d783b6bb0d/messages
+Authorization: {{asdToken0}}
+Content-Type: application/json
+{
+    "content": "Khong dieu kien",
+    "imageLink": "",
+    "_content": "",
+    "_imageLink": "khong dieu kien"
+}
+
+POST {{url}}/groups/{{asdGroup1}}/messages
+Authorization: {{asdToken0}}
+Content-Type: application/json
+{
+    "content": "Khong dieu kien",
+    "imageLink": "",
+    "_content": "",
+    "_imageLink": "khong dieu kien"
+}
+
 ########################################
 
 GET {{url}}/groups
@@ -77,6 +98,16 @@ Authorization: {{asdToken1}}
 
 GET {{url}}/groups/{{asdGroup1}}/messages
 Authorization: {{asdToken1}}
+
+POST {{url}}/groups/{{asdGroup1}}/messages
+Authorization: {{asdToken1}}
+Content-Type: application/json
+{
+    "content": "Khong dieu kien",
+    "imageLink": "",
+    "_content": "",
+    "_imageLink": "khong dieu kien"
+}
 
 # GET {{url}}/users/{{asdId0}}/posts
 # Authorization: {{asdToken0}}

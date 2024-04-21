@@ -20,17 +20,23 @@ const ownedGroupid = (req, res, next) => {
 // check group is joined by self, for GET and POST messages
 const joinedGroupid = asyncHandler(async (req, res, next) => {
   const selfRef = await GroupMember.findOne({
-    group: req.groupParam,
+    group: req.params.groupid,
     user: req.user,
   }).exec();
 
-  if (req.method === "POST") return res.sendStatus(403); // forbidden
+  if (req.method === "POST" && selfRef === null) return res.sendStatus(403); // forbidden
 
   if (selfRef === null) req.isGroupMember = false;
   else req.isGroupMember = true;
 
   next();
 });
+
+// check memberid === self
+const memberid = (req, res, next) => {
+  if (req.params.memberis !== req.user.id) return res.sendStatus(404);
+  next();
+};
 
 module.exports = {
   userid,

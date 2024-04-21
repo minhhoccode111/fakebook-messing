@@ -208,22 +208,63 @@ const postGroupMessages = [
   getGroupMessages[3],
 ];
 
-// send a message to a group
-const getGroupMembers = asyncHandler(async (req, res) => {
-  res.json(`getGroupMembers - group id: ${req.params.groupid} - not yet`);
-});
+// GET /groups/:groupid/members
+const getGroupMembers = [
+  mongo.groupid,
+  param.groupid,
+  authorize.ownedGroupid,
+  authorize.joinedGroupid,
+  asyncHandler(async (req, res) => {
+    // find all members' references in this group
+    const groupMembersRef = await GroupMember.find(
+      { group: req.groupParam },
+      "user isCreator",
+    )
+      .populate("user", "_id fullname avatarLink status")
+      .exec();
 
-// send a message to a group
-const postGroupMembers = asyncHandler(async (req, res) => {
-  res.json(`postGroupMembers - group id: ${req.params.groupid} - not yet`);
-});
+    // extract data
+    const groupMembers = groupMembersRef.map((ref) => ({
+      ...ref.toJSON().user,
+      isCreator: ref.isCreator,
+    }));
 
-// send a message to a group
-const deleteGroupMember = asyncHandler(async (req, res) => {
-  res.json(
-    `deleteGroupMember - group id: ${req.params.groupid} - member id: ${req.params.memberid} - not yet`,
-  );
-});
+    res.json({ selfUser: req.user, groupMembers });
+  }),
+];
+
+// POST /groups/:groupid/members
+const postGroupMembers = [
+  mongo.groupid,
+  param.groupid,
+  asyncHandler(async (req, res, next) => {
+    //  check if self is already joined the group
+    const selfRef = await GroupMember.findOne(
+      { group: req.groupParam, user: req.user },
+      "_id",
+    ).exec();
+
+    // forbidden if self already in group or group not public
+    if (selfRef !== null || !req.groupParam.public) return res.sendStatus(403);
+
+    next();
+  }),
+
+  getGroupMembers[4],
+];
+
+// DELETE /groups/:groupid/members/:memberid
+const deleteGroupMember = [
+  mongo.groupid,
+  mongo.memberid,
+  param.groupid,
+  authorize.joinedGroupid,
+  asyncHandler(async (req, res) => {
+    // forbidden if self not in group
+    if (!req.isGroupMember) return res.sendStatus(403);
+    // TODO:
+  }),
+];
 
 module.exports = {
   getAllGroups,

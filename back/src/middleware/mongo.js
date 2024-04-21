@@ -28,9 +28,17 @@ const groupid = (req, res, next) => {
   next();
 };
 
+// Check valid mongoose id
+const memberid = (req, res, next) => {
+  const isValidId = mongoose.isValidObjectId(req.params.memberid);
+  if (!isValidId) return res.sendStatus(404);
+  next();
+};
+
 module.exports = {
   userid,
   postid,
   commentid,
   groupid,
+  memberid,
 };
