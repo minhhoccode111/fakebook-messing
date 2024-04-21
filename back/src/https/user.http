@@ -53,3 +53,12 @@ Authorization: {{asdToken1}}
 
 GET {{url}}/users/{{asdId0}}/posts
 Authorization: {{asdToken1}}
+
+POST {{url}}/users/{{asdId1}}/posts
+Authorization: {{asdToken1}}
+Content-Type: application/json
+{
+    "content": "Khong dieu kien",
+    "_content": ""
+}
+

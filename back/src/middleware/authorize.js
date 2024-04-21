@@ -10,8 +10,13 @@ const userid = (req, res, next) => {
   next();
 };
 
-// check messing part
+// check group belong to self
+const groupid = (req, res, next) => {
+  if (req.user.id !== req.groupParam.creator.id) return res.sendStatus(404);
+  next();
+};
 
 module.exports = {
   userid,
+  groupid,
 };

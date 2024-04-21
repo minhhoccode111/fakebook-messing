@@ -98,21 +98,27 @@ const groupInfo = [
     .isLength({ max: 250 })
     .escape(),
   body(`avatarLink`).trim().escape(),
+  // no need to validate 'public' since we check with public === 'true'
 
   validResult,
 ];
 
-// Should be called after groupParam is marked on req.groupParam
-const groupName = asyncHandler(async (req, res, next) => {
-  // skip if the name is the same as the old one
-  debug(`groupParam.name belike: `, req.groupParam.name);
-  debug(`body.name belike: `, req.body.name);
-  if (req.groupParam.name === req.body.name) return next();
+// check if group name existed for POST
+const groupNamePost = asyncHandler(async (req, res, next) => {
+  const name = req.body.name;
+  const group = await Group.findOne({ name }, "name").exec();
 
-  // else change name and that name already exists
-  const group = await Group.findOne({ name: req.body.name }, "name").exec();
+  if (group !== null) return res.sendStatus(409);
+  next();
+});
 
-  if (group !== null) return res.sendStatus(409); // conflict
+// check if group name existed for PUT
+const groupNamePut = asyncHandler(async (req, res, next) => {
+  const name = req.body.name;
+  const group = await Group.findOne({ name }, "_id name").exec();
+  // if group with that name exist and not current updating group
+  if (group !== null && group.id !== req.params.groupid)
+    return res.sendStatus(409); // conflict
   next();
 });
 
@@ -159,7 +165,8 @@ module.exports = {
   signupUsername,
   userUpdate,
   groupInfo,
-  groupName,
+  groupNamePost,
+  groupNamePut,
   messageCreate,
   commentCreate,
   postCreate,

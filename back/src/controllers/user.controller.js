@@ -82,7 +82,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
   // debug(`followers belike: `, followers);
   // debug(`followings belike: `, followings);
 
-  return res.send({ followers, followings, mayknows });
+  return res.send({ selfUser: req.user, followers, followings, mayknows });
 });
 
 // GET /users/:userid

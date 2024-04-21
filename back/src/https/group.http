@@ -11,7 +11,7 @@ POST {{url}}/groups
 Authorization: {{asdToken0}}
 Content-Type: application/json
 {
-    "name": "asd0 created this group",
+    "name": "dsbfhasdsasdu",
     "public": "true",
     "bio": "",
     "avatarLink": ""
@@ -24,12 +24,14 @@ PUT {{url}}/groups/{{asdGroup0}}
 Authorization: {{asdToken0}}
 Content-Type: application/json
 {
-    "name": "asd0 created this group3",
+    "name": "Lead Accounts Designer Updated...",
     "public": "true",
     "bio": "",
     "avatarLink": ""
 }
 
+DELETE {{url}}/groups/{{asdGroup0}}
+Authorization: {{asdToken0}}
 
 ########################################
 

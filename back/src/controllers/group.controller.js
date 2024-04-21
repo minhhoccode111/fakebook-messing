@@ -65,9 +65,13 @@ const getAllGroups = asyncHandler(async (req, res) => {
 // POST /groups
 const postAllGroups = [
   valid.groupInfo,
-  valid.groupName,
+  valid.groupNamePost,
   asyncHandler(async (req, res, next) => {
+    // WARN: don't destructuring `public` field
+    // since it's not a valid name in jsj
     const { name, bio, avatarLink } = req.body;
+
+    // debug(`the req.body belike: `, req.body);
 
     const group = new Group({
       name,
@@ -97,25 +101,29 @@ const getGroup = [
   }),
 ];
 
-// update current group
+// PUT /groups/:groupid
 const putGroup = [
   mongo.groupid,
   param.groupid,
-  valid.groupName,
   valid.groupInfo,
+  valid.groupNamePut,
+  authorize.groupid,
   asyncHandler(async (req, res, next) => {
+    const oldGroup = req.groupParam;
     const { name, bio, avatarLink } = req.body;
 
-    const oldGroup = req.groupParam;
+    // debug(`oldGroup belike: `, oldGroup);
 
-    debug(`oldGroup belike: `, oldGroup);
-
-    const newGroup = Object.assign(
-      {
-        _id: req.params.groupid,
-      },
-      { ...req.body, public: req.body.public === "true" },
-      { ...req.groupParam.toJSON() },
+    const newGroup = new Group(
+      Object.assign(
+        {
+          _id: req.params.groupid,
+          updatedAt: new Date(),
+          public: req.body.public === "true",
+        },
+        req.body,
+        oldGroup,
+      ),
     );
 
     // update the group
@@ -127,10 +135,14 @@ const putGroup = [
   getAllGroups,
 ];
 
-// update current group
+// DELETE /groups/:groupid
 const deleteGroup = [
+  mongo.groupid,
+  param.groupid,
+  authorize.groupid,
   asyncHandler(async (req, res) => {
-    res.json(`deleteGroup - group id: ${req.params.groupid} - not yet`);
+    await Group.findByIdAndDelete(req.params.groupid);
+    return res.sendStatus(200);
   }),
 ];
 
