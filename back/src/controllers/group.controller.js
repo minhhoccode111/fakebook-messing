@@ -144,15 +144,69 @@ const deleteGroup = [
   }),
 ];
 
-// get all messages with a group
-const getGroupMessages = asyncHandler(async (req, res) => {
-  res.json(`getGroupMessages - group id: ${req.params.groupid} - not yet`);
-});
+// GET /groups/:groupid/messages
+const getGroupMessages = [
+  mongo.groupid,
+  param.groupid,
+  authorize.joinedGroupid,
+  asyncHandler(async (req, res) => {
+    const group = req.groupParam;
 
-// send a message to a group
-const postGroupMessages = asyncHandler(async (req, res) => {
-  res.json(`postGroupMessages - group id: ${req.params.groupid} - not yet`);
-});
+    const isMember = req.isGroupMember;
+
+    if (!isMember)
+      return res.json({
+        messages: null,
+        isMember,
+      });
+
+    // find all messages are being sent to this group
+    const messagesInGroup = await Message.find({ groupReceive: group }, "-__v")
+      .populate("sender", "_id avatarLink")
+      .sort({ createdAt: 1 })
+      .exec();
+
+    // mark owned messages to display properly
+    const messages = messagesInGroup.map((mess) => {
+      let owned;
+      if (mess.sender.id === req.user.id) owned = true;
+      else owned = false;
+      return { ...mess.toJSON(), owned };
+    });
+
+    return res.json({
+      // NOTE: no need to know isCreator
+      isMember,
+      messages,
+    });
+  }),
+];
+
+// POST /groups/:groupid/messages
+const postGroupMessages = [
+  mongo.groupid,
+  param.groupid,
+  authorize.joinedGroupid,
+  valid.messageCreate,
+  asyncHandler(async (req, res, next) => {
+    const group = req.groupParam;
+
+    await new Message(
+      Object.assign(
+        {
+          sender: req.user,
+          userReceive: null,
+          groupReceive: group,
+        },
+        req.body,
+      ),
+    ).save();
+
+    next();
+  }),
+
+  getGroupMessages[3],
+];
 
 // send a message to a group
 const getGroupMembers = asyncHandler(async (req, res) => {

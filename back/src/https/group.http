@@ -33,6 +33,13 @@ Content-Type: application/json
 DELETE {{url}}/groups/{{asdGroup0}}
 Authorization: {{asdToken0}}
 
+# NOTE: not member group
+GET {{url}}/groups/6624d27e8ebc73d783b6bb0d/messages
+Authorization: {{asdToken0}}
+
+GET {{url}}/groups/{{asdGroup1}}/messages
+Authorization: {{asdToken0}}
+
 ########################################
 
 GET {{url}}/groups
@@ -61,6 +68,15 @@ Content-Type: application/json
     "avatarLink": ""
 }
 
+DELETE {{url}}/groups/{{asdGroup1}}
+Authorization: {{asdToken1}}
+
+# TODO: not member group
+# GET {{url}}/groups/6624d27e8ebc73d783b6bb0d/messages
+# Authorization: {{asdToken1}}
+
+GET {{url}}/groups/{{asdGroup1}}/messages
+Authorization: {{asdToken1}}
 
 # GET {{url}}/users/{{asdId0}}/posts
 # Authorization: {{asdToken0}}

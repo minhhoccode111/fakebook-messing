@@ -13,7 +13,7 @@ const userid = asyncHandler(async (req, res, next) => {
     "-__v -password -username", // security
   ).exec();
   if (!user) return res.sendStatus(404);
-  req.userParam = user; // mark on req
+  req.userParam = user.toJSON(); // mark on req
   next();
 });
 
@@ -28,7 +28,7 @@ const postid = asyncHandler(async (req, res, next) => {
     "-__v -creator",
   ).exec();
   if (!post) return res.sendStatus(404);
-  req.postParam = post;
+  req.postParam = post.toJSON();
   next();
 });
 
@@ -45,7 +45,7 @@ const commentid = asyncHandler(async (req, res, next) => {
     .populate("creator", "_id fullname status avatarLink")
     .exec();
   if (!comment) return res.sendStatus(404);
-  req.commentParam = comment;
+  req.commentParam = comment.toJSON();
   next();
 });
 
@@ -59,7 +59,7 @@ const groupid = asyncHandler(async (req, res, next) => {
     .populate("creator", "_id fullname status avatarLink")
     .exec();
   if (!group) return res.sendStatus(404);
-  req.groupParam = group;
+  req.groupParam = group.toJSON();
   next();
 });
 
