@@ -1,35 +1,26 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-
 import { Button } from "@/components/ui/button";
+import { create } from "zustand";
+
+const useStore = create((set) => ({
+  count: 0,
+  inc: () => set((state) => ({ count: state.count + 1 })),
+  dec: () => set((state) => ({ count: state.count - 1 })),
+  reset: () => set({ count: 0 }),
+}));
 
 function App() {
-  const [count, setCount] = useState(0);
+  const inc = useStore((state) => state.inc);
+  const dec = useStore((state) => state.dec);
+  const count = useStore((state) => state.count);
+  const reset = useStore((state) => state.reset);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <Button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </Button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="h-screen grid place-items-center">
+      <p className="">count is: {count}</p>
+      <Button onClick={inc}>inc</Button>
+      <Button onClick={dec}>dec</Button>
+      <Button onClick={reset}>reset</Button>
+    </div>
   );
 }
 
