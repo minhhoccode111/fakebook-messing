@@ -66,14 +66,15 @@ const groupid = asyncHandler(async (req, res, next) => {
 const memberid = asyncHandler(async (req, res, next) => {
   const member = await GroupMember.findOne(
     {
-      _id: req.params.groupid,
+      user: req.params.memberid,
+      group: req.params.groupid,
     },
     "-__v",
   )
-    .populate("creator", "_id fullname status avatarLink")
+    .populate("user", "-__v -password -username") // security
     .exec();
-  if (!group) return res.sendStatus(404);
-  req.groupParam = group.toJSON();
+  if (!member) return res.sendStatus(404);
+  req.memberParam = member.user.toJSON();
   next();
 });
 
@@ -82,4 +83,5 @@ module.exports = {
   postid,
   commentid,
   groupid,
+  memberid,
 };

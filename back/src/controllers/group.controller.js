@@ -258,11 +258,48 @@ const deleteGroupMember = [
   mongo.groupid,
   mongo.memberid,
   param.groupid,
-  authorize.joinedGroupid,
+  param.memberid,
   asyncHandler(async (req, res) => {
-    // forbidden if self not in group
-    if (!req.isGroupMember) return res.sendStatus(403);
-    // TODO:
+    const group = req.groupParam;
+    const member = req.memberParam;
+
+    // find all members' references in this group
+    const groupMembersRef = await GroupMember.find({ group }, "user isCreator")
+      .populate("user", "_id fullname avatarLink status")
+      .exec();
+
+    // references of current logged in user and user to be deleted with the group
+    const userToDeleteRefInGroupIndex = groupMembersRef.findIndex(
+      (ref) => ref.user.id === req.params.userid,
+    );
+    const loggedInUserRefInGroupIndex = groupMembersRef.findIndex(
+      (ref) => ref.user.id === req.user.id,
+    );
+
+    const userToDeleteRefInGroup = groupMembersRef[userToDeleteRefInGroupIndex];
+    const loggedInUserRefInGroup = groupMembersRef[loggedInUserRefInGroupIndex];
+
+    // try to delete other member but current logged in user is not a group creator
+    // or the creator try to leave the group (delete the group instead)
+    if (
+      (!loggedInUserRefInGroup.isCreator &&
+        loggedInUserRefInGroup?.user?.id !==
+          userToDeleteRefInGroup?.user?.id) ||
+      userToDeleteRefInGroup.isCreator
+    )
+      return res.sendStatus(400);
+
+    // delete reference between the target user vs the group
+    await GroupMember.deleteOne({ group, user: req.params.userid });
+
+    // modify data
+    const groupMembers = groupMembersRef
+      // first remove the deleted ref
+      .filter((ref) => ref.user.id !== userToDeleteRefInGroup.user.id)
+      // extract the populated ref.user
+      .map((ref) => ({ ...ref.toJSON().user, isCreator: ref.isCreator }));
+
+    return res.json({ selfUser: req.user, groupMembers });
   }),
 ];
 
