@@ -37,7 +37,7 @@ Authorization: {{asdToken0}}
 GET {{url}}/groups/6624d27e8ebc73d783b6bb0d/messages
 Authorization: {{asdToken0}}
 
-GET {{url}}/groups/{{asdGroup1}}/messages
+GET {{url}}/groups/{{asdGroup0}}/messages
 Authorization: {{asdToken0}}
 
 # NOTE: not member group
@@ -51,7 +51,7 @@ Content-Type: application/json
     "_imageLink": "khong dieu kien"
 }
 
-POST {{url}}/groups/{{asdGroup1}}/messages
+POST {{url}}/groups/{{asdGroup0}}/messages
 Authorization: {{asdToken0}}
 Content-Type: application/json
 {
@@ -60,6 +60,16 @@ Content-Type: application/json
     "_content": "",
     "_imageLink": "khong dieu kien"
 }
+
+GET {{url}}/groups/{{asdGroup0}}/members
+Authorization: {{asdToken0}}
+
+POST {{url}}/groups/{{asdGroup0}}/members
+Authorization: {{asdToken0}}
+
+DELETE {{url}}/groups/{{asdGroup0}}/members/6624d27b8ebc73d783b6bacb
+Authorization: {{asdToken0}}
+
 
 ########################################
 

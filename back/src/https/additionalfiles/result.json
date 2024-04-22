@@ -1,0 +1,280 @@
+{
+  "_comment": "asd user",
+
+  "selfUser": {
+    "_id": "6624d27a8ebc73d783b6bac5",
+    "fullname": "Leticia Barrows",
+    "status": "online",
+    "bio": "Iure teneo placeat curis. Validus averto alias. Cunabula deprecator aedificium ipsam templum conqueror tantillus quas suscipit.",
+    "avatarLink": "https://avatars.githubusercontent.com/u/64649798",
+    "dateOfBirth": "2023-05-26T18:05:46.264Z",
+    "createdAt": "2024-04-20T09:09:07.649Z",
+    "updatedAt": "2024-04-20T14:12:02.776Z",
+    "createdAtFormatted": "Apr 20, 2024 - 16:09",
+    "createdAtUnix": 1713604147649,
+    "updatedAtFormatted": "Apr 20, 2024 - 21:12",
+    "updatedAtUnix": 1713622322776,
+    "dateOfBirthFormatted": "May 27, 2023 - 01:05",
+    "dateOfBirthUnix": 1685124346264,
+    "dateOfBirthIso": "2023-05-27",
+    "id": "6624d27a8ebc73d783b6bac5"
+  },
+  "joinedGroups": [
+    {
+      "_id": "6624d27f8ebc73d783b6bb1b",
+      "id": "6624d27f8ebc73d783b6bb1b",
+      "name": "Lead Accounts Designer",
+      "public": false,
+      "avatarLink": "tai vi sao",
+      "isCreator": true
+    },
+    {
+      "_id": "6624d27d8ebc73d783b6baeb",
+      "id": "6624d27d8ebc73d783b6baeb",
+      "name": "Internal Security Designer",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/151.jpg",
+      "isCreator": true
+    },
+    {
+      "_id": "6624d3717e4f09259552762b",
+      "id": "6624d3717e4f09259552762b",
+      "name": "dsbfhsasdu",
+      "public": true,
+      "avatarLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX12hdq7FMZRu7mtAqwmzmgHjR8rQ8qa0FEfWRbqsxfB2FG7jB688i&usqp=CAE&s",
+      "isCreator": true
+    },
+    {
+      "_id": "6624d3847e4f092595527636",
+      "id": "6624d3847e4f092595527636",
+      "name": "dsbfhasdsasdu",
+      "public": true,
+      "avatarLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX12hdq7FMZRu7mtAqwmzmgHjR8rQ8qa0FEfWRbqsxfB2FG7jB688i&usqp=CAE&s",
+      "isCreator": true
+    },
+    {
+      "_id": "6624d27f8ebc73d783b6bb11",
+      "id": "6624d27f8ebc73d783b6bb11",
+      "name": "Human Accounts Executive",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1056.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27f8ebc73d783b6bb19",
+      "id": "6624d27f8ebc73d783b6bb19",
+      "name": "Customer Security Planner",
+      "public": true,
+      "avatarLink": "https://avatars.githubusercontent.com/u/33679382",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bb0f",
+      "id": "6624d27e8ebc73d783b6bb0f",
+      "name": "Internal Creative Agent",
+      "public": false,
+      "avatarLink": "https://avatars.githubusercontent.com/u/79012041",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27d8ebc73d783b6baf5",
+      "id": "6624d27d8ebc73d783b6baf5",
+      "name": "Direct Program Consultant",
+      "public": true,
+      "avatarLink": "https://avatars.githubusercontent.com/u/454973",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bb05",
+      "id": "6624d27e8ebc73d783b6bb05",
+      "name": "Internal Tactics Manager",
+      "public": false,
+      "avatarLink": "https://avatars.githubusercontent.com/u/65862697",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27f8ebc73d783b6bb17",
+      "id": "6624d27f8ebc73d783b6bb17",
+      "name": "Product Intranet Consultant",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1059.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27d8ebc73d783b6baef",
+      "id": "6624d27d8ebc73d783b6baef",
+      "name": "Direct Assurance Orchestrator",
+      "public": false,
+      "avatarLink": "https://avatars.githubusercontent.com/u/20921380",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27f8ebc73d783b6bb1f",
+      "id": "6624d27f8ebc73d783b6bb1f",
+      "name": "Chief Usability Administrator",
+      "public": true,
+      "avatarLink": "https://avatars.githubusercontent.com/u/64270843",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27f8ebc73d783b6bb15",
+      "id": "6624d27f8ebc73d783b6bb15",
+      "name": "Dynamic Response Analyst",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/852.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27d8ebc73d783b6baf1",
+      "id": "6624d27d8ebc73d783b6baf1",
+      "name": "Senior Implementation Executive",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1249.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27d8ebc73d783b6baed",
+      "id": "6624d27d8ebc73d783b6baed",
+      "name": "Forward Group Liaison",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/213.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bb01",
+      "id": "6624d27e8ebc73d783b6bb01",
+      "name": "Dynamic Quality Producer",
+      "public": true,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/716.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6baff",
+      "id": "6624d27e8ebc73d783b6baff",
+      "name": "Investor Research Consultant",
+      "public": true,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/342.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bb03",
+      "id": "6624d27e8ebc73d783b6bb03",
+      "name": "Chief Brand Producer",
+      "public": true,
+      "avatarLink": "https://avatars.githubusercontent.com/u/86672924",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6baf7",
+      "id": "6624d27e8ebc73d783b6baf7",
+      "name": "District Integration Director",
+      "public": true,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/954.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bb09",
+      "id": "6624d27e8ebc73d783b6bb09",
+      "name": "Corporate Optimization Architect",
+      "public": false,
+      "avatarLink": "https://avatars.githubusercontent.com/u/16295508",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27d8ebc73d783b6bae5",
+      "id": "6624d27d8ebc73d783b6bae5",
+      "name": "Legacy Security Orchestrator",
+      "public": true,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/548.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bb0b",
+      "id": "6624d27e8ebc73d783b6bb0b",
+      "name": "Global Accounts Representative",
+      "public": false,
+      "avatarLink": "https://avatars.githubusercontent.com/u/36898026",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bb07",
+      "id": "6624d27e8ebc73d783b6bb07",
+      "name": "Human Brand Developer",
+      "public": true,
+      "avatarLink": "https://avatars.githubusercontent.com/u/99788908",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27f8ebc73d783b6bb13",
+      "id": "6624d27f8ebc73d783b6bb13",
+      "name": "Dynamic Accountability Associate",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/871.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27d8ebc73d783b6bae7",
+      "id": "6624d27d8ebc73d783b6bae7",
+      "name": "Central Group Associate",
+      "public": true,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/997.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27d8ebc73d783b6bae9",
+      "id": "6624d27d8ebc73d783b6bae9",
+      "name": "Chief Markets Producer",
+      "public": false,
+      "avatarLink": "https://avatars.githubusercontent.com/u/46883103",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6baf9",
+      "id": "6624d27e8ebc73d783b6baf9",
+      "name": "Legacy Intranet Coordinator",
+      "public": false,
+      "avatarLink": "https://avatars.githubusercontent.com/u/95387826",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bafb",
+      "id": "6624d27e8ebc73d783b6bafb",
+      "name": "Direct Security Technician",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1009.jpg",
+      "isCreator": false
+    },
+    {
+      "_id": "6624d27f8ebc73d783b6bb1d",
+      "id": "6624d27f8ebc73d783b6bb1d",
+      "name": "Senior Paradigm Liaison",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1100.jpg",
+      "isCreator": false
+    }
+  ],
+  "publicGroups": [],
+  "privateGroups": [
+    {
+      "_id": "6624d27d8ebc73d783b6baf3",
+      "name": "International Communications Executive",
+      "public": false,
+      "avatarLink": "https://avatars.githubusercontent.com/u/68122869",
+      "id": "6624d27d8ebc73d783b6baf3"
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bafd",
+      "name": "Regional Data Agent",
+      "public": false,
+      "avatarLink": "https://avatars.githubusercontent.com/u/73802091",
+      "id": "6624d27e8ebc73d783b6bafd"
+    },
+    {
+      "_id": "6624d27e8ebc73d783b6bb0d",
+      "name": "Chief Accounts Engineer",
+      "public": false,
+      "avatarLink": "https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/1173.jpg",
+      "id": "6624d27e8ebc73d783b6bb0d"
+    }
+  ]
+}
