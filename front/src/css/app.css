@@ -1,42 +1,42 @@
-/* scroll bar custom style */
-::-webkit-scrollbar {
-  width: 0;
-  max-width: 0;
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
 }
 
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
 }
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
 }
-
-/* ripper button */
-.ripper {
-  color: #1d9af2;
-  background-color: #ffffff;
-  border: 1px solid #1d9af2;
-  border-radius: 4px;
-  /* padding: 15px 18px 30px 15px; */
-  cursor: pointer;
-  box-shadow: 0 0 4px #999;
-  outline: none;
-  background-position: center;
-  transition: background 0.8s;
-}
-.ripper:hover {
-  background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%)
-    center/15000%;
-  color: white;
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-.ripper:active {
-  background-color: #292d3e;
-  background-size: 100%;
-  transition: background 0s;
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
 }
