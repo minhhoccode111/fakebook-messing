@@ -1,9 +1,17 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Layout from "./routes/layout";
-import NotFound from "./routes/404";
-import Index from "./routes/index";
+import NotFound from "@/routes/404";
+import Layout from "@/routes/layout";
+import Index from "@/routes/index";
+import About from "@/routes/about";
+import Login from "@/routes/login";
+import { loader as logoutLoader } from "@/routes/logout";
+import Signup from "@/routes/signup";
+import Fakebook from "@/routes/fakebook";
+import FakebookLayout from "@/routes/fakebook-layout";
+import Messing from "@/routes/messing";
+import Profile from "@/routes/profile";
 
-const Router = () => {
+export default function Router() {
   const router = createBrowserRouter([
     {
       path: "/",
@@ -13,17 +21,28 @@ const Router = () => {
         {
           index: true,
           element: <Index />,
+        },
+
+        {
+          path: "fakebook",
+          element: <FakebookLayout />,
           errorElement: <NotFound />,
+          children: [
+            {
+              index: true,
+              errorElement: <NotFound />,
+              element: <Fakebook />,
+            },
+            {
+              path: ":userid",
+              element: <Profile />,
+            },
+          ],
         },
 
         {
-          path: "profile",
-          element: <Profile />,
-        },
-
-        {
-          path: "chat",
-          element: <Chat />,
+          path: "messing",
+          element: <Messing />,
         },
 
         {
@@ -33,7 +52,7 @@ const Router = () => {
 
         {
           path: "logout",
-          element: <Logout />,
+          loader: logoutLoader,
         },
 
         {
@@ -50,6 +69,4 @@ const Router = () => {
   ]);
 
   return <RouterProvider router={router}></RouterProvider>;
-};
-
-export default Router;
+}

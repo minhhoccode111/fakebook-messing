@@ -9,7 +9,7 @@ const useStore = create<State & Actions>((set) => ({
   reset: () => set({ count: 0 }),
 }));
 
-function Index() {
+export default function Index() {
   const inc = useStore((state) => state.inc);
   const dec = useStore((state) => state.dec);
   const count = useStore((state) => state.count);
@@ -24,5 +24,3 @@ function Index() {
     </div>
   );
 }
-
-export default Index;
