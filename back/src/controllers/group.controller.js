@@ -105,7 +105,7 @@ const putGroup = [
 
     // Object.assign "target will be overwritten by source if have the same key"
     const newGroup = new Group(
-      Object.assign(oldGroup.toJSON(), {
+      Object.assign(oldGroup, {
         ...req.body,
         public: req.body.public === "true",
         updatedAt: new Date(),
@@ -130,6 +130,7 @@ const deleteGroup = [
   authorize.ownedGroupid,
   asyncHandler(async (req, _, next) => {
     await Group.findByIdAndDelete(req.params.groupid);
+    await GroupMember.deleteMany({ group: req.params.groupid });
     next();
   }),
   getAllGroups,
