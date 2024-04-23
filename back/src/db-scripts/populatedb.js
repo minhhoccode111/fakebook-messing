@@ -38,7 +38,8 @@ async function main() {
   await createUsers(15, "asd"); // number of users
   // await createUsers(5, "messing"); // number of users
   await createGroups(30); // number of groups
-  await createMessages(1500); // number of messages, to other users and groups
+  // await createMessages(1500); // number of messages, to other users and groups
+  await createMessages(150); // number of messages, to other users and groups
   // base on users send messages to groups
   // 50% messages will be sent to groups
   await createGroupMembers();

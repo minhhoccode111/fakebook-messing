@@ -1,123 +1,50 @@
-# "username": "asd0",
-# "_fullname": "Blanche Steuber",
-# "_username": "asd1",
-# "_fullname": "Doreen Prohaska",
-# "password": "asd"
-
 GET {{url}}/groups
-Authorization: {{asdToken0}}
+Authorization: {{token}}
 
 POST {{url}}/groups
-Authorization: {{asdToken0}}
+Authorization: {{token}}
 Content-Type: application/json
 {
-    "name": "dsbfhasdsasdu",
+    "name": "meow meow",
     "public": "true",
     "bio": "",
     "avatarLink": ""
 }
 
-GET {{url}}/groups/{{asdGroup0}}
-Authorization: {{asdToken0}}
+GET {{url}}/groups/{{group}}
+Authorization: {{token}}
 
-PUT {{url}}/groups/{{asdGroup0}}
-Authorization: {{asdToken0}}
+PUT {{url}}/groups/{{group}}
+Authorization: {{token}}
 Content-Type: application/json
 {
-    "name": "Lead Accounts Designer", 
+    "name": "Lead Accounts j Designer", 
     "public": "false",
     "bio": "khong dieu kien",
     "avatarLink": "tai vi sao"
 }
 
-DELETE {{url}}/groups/{{asdGroup0}}
-Authorization: {{asdToken0}}
+# TODO: this will be test last
+DELETE {{url}}/groups/{{group}}
+Authorization: {{token}}
 
-# NOTE: not member group
-GET {{url}}/groups/6624d27e8ebc73d783b6bb0d/messages
-Authorization: {{asdToken0}}
+GET {{url}}/groups/{{group}}/messages
+Authorization: {{token}}
 
-GET {{url}}/groups/{{asdGroup0}}/messages
-Authorization: {{asdToken0}}
-
-# NOTE: not member group
-POST {{url}}/groups/6624d27e8ebc73d783b6bb0d/messages
-Authorization: {{asdToken0}}
+POST {{url}}/groups/{{group}}/messages
+Authorization: {{token}}
 Content-Type: application/json
 {
     "content": "Khong dieu kien",
-    "imageLink": "",
-    "_content": "",
-    "_imageLink": "khong dieu kien"
+    "imageLink": ""
 }
 
-POST {{url}}/groups/{{asdGroup0}}/messages
-Authorization: {{asdToken0}}
-Content-Type: application/json
-{
-    "content": "Khong dieu kien",
-    "imageLink": "",
-    "_content": "",
-    "_imageLink": "khong dieu kien"
-}
+GET {{url}}/groups/{{group}}/members
+Authorization: {{token}}
 
-GET {{url}}/groups/{{asdGroup0}}/members
-Authorization: {{asdToken0}}
+POST {{url}}/groups/{{group}}/members
+Authorization: {{token}}
 
-POST {{url}}/groups/{{asdGroup0}}/members
-Authorization: {{asdToken0}}
+DELETE {{url}}/groups/{{group}}/members/{{member}}
+Authorization: {{token}}
 
-DELETE {{url}}/groups/{{asdGroup0}}/members/6624d27b8ebc73d783b6bacb
-Authorization: {{asdToken0}}
-
-
-########################################
-
-GET {{url}}/groups
-Authorization: {{asdToken1}}
-
-POST {{url}}/groups
-Authorization: {{asdToken1}}
-Content-Type: application/json
-{
-    "name": "asd1 created this group",
-    "public": "true",
-    "bio": "",
-    "avatarLink": ""
-}
-
-GET {{url}}/groups/{{asdGroup1}}
-Authorization: {{asdToken1}}
-
-PUT {{url}}/groups/{{asdGroup1}}
-Authorization: {{asdToken1}}
-Content-Type: application/json
-{
-    "name": "asd1 created this group0",
-    "public": "true",
-    "bio": "",
-    "avatarLink": ""
-}
-
-DELETE {{url}}/groups/{{asdGroup1}}
-Authorization: {{asdToken1}}
-
-# TODO: not member group
-# GET {{url}}/groups/6624d27e8ebc73d783b6bb0d/messages
-# Authorization: {{asdToken1}}
-
-GET {{url}}/groups/{{asdGroup1}}/messages
-Authorization: {{asdToken1}}
-
-POST {{url}}/groups/{{asdGroup1}}/messages
-Authorization: {{asdToken1}}
-Content-Type: application/json
-{
-    "content": "Khong dieu kien",
-    "imageLink": "",
-    "_content": "",
-    "_imageLink": "khong dieu kien"
-}
-
-# GET {{url}}/users/{{asdId0}}/posts
-# Authorization: {{asdToken0}}
