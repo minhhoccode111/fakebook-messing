@@ -336,7 +336,7 @@ const getUserPostHelper = asyncHandler(async (req, res) => {
 
   // debug(`the comments belike: `, comments);
 
-  return res.json({ ...post.toJSON(), likes, comments });
+  return res.json({ ...post, likes, comments });
 });
 
 // POST /users/:userid/posts/:postid/likes

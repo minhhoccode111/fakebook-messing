@@ -23,6 +23,7 @@ Authorization: {{token}}
 GET {{url}}/users/{{self}}/messages
 Authorization: {{token}}
 
+# 
 POST {{url}}/users/{{other}}/messages
 Authorization: {{token}}
 Content-Type: application/json
@@ -66,6 +67,10 @@ POST {{url}}/users/{{self}}/posts/{{post}}/comments
 Authorization: {{token}}
 Content-Type: application/json
 {
-    "content": "Khong dieu kien"
+    "content": "tai vi sao"
 }
+
+# 
+POST {{url}}/users/{{self}}/posts/{{post}}/comments/{{comment}}/likes
+Authorization: {{token}}
 
