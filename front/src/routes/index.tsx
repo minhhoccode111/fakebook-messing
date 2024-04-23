@@ -1,15 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { create } from "zustand";
-
-type State = {
-  count: number;
-};
-
-type Actions = {
-  inc: () => void;
-  dec: () => void;
-  reset: () => void;
-};
+import { State, Actions } from "@/shared/types/counter";
 
 const useStore = create<State & Actions>((set) => ({
   count: 0,

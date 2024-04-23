@@ -6,7 +6,7 @@ const NotFound = () => {
   const { pathname } = useLocation();
   return (
     <div>
-      <p className="">We are in: {pathname}</p>
+      <p className="">Can't found route: {pathname}</p>
       <Button>
         <Link to={"/"}>Home</Link>
       </Button>

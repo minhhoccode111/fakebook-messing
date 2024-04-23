@@ -15,6 +15,36 @@ const Router = () => {
           element: <Index />,
           errorElement: <NotFound />,
         },
+
+        {
+          path: "profile",
+          element: <Profile />,
+        },
+
+        {
+          path: "chat",
+          element: <Chat />,
+        },
+
+        {
+          path: "login",
+          element: <Login />,
+        },
+
+        {
+          path: "logout",
+          element: <Logout />,
+        },
+
+        {
+          path: "signup",
+          element: <Signup />,
+        },
+
+        {
+          path: "about",
+          element: <About />,
+        },
       ],
     },
   ]);
