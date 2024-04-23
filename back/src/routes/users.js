@@ -14,7 +14,6 @@ router.put("/:userid", UsersController.putUser);
 // not implemented
 // router.delete('/', deleteUser);
 
-// additional route to get all user connections with a specific user
 router.get("/:userid/connections", UsersController.userGetAllUsers);
 
 router.post("/:userid/follows", UsersController.postUserFollows);

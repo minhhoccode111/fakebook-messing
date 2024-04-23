@@ -1,0 +1,72 @@
+# database design
+- `User`
+	- username (email) (char: 8 - )
+	- password (char: 8 - 32)
+	- fullname (char: 1 - 50)
+	- date of birth
+	- bio
+	- status (online, offline, busy, afk)
+	- avatar link
+	- created at
+	- virtual
+		- created at formatted
+		- created at unix
+		- date of birth formatted
+		- date of birth unix
+		- date of birth iso (to update with html form)
+- `Message`
+	- creator (`User ObjectId`)
+	- user (`User ObjectId`)
+	- group (`Group ObjectId`)
+	- content
+	- image link
+	- created at
+	- virtual
+		- created at formatted
+		- created at unix
+- `Group`
+	- creator (`User ObjectId`)
+	- name (unique)
+	- public
+	- bio
+	- avatar link
+	- created at
+	- virtual
+		- created at formatted
+		- created at unix
+- `GroupMember`
+	- user (`User ObjectId`)
+	- group (`Group ObjectId`)
+	- is creator
+	- created at
+	- virtual
+		- created at formatted
+		- created at unix
+- `Follow`
+	- follower
+	- following
+	- created at
+	- virtual
+		- created at formatted
+		- created at unix
+- `Post`
+	- creator
+	- content
+	- created at
+	- virtual
+		- created at formatted
+		- created at unix
+- `Comment`
+	- creator
+	- post
+	- content
+	- created at `
+	- virtual
+		- created at formatted
+		- created at unix
+- `LikePost`
+	- creator
+	- post
+- `LikeComment`
+	- creator
+	- comment

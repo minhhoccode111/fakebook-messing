@@ -1,17 +1,11 @@
 // no need for try...catch block
 const asyncHandler = require("express-async-handler");
 
-//
+// validation middlewares
 const valid = require("./../middleware/valid");
 const param = require("./../middleware/param");
 const mongo = require("./../middleware/mongo");
 const authorize = require("./../middleware/authorize");
-
-// environment variables
-const EnvVar = require("./../constants/envvar");
-
-// manually logging
-const debug = require("./../constants/debug");
 
 // mongoose models
 const User = require("./../models/user");
@@ -20,10 +14,10 @@ const Post = require("./../models/post");
 const Comment = require("./../models/comment");
 const LikePost = require("./../models/likePost");
 const LikeComment = require("./../models/likeComment");
-
 const Message = require("./../models/message");
-const Group = require("./../models/group");
-const GroupMember = require("./../models/groupMember");
+
+// manually logging
+const debug = require("./../constants/debug");
 
 const getAllUsersHelper = asyncHandler(async (req, res) => {
   const self = req.selfUser;
@@ -52,7 +46,6 @@ const getAllUsersHelper = asyncHandler(async (req, res) => {
       followings.push(connections[i].following);
     } else {
       // else self is following
-      // BUG: connections[i].followers
       followers.push(connections[i].follower);
     }
   }
@@ -78,23 +71,23 @@ const getAllUsersHelper = asyncHandler(async (req, res) => {
     ],
   }).exec();
 
-  return res.send({ self, followers, followings, mayknows });
+  return res.json({ self, followers, followings, mayknows });
 });
 
 // GET /users
 const selfGetAllUsers = [
-  (req, res, next) => {
+  (req, _, next) => {
     req.selfUser = req.user;
     next();
   },
   getAllUsersHelper,
 ];
 
-// GET /users/:userid/all
+// GET /users/:userid/connections
 const userGetAllUsers = [
   mongo.userid,
   param.userid,
-  (req, res, next) => {
+  (req, _, next) => {
     req.selfUser = req.userParam;
     next();
   },
@@ -114,27 +107,23 @@ const getUser = [
 const putUser = [
   authorize.userid,
   valid.userUpdate,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, res, next) => {
     // Merge update user
-    const newUser = Object.assign(req.user.toJSON(), req.body);
+    const user = Object.assign(req.user.toJSON(), req.body);
 
-    await User.findByIdAndUpdate(newUser);
+    await User.findByIdAndUpdate(req.params.userid, user);
 
-    // debug(`newUser belike: `, newUser);
-
-    // security
-    const { password, username, __v, ...user } = newUser;
-
-    // then update profile
-    return res.json(user);
+    // TODO: fix this and its tests
+    next();
   }),
+  getUser,
 ];
 
 // POST /users/:userid/follows
 const postUserFollows = [
   mongo.userid,
   param.userid,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     const follower = req.user;
     const following = req.userParam;
 
@@ -153,7 +142,6 @@ const postUserFollows = [
     next();
   }),
 
-  // Return self GET /users
   selfGetAllUsers,
 ];
 
@@ -188,8 +176,8 @@ const getUserMessages = [
     // debug(`the messages belike: `, messages);
 
     res.json({
-      selfUser: req.user,
-      paramUser: req.userParam,
+      self: req.user,
+      userParam: req.userParam,
       messages,
     });
   }),
@@ -200,7 +188,7 @@ const postUserMessages = [
   mongo.userid,
   param.userid,
   valid.messageCreate,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     const { imageLink, content } = req.body;
 
     await new Message({
@@ -282,10 +270,7 @@ const getUserPosts = [
       return [...total, { ...post.toJSON(), comments, likes: postLikes }];
     }, Promise.resolve([]));
 
-    // debug(`the posts after map: `, posts);
-
-    // debug({ creator, posts });
-    return res.json({ creator, posts });
+    return res.json({ userParam: req.userParam, posts });
   }),
 ];
 
@@ -293,7 +278,7 @@ const getUserPosts = [
 const postUserPosts = [
   authorize.userid,
   valid.postCreate,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     const creator = req.user;
     const content = req.body.content;
 
@@ -313,7 +298,7 @@ const deleteUserPost = [
   authorize.userid,
   mongo.postid,
   param.postid,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     await Post.findByIdAndDelete(req.params.postid);
 
     // instead of calling validUserParam for GET /users/:userid/posts
@@ -360,7 +345,7 @@ const postUserPostLikes = [
   mongo.userid,
   mongo.postid,
   param.postid,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     const creator = req.user;
     const post = req.postParam;
 
@@ -387,7 +372,7 @@ const postUserPostComments = [
   mongo.postid,
   param.postid,
   valid.commentCreate,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     const content = req.body.content;
     const post = req.postParam;
     const creator = req.user;
@@ -406,7 +391,7 @@ const postUserCommentLikes = [
   mongo.commentid,
   param.postid,
   param.commentid,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     const creator = req.user;
     const comment = req.commentParam;
 

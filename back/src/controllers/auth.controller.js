@@ -26,15 +26,14 @@ const loginPost = [
   valid.login,
   asyncHandler(async (req, res) => {
     // extract data from form
-    const formUsername = req.body.username;
-    const formPassword = req.body.password;
+    const { username, password } = req.body;
     // check username existed
-    const user = await User.findOne({ username: formUsername }, "-__v").exec();
+    const user = await User.findOne({ username }, "-__v").exec();
     if (user === null) {
       return res.sendStatus(401);
     } else {
       // check password match
-      const valid = await bcrypt.compare(formPassword, user.password);
+      const valid = await bcrypt.compare(password, user.password);
 
       if (!valid) {
         return res.sendStatus(401);
@@ -49,23 +48,22 @@ const loginPost = [
 
       // valid username and password
       // token is created using username only
-      const token = jwt.sign({ username: formUsername }, process.env.SECRET, {
+      // NOTE: do we have to convert to number
+      const token = jwt.sign({ username }, EnvVar.Secret, {
         expiresIn,
       });
 
-      // debug(`the user found in database belike: `, user);
-      // debug(`expire time belike: `, 60 * 60 * 24 * 7, ` seconds`);
-      // debug(`expire time formatted belike: `, expiresInDateFormatted);
-
       // remove password and username
-      const { password, username, ...publicUserInfo } = user.toJSON();
+      const userInfo = user.toJSON();
+      delete userInfo.password;
+      delete userInfo.username;
 
       // debug(`the public user info after logging in: `, publicUserInfo);
 
       // return info for client to store on their localStorage and check of expire
-      return res.status(200).json({
+      return res.json({
         token,
-        user: publicUserInfo,
+        self: userInfo,
         expiresIn,
         expiresInDate,
         expiresInDateFormatted,
@@ -83,14 +81,12 @@ const signupPost = [
     // encode password
     const hashedPassword = await bcrypt.hash(password, Number(EnvVar.Secret));
 
-    const newUser = new User({
+    await new User({
       fullname,
       username,
       password: hashedPassword,
       isCreator: false,
-    });
-
-    await newUser.save();
+    }).save();
 
     // debug(`the created user is: `, newUser);
 

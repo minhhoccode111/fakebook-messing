@@ -133,7 +133,7 @@ describe(`POST /login`, () => {
 
     expect(res.headers["content-type"]).toMatch(/json/);
     expect(res.status).toBe(200);
-    expect(res.body.user.fullname).toBeDefined();
+    expect(res.body.self.fullname).toBeDefined();
 
     // then use the returned token to get authenticated route
     const token = res.body.token;

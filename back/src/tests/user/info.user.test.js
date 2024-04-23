@@ -116,9 +116,11 @@ describe(`User Info Testing`, () => {
     // debug(`user asd: `, asd);
     // debug(`user qwe: `, qwe);
     describe(`INVALID CASES`, () => {
+      // debug(`the asdBody0 belike: `, asdBody0);
+      // debug(`the asdBody1 belike: `, asdBody1);
       const invalidCases = [
         ["asd", 404],
-        [asdBody0.user.id.replace("6", "0"), 404],
+        [asdBody0.self.id.replace("6", "0"), 404],
       ];
 
       test(`Some invalid cases run at once`, async () => {
@@ -138,20 +140,20 @@ describe(`User Info Testing`, () => {
     describe(`VALID CASES`, () => {
       test(`asd GET /users/:qwe.id`, async () => {
         const res = await request(app)
-          .get(`/api/v1/users/${qweBody0.user.id}`)
+          .get(`/api/v1/users/${qweBody0.self.id}`)
           .set("Authorization", `Bearer ${asdBody0.token}`);
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/json/);
-        expect(res.body).toEqual(qweBody0.user);
+        expect(res.body).toEqual(qweBody0.self);
       });
 
       test(`qwe GET /users/:asd.id`, async () => {
         const res = await request(app)
-          .get(`/api/v1/users/${asdBody0.user.id}`)
+          .get(`/api/v1/users/${asdBody0.self.id}`)
           .set("Authorization", `Bearer ${qweBody0.token}`);
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/json/);
-        expect(res.body).toEqual(asdBody0.user);
+        expect(res.body).toEqual(asdBody0.self);
       });
     });
   });
@@ -168,8 +170,8 @@ describe(`User Info Testing`, () => {
     describe(`INVALID CASES`, () => {
       const invalidCases = [
         [{ id: "asd", data: newAsdUser }, 404],
-        [{ id: qweBody0.user.id, data: newAsdUser }, 404],
-        [{ id: qweBody0.user.id.replace("6", "0"), data: newAsdUser }, 404],
+        [{ id: qweBody0.self.id, data: newAsdUser }, 404],
+        [{ id: qweBody0.self.id.replace("6", "0"), data: newAsdUser }, 404],
       ];
 
       test(`Some invalid cases run at once`, async () => {
@@ -188,16 +190,24 @@ describe(`User Info Testing`, () => {
     describe(`VALID CASES`, () => {
       test(`asd PUT /users/:asd.id`, async () => {
         const res = await request(app)
-          .put(`/api/v1/users/${asdBody0.user.id}`)
+          .put(`/api/v1/users/${asdBody0.self.id}`)
           .set("Authorization", `Bearer ${asdBody0.token}`)
           .type("form")
           .send(newAsdUser);
 
+        // {
+        //   fullname: "Troi Dat Oi",
+        //   status: "online",
+        //   bio: "Co toi thi khong co nang, dua voi toi o trong tam tri nang chuyen gi ma do dang",
+        //   avatarLink: "Troi Dat Oi khong le anh ke mot cau chuyen chang den dau",
+        //   dateOfBirth: "2001-01-01",
+        // }
+
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(Object.assign(newAsdUser, asdBody0.user));
+        expect(res.body).toEqual(Object.assign(asdBody0.self, newAsdUser));
 
         const resGet = await request(app)
-          .get(`/api/v1/users/${asdBody0.user.id}`)
+          .get(`/api/v1/users/${asdBody0.self.id}`)
           .set("Authorization", `Bearer ${asdBody0.token}`);
 
         expect(resGet.status).toBe(200);
@@ -210,7 +220,7 @@ describe(`User Info Testing`, () => {
     describe(`INVALID CASES`, () => {
       const invalidCases = [
         [{ id: "asd" }, 404],
-        [{ id: qweBody0.user.id.replace("6", "0") }, 404],
+        [{ id: qweBody0.self.id.replace("6", "0") }, 404],
       ];
 
       test(`Some invalid cases run at once`, async () => {
@@ -228,7 +238,7 @@ describe(`User Info Testing`, () => {
       // NOTE: asd0, asd1 follow each other and qwe0 has no connections
       test(`asd0 follow qwe0`, async () => {
         const followRes0 = await request(app)
-          .post(`/api/v1/users/${qweBody0.user.id}/follows`)
+          .post(`/api/v1/users/${qweBody0.self.id}/follows`)
           .set("Authorization", `Bearer ${asdBody0.token}`);
 
         expect(followRes0.status).toBe(200);
@@ -248,7 +258,7 @@ describe(`User Info Testing`, () => {
 
       test(`asd0 unfollow asd1`, async () => {
         const followRes0 = await request(app)
-          .post(`/api/v1/users/${asdBody1.user.id}/follows`)
+          .post(`/api/v1/users/${asdBody1.self.id}/follows`)
           .set("Authorization", `Bearer ${asdBody0.token}`);
 
         expect(followRes0.status).toBe(200);

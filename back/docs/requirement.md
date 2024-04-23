@@ -1,0 +1,27 @@
+# assignment 
+- intro: 
+	- build a social media site
+	- you'll need to do some of your own research and read the documentation for a few of the modules you'll be using in this project
+	- it doesn't need a nice user experience
+	- backend is critical
+	- features: users, profiles, posts, followers, following, "liking" (, chat, comments)
+	- social media login or `passport-local` or `passport-github2`
+	- feature like real-time updates (socket.io), notifications, chat are not expected unless you feel really confident about you skills
+- think through and plan out, a few hours of thought can save you months of coding
+- make sure to finish the site **core** functionalities before working on the rest
+- think through the data architecture to make this work. Take sometime to plan your approach before diving in because **there are lots of models and the relationship between them is more complicated than anything you've done before** 
+- use `faker` to create dummy data
+- requirements (features your app should have more or less, for simplicity don't implement too much delete and update actions) 
+	- Users must sign in to see anything except the sign-in page.
+	- Users should be able to sign in using your chosen authentication method.
+	- Users can send follow requests to other users.
+	- Users can create posts (begin with text only).
+	- Users can like posts.
+	- Users can comment on posts.
+	- Posts should always display the post content, author, comments, and likes.
+	- `There should be an index page for posts, which shows all the recent posts from the current user and users they are following.`
+	- Users can create a profile with a profile picture. Depending on how you handle authentication, for example via passport-github2, you may be able to use their account’s existing profile picture. If this isn’t the case you can use Gravatar to generate them.
+	- A user’s profile page should contain their profile information, profile photo, and posts.
+	- There should be an index page for users, which shows all users and buttons for sending follow requests to users the user is not already following or have a pending request.
+	- Deploy your app to a hosting provider of your choice!
+

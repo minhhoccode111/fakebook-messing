@@ -1,29 +1,19 @@
 // no need for try...catch block
 const asyncHandler = require("express-async-handler");
 
-//
+// validation middlewares
 const valid = require("./../middleware/valid");
 const param = require("./../middleware/param");
 const mongo = require("./../middleware/mongo");
 const authorize = require("./../middleware/authorize");
 
-// environment variables
-const EnvVar = require("./../constants/envvar");
-
-// manually logging
-const debug = require("./../constants/debug");
-
 // mongoose models
-const User = require("./../models/user");
-const Follow = require("./../models/follow");
-const Post = require("./../models/post");
-const Comment = require("./../models/comment");
-const LikePost = require("./../models/likePost");
-const LikeComment = require("./../models/likeComment");
-
 const Message = require("./../models/message");
 const Group = require("./../models/group");
 const GroupMember = require("./../models/groupMember");
+
+// manually logging
+const debug = require("./../constants/debug");
 
 // GET /groups
 const getAllGroups = asyncHandler(async (req, res) => {
@@ -55,7 +45,7 @@ const getAllGroups = asyncHandler(async (req, res) => {
   const privateGroups = notJoinedGroups.filter((gr) => !gr.public);
 
   res.json({
-    selfUser: req.user,
+    self: req.user,
     joinedGroups,
     publicGroups,
     privateGroups,
@@ -66,7 +56,7 @@ const getAllGroups = asyncHandler(async (req, res) => {
 const postAllGroups = [
   valid.groupInfo,
   valid.groupNamePost,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     // WARN: don't destructuring `public` field
     // since it's not a valid name in jsj
     const { name, bio, avatarLink } = req.body;
@@ -108,7 +98,7 @@ const putGroup = [
   valid.groupInfo,
   valid.groupNamePut,
   authorize.ownedGroupid,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     const oldGroup = req.groupParam;
 
     // debug(`oldGroup belike: `, oldGroup);
@@ -138,10 +128,11 @@ const deleteGroup = [
   mongo.groupid,
   param.groupid,
   authorize.ownedGroupid,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req, _, next) => {
     await Group.findByIdAndDelete(req.params.groupid);
-    return res.sendStatus(200);
+    next();
   }),
+  getAllGroups,
 ];
 
 // GET /groups/:groupid/messages
@@ -188,7 +179,7 @@ const postGroupMessages = [
   param.groupid,
   authorize.joinedGroupid,
   valid.messageCreate,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     const group = req.groupParam;
 
     await new Message(
@@ -228,7 +219,7 @@ const getGroupMembers = [
       groupMembers.push({ ...ref.toJSON().user, isCreator: ref.isCreator });
     }
 
-    res.json({ selfUser: req.user, groupMembers });
+    res.json({ self: req.user, groupMembers });
   }),
 ];
 
@@ -303,7 +294,7 @@ const deleteGroupMember = [
       groupMembers.push({ isCreator: ref.isCreator, ...ref.toJSON().user });
     }
 
-    return res.json({ selfUser: req.user, groupMembers });
+    return res.json({ self: req.user, groupMembers });
   }),
 ];
 

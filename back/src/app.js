@@ -95,15 +95,14 @@ passport.use(
 
 // handle api request
 const routes = require("./routes/index");
-app.use("/api/v1/auth", routes.auth);
+app.use("/auth", routes.auth);
 app.use(
-  "/api/v1/users",
+  "/users",
   passport.authenticate("jwt", { session: false }),
   routes.users,
 );
-// things about chat, need authenticate
 app.use(
-  "/api/v1/groups",
+  "/groups",
   passport.authenticate("jwt", { session: false }),
   routes.groups,
 );
