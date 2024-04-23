@@ -94,20 +94,8 @@ passport.use(
 );
 
 // handle api request
-const routes = require("./routes/index"); // modular
-// things about auth
+const routes = require("./routes/index");
 app.use("/api/v1/auth", routes.auth);
-// things about user, need authenticate
-// app.use(
-//   "/api/v1/chat",
-//   passport.authenticate("jwt", { session: false }),
-//   routes.users,
-// );
-// app.use(
-//   "/api/v1/user",
-//   passport.authenticate("jwt", { session: false }),
-//   routes.users,
-// );
 app.use(
   "/api/v1/users",
   passport.authenticate("jwt", { session: false }),

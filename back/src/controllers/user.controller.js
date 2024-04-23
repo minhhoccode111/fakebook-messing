@@ -25,16 +25,16 @@ const Message = require("./../models/message");
 const Group = require("./../models/group");
 const GroupMember = require("./../models/groupMember");
 
-// GET /users
-const getAllUsers = asyncHandler(async (req, res) => {
+const getAllUsersHelper = asyncHandler(async (req, res) => {
+  const self = req.selfUser;
   // all users have connection with self
   const connections = await Follow.find(
     {
       $or: [
         // self is follower
-        { follower: req.user.id },
+        { follower: self.id },
         // self is followed
-        { following: req.user.id },
+        { following: self.id },
       ],
     },
     "follower following",
@@ -47,7 +47,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
   const followings = [];
 
   for (let i = 0, len = connections.length; i < len; i++) {
-    if (connections[i].follower.id === req.user.id) {
+    if (connections[i].follower.id === self.id) {
       // if self is follower
       followings.push(connections[i].following);
     } else {
@@ -62,7 +62,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
     $and: [
       {
         _id: {
-          $ne: req.user.id, // not self
+          $ne: self.id, // not self
         },
       },
       {
@@ -78,18 +78,34 @@ const getAllUsers = asyncHandler(async (req, res) => {
     ],
   }).exec();
 
-  // debug(`mayknows belike: `, mayknows);
-  // debug(`followers belike: `, followers);
-  // debug(`followings belike: `, followings);
-
-  return res.send({ selfUser: req.user, followers, followings, mayknows });
+  return res.send({ self, followers, followings, mayknows });
 });
+
+// GET /users
+const selfGetAllUsers = [
+  (req, res, next) => {
+    req.selfUser = req.user;
+    next();
+  },
+  getAllUsersHelper,
+];
+
+// GET /users/:userid/all
+const userGetAllUsers = [
+  mongo.userid,
+  param.userid,
+  (req, res, next) => {
+    req.selfUser = req.userParam;
+    next();
+  },
+  getAllUsersHelper,
+];
 
 // GET /users/:userid
 const getUser = [
   mongo.userid,
   param.userid,
-  async (req, res) => {
+  (req, res) => {
     return res.json(req.userParam);
   },
 ];
@@ -138,7 +154,7 @@ const postUserFollows = [
   }),
 
   // Return self GET /users
-  getAllUsers,
+  selfGetAllUsers,
 ];
 
 // GET /users/:userid/messages
@@ -417,7 +433,8 @@ const postUserCommentLikes = [
 ];
 
 module.exports = {
-  getAllUsers,
+  selfGetAllUsers,
+  userGetAllUsers,
   getUser,
   putUser,
   // deleteUser,

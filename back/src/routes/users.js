@@ -5,7 +5,7 @@ const UsersController = require("./../controllers/user.controller");
 
 // console.log(UsersController.getAllUsers());
 
-router.get("/", UsersController.getAllUsers);
+router.get("/", UsersController.selfGetAllUsers);
 
 router.get("/:userid", UsersController.getUser);
 
@@ -13,6 +13,9 @@ router.put("/:userid", UsersController.putUser);
 
 // not implemented
 // router.delete('/', deleteUser);
+
+// additional route to get all user connections with a specific user
+router.get("/:userid/all", UsersController.userGetAllUsers);
 
 router.post("/:userid/follows", UsersController.postUserFollows);
 
