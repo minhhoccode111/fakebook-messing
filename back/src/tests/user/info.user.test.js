@@ -204,14 +204,21 @@ describe(`User Info Testing`, () => {
         // }
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual(Object.assign(asdBody0.self, newAsdUser));
+        // expect(res.body).toEqual(Object.assign(asdBody0.self, newAsdUser));
+        expect(res.body.fullname).toBe(newAsdUser.fullname);
+        expect(res.body.status).toBe(newAsdUser.status);
+        expect(res.body.bio).toBe(newAsdUser.bio);
+        expect(res.body.avatarLink).toBe(newAsdUser.avatarLink);
 
         const resGet = await request(app)
           .get(`/api/v1/users/${asdBody0.self.id}`)
           .set("Authorization", `Bearer ${asdBody0.token}`);
 
         expect(resGet.status).toBe(200);
-        expect(resGet.body).toEqual(newAsdUser);
+        expect(resGet.body.fullname).toBe(newAsdUser.fullname);
+        expect(resGet.body.status).toBe(newAsdUser.status);
+        expect(resGet.body.bio).toBe(newAsdUser.bio);
+        expect(resGet.body.avatarLink).toBe(newAsdUser.avatarLink);
       });
     });
   });

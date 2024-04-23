@@ -1,64 +1,71 @@
-# "username": "asd0",
-# "_fullname": "Blanche Steuber",
-# "_username": "asd1",
-# "_fullname": "Doreen Prohaska",
-# "password": "asd"
-
 GET {{url}}/users
-Authorization: {{asdToken0}}
+Authorization: {{token}}
 
-GET {{url}}/users/{{asdId1}}
-Authorization: {{asdToken0}}
+# 
+GET {{url}}/users/{{other}}
+Authorization: {{token}}
 
-POST {{url}}/users/{{asdId1}}/follows
-Authorization: {{asdToken0}}
+GET {{url}}/users/{{self}}
+Authorization: {{token}}
 
-GET {{url}}/users/{{asdId1}}/messages
-Authorization: {{asdToken0}}
+# 
+POST {{url}}/users/{{self}}/follows
+Authorization: {{token}}
 
-POST {{url}}/users/{{asdId1}}/messages
-Authorization: {{asdToken0}}
+POST {{url}}/users/{{other}}/follows
+Authorization: {{token}}
+
+# only need to change token and switch run between other and self
+# no need to change this manually
+GET {{url}}/users/{{other}}/messages
+Authorization: {{token}}
+
+GET {{url}}/users/{{self}}/messages
+Authorization: {{token}}
+
+POST {{url}}/users/{{other}}/messages
+Authorization: {{token}}
 Content-Type: application/json
 {
     "content": "Khong dieu kien",
-    "imageLink": "",
-    "_content": "",
-    "_imageLink": "khong dieu kien"
+    "imageLink": ""
 }
 
-GET {{url}}/users/{{asdId1}}/posts
-Authorization: {{asdToken0}}
-
-POST {{url}}/users/{{asdId0}}/posts
-Authorization: {{asdToken0}}
+POST {{url}}/users/{{self}}/messages
+Authorization: {{token}}
 Content-Type: application/json
 {
     "content": "Khong dieu kien",
-    "_content": ""
+    "imageLink": ""
 }
 
-########################################
+#
+GET {{url}}/users/{{other}}/posts
+Authorization: {{token}}
 
-GET {{url}}/users
-Authorization: {{asdToken1}}
+GET {{url}}/users/{{self}}/posts
+Authorization: {{token}}
 
-GET {{url}}/users/{{asdId1}}
-Authorization: {{asdToken1}}
-
-POST {{url}}/users/{{asdId0}}/follows
-Authorization: {{asdToken1}}
-
-GET {{url}}/users/{{asdId0}}/messages
-Authorization: {{asdToken1}}
-
-GET {{url}}/users/{{asdId0}}/posts
-Authorization: {{asdToken1}}
-
-POST {{url}}/users/{{asdId1}}/posts
-Authorization: {{asdToken1}}
+# 
+POST {{url}}/users/{{other}}/posts
+Authorization: {{token}}
 Content-Type: application/json
 {
-    "content": "Khong dieu kien",
-    "_content": ""
+    "content": "Khong dieu kien"
+}
+
+POST {{url}}/users/{{self}}/posts
+Authorization: {{token}}
+Content-Type: application/json
+{
+    "content": "Khong dieu kien"
+}
+
+# 
+POST {{url}}/users/{{self}}/posts/{{post}}/comments
+Authorization: {{token}}
+Content-Type: application/json
+{
+    "content": "Khong dieu kien"
 }
 

@@ -113,7 +113,7 @@ describe(`User Post Testing`, () => {
     describe(`VALID CASES`, () => {
       test(`asd GET /users/:qwe.id/posts`, async () => {
         const res = await request(app)
-          .get(`/api/v1/users/${qweBody.user.id}/posts`)
+          .get(`/api/v1/users/${qweBody.self.id}/posts`)
           .set("Authorization", `Bearer ${asdBody.token}`);
 
         expect(res.status).toBe(200);
@@ -140,7 +140,7 @@ describe(`User Post Testing`, () => {
           // debug(post.comments);
           expect(
             post.comments.some(
-              (comment) => comment.creator.fullname === qweBody.user.fullname,
+              (comment) => comment.creator.fullname === qweBody.self.fullname,
             ),
           ).toBe(true);
 
@@ -157,8 +157,8 @@ describe(`User Post Testing`, () => {
   describe(`POST /users/:userid/posts`, () => {
     describe(`INVALID CASES`, () => {
       const cases = [
-        [{ id: asdBody.user.id, content: "" }, 400],
-        [{ id: qweBody.user.id, content: "Some dummy data" }, 404],
+        [{ id: asdBody.self.id, content: "" }, 400],
+        [{ id: qweBody.self.id, content: "Some dummy data" }, 404],
       ];
 
       test(`some invalid cases`, async () => {
@@ -178,7 +178,7 @@ describe(`User Post Testing`, () => {
       const content = "This is a dummy post content";
       test(`asd POST /users`, async () => {
         const res = await request(app)
-          .post(`/api/v1/users/${asdBody.user.id}/posts`)
+          .post(`/api/v1/users/${asdBody.self.id}/posts`)
           .set("Authorization", `Bearer ${asdBody.token}`)
           .type("form")
           .send({ content });
@@ -187,10 +187,10 @@ describe(`User Post Testing`, () => {
         // no need to test the res.body returned because
         // it will reuse GET /users/:userid/posts
 
-        const { posts, creator } = res.body;
+        const { posts, userParam } = res.body;
         expect(posts.length).toBe(4);
         expect(posts.some((post) => post.content === content)).toBe(true);
-        expect(creator.fullname).toBe(asdBody.user.fullname);
+        expect(userParam.fullname).toBe(asdBody.self.fullname);
       });
     });
   });
@@ -199,11 +199,11 @@ describe(`User Post Testing`, () => {
     describe(`INVALID CASES`, () => {
       test(`some invalid cases`, async () => {
         const asdPost = await Post.findOne(
-          { creator: asdBody.user.id },
+          { creator: asdBody.self.id },
           "_id",
         ).exec();
         const qwePost = await Post.findOne(
-          { creator: qweBody.user.id },
+          { creator: qweBody.self.id },
           "_id",
         ).exec();
 
@@ -211,15 +211,15 @@ describe(`User Post Testing`, () => {
 
         const cases = [
           // asd try to delete not valid mongodb id
-          [{ userid: asdBody.user.id, postid: "somerandomstring" }, 404],
+          [{ userid: asdBody.self.id, postid: "somerandomstring" }, 404],
           [{ userid: "somerandomstring", postid: qwePost.id }, 404],
           // asd try to delete a valid postid but not own
-          [{ userid: asdBody.user.id, postid: qwePost.id }, 404],
+          [{ userid: asdBody.self.id, postid: qwePost.id }, 404],
           // asd try to delete a post of qwe user
-          [{ userid: qweBody.user.id, postid: qwePost.id }, 404],
+          [{ userid: qweBody.self.id, postid: qwePost.id }, 404],
 
           // TODO: this should not be 404
-          // [{ userid: asdBody.user.id, postid: asdPost.id }, 200],
+          // [{ userid: asdBody.self.id, postid: asdPost.id }, 200],
         ];
 
         // debug(`cases belike: `, cases);
@@ -237,7 +237,7 @@ describe(`User Post Testing`, () => {
     describe(`VALID CASES`, () => {
       test(`asd DELETE /users/:userid/posts/:postid`, async () => {
         const asdPosts = await Post.find(
-          { creator: asdBody.user.id },
+          { creator: asdBody.self.id },
           "_id content",
         ).exec(); // should be 4
 
@@ -246,12 +246,12 @@ describe(`User Post Testing`, () => {
         // debug(`asdPosts belike: `, asdPosts);
 
         const res = await request(app)
-          .delete(`/api/v1/users/${asdBody.user.id}/posts/${asdPosts[0].id}`)
+          .delete(`/api/v1/users/${asdBody.self.id}/posts/${asdPosts[0].id}`)
           .set("Authorization", `Bearer ${asdBody.token}`);
 
         // also reuse GET /users/:userid/posts after deletion
         expect(res.status).toBe(200);
-        expect(res.body.creator.fullname).toBe(asdBody.user.fullname);
+        expect(res.body.userParam.fullname).toBe(asdBody.self.fullname);
         expect(res.body.posts.length).toBe(asdPosts.length - 1);
 
         // debug(`the res.body.post: `, res.body.posts);

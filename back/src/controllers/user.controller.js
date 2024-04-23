@@ -107,13 +107,12 @@ const getUser = [
 const putUser = [
   authorize.userid,
   valid.userUpdate,
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, _, next) => {
     // Merge update user
     const user = Object.assign(req.user.toJSON(), req.body);
 
     await User.findByIdAndUpdate(req.params.userid, user);
 
-    // TODO: fix this and its tests
     next();
   }),
   getUser,

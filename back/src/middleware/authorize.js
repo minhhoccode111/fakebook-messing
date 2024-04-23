@@ -24,7 +24,8 @@ const joinedGroupid = asyncHandler(async (req, res, next) => {
     user: req.user,
   }).exec();
 
-  if (req.method === "POST" && selfRef === null) return res.sendStatus(403); // forbidden
+  // self try to post to a group that not join
+  if (req.method === "POST" && selfRef === null) return res.sendStatus(404);
 
   if (selfRef === null) req.isGroupMember = false;
   else req.isGroupMember = true;

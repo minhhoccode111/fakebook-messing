@@ -87,20 +87,20 @@ describe(`User Post Interaction Testing`, () => {
     describe(`VALID CASES`, () => {
       test(`asd POST /users/:userid/posts/:postid/likes`, async () => {
         // 4 comments, 0 post like, 0 comment likes
-        const asdPost = await Post.findOne({ creator: asdBody.user.id }).exec();
-        const qwePost = await Post.findOne({ creator: qweBody.user.id }).exec();
+        const asdPost = await Post.findOne({ creator: asdBody.self.id }).exec();
+        const qwePost = await Post.findOne({ creator: qweBody.self.id }).exec();
 
         const cases = [
           // add likes
-          [asdBody.token, asdBody.user.id, asdPost.id, 1],
-          [qweBody.token, asdBody.user.id, asdPost.id, 2],
-          [asdBody.token, qweBody.user.id, qwePost.id, 1],
-          [qweBody.token, qweBody.user.id, qwePost.id, 2],
+          [asdBody.token, asdBody.self.id, asdPost.id, 1],
+          [qweBody.token, asdBody.self.id, asdPost.id, 2],
+          [asdBody.token, qweBody.self.id, qwePost.id, 1],
+          [qweBody.token, qweBody.self.id, qwePost.id, 2],
           // remove likes
-          [asdBody.token, asdBody.user.id, asdPost.id, 1],
-          [qweBody.token, asdBody.user.id, asdPost.id, 0],
-          [asdBody.token, qweBody.user.id, qwePost.id, 1],
-          [qweBody.token, qweBody.user.id, qwePost.id, 0],
+          [asdBody.token, asdBody.self.id, asdPost.id, 1],
+          [qweBody.token, asdBody.self.id, asdPost.id, 0],
+          [asdBody.token, qweBody.self.id, qwePost.id, 1],
+          [qweBody.token, qweBody.self.id, qwePost.id, 0],
           // [qweBody.token, "somerandomstring", qwePost.id, 0],
         ];
 
@@ -164,16 +164,16 @@ describe(`User Post Interaction Testing`, () => {
     describe(`VALID CASES`, () => {});
     test(`asd POST /users/:userid/posts/:postid/comments/:commentid/likes`, async () => {
       // 1 asd post, 4 comments, 0 post like, 0 comment likes
-      const asdPost = await Post.findOne({ creator: asdBody.user.id }).exec();
+      const asdPost = await Post.findOne({ creator: asdBody.self.id }).exec();
 
       // 1 asd comment
       const asdComment = await Comment.findOne({
-        creator: asdBody.user.id,
+        creator: asdBody.self.id,
         post: asdPost.id,
       }).exec();
       // 1 qwe comment
       const qweComment = await Comment.findOne({
-        creator: qweBody.user.id,
+        creator: qweBody.self.id,
         post: asdPost.id,
       }).exec();
 
@@ -181,14 +181,14 @@ describe(`User Post Interaction Testing`, () => {
         // increase on asdComment
         {
           token: asdBody.token,
-          userid: asdBody.user.id,
+          userid: asdBody.self.id,
           postid: asdPost.id,
           commentid: asdComment.id,
           likes: 1,
         },
         {
           token: qweBody.token,
-          userid: asdBody.user.id,
+          userid: asdBody.self.id,
           postid: asdPost.id,
           commentid: asdComment.id,
           likes: 2,
@@ -196,14 +196,14 @@ describe(`User Post Interaction Testing`, () => {
         // decrease on asdComment
         {
           token: asdBody.token,
-          userid: asdBody.user.id,
+          userid: asdBody.self.id,
           postid: asdPost.id,
           commentid: asdComment.id,
           likes: 1,
         },
         {
           token: qweBody.token,
-          userid: asdBody.user.id,
+          userid: asdBody.self.id,
           postid: asdPost.id,
           commentid: asdComment.id,
           likes: 0,
@@ -211,14 +211,14 @@ describe(`User Post Interaction Testing`, () => {
         // increase on qweComment
         {
           token: asdBody.token,
-          userid: asdBody.user.id,
+          userid: asdBody.self.id,
           postid: asdPost.id,
           commentid: qweComment.id,
           likes: 1,
         },
         {
           token: qweBody.token,
-          userid: asdBody.user.id,
+          userid: asdBody.self.id,
           postid: asdPost.id,
           commentid: qweComment.id,
           likes: 2,
@@ -226,14 +226,14 @@ describe(`User Post Interaction Testing`, () => {
         // decrease on qweComment
         {
           token: asdBody.token,
-          userid: asdBody.user.id,
+          userid: asdBody.self.id,
           postid: asdPost.id,
           commentid: qweComment.id,
           likes: 1,
         },
         {
           token: qweBody.token,
-          userid: asdBody.user.id,
+          userid: asdBody.self.id,
           postid: asdPost.id,
           commentid: qweComment.id,
           likes: 0,

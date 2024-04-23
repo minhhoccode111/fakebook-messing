@@ -1,20 +1,17 @@
-POST http://localhost:3000/api/v1/auth/signup
+POST {{url}}/auth/signup
 Content-Type: application/json
 {
-  "fullname": "khong dieu kien",
-  "username": "mhc11@gmail.com",
+  "fullname": ".",
+  "username": "valid@gmail.com",
   "password": "Bruh0!0!",
   "confirm-password": "Bruh0!0!"
 }
 
 
-POST http://localhost:3000/api/v1/auth/login
+POST {{url}}/auth/login
 Content-Type: application/json
 {
   "username": "asd0",
-  "_fullname": "Blanche Steuber",
-  "_username": "asd1",
-  "_fullname": "Doreen Prohaska",
   "password": "asd"
 }
 

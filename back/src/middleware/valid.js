@@ -84,7 +84,11 @@ const userUpdate = [
       if (!valid.includes(val)) req.body.status = "online";
     }),
   body("avatarLink").trim().escape(),
-  body("dateOfBirth", "Invalid Date Of Birth").trim().escape().isDate(),
+  body("dateOfBirth").custom((val, { req }) => {
+    const date = new Date(val);
+    if (date instanceof Date && !isNaN(date)) req.body.dateOfBirth = date;
+    else req.body.dateOfBirth = new Date("2001-01-01");
+  }),
 ];
 
 // Should be called after groupParam is marked on req.groupParam
