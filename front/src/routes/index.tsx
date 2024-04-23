@@ -1,14 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { create } from "zustand";
 
-const useStore = create((set) => ({
+type State = {
+  count: number;
+};
+
+type Actions = {
+  inc: () => void;
+  dec: () => void;
+  reset: () => void;
+};
+
+const useStore = create<State & Actions>((set) => ({
   count: 0,
   inc: () => set((state) => ({ count: state.count + 1 })),
   dec: () => set((state) => ({ count: state.count - 1 })),
   reset: () => set({ count: 0 }),
 }));
 
-function App() {
+function Index() {
   const inc = useStore((state) => state.inc);
   const dec = useStore((state) => state.dec);
   const count = useStore((state) => state.count);
@@ -24,4 +34,4 @@ function App() {
   );
 }
 
-export default App;
+export default Index;
