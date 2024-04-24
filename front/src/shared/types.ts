@@ -10,3 +10,13 @@ export type ThemeProviderState = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
 };
+
+export type CounterState = {
+  count: number;
+};
+
+export type CounterActions = {
+  inc: () => void;
+  dec: () => void;
+  reset: () => void;
+};

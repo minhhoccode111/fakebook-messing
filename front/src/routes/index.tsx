@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { create } from "zustand";
-import { State, Actions } from "@/shared/types/counter";
 import { Fragment } from "react/jsx-runtime";
+import { CounterState, CounterActions } from "@/shared/types";
+import { MyButtonInterface } from "@/shared/interfaces";
 
-const useStore = create<State & Actions>((set) => ({
+const useStore = create<CounterState & CounterActions>((set) => ({
   count: 0,
   inc: () => set((state) => ({ count: state.count + 1 })),
   dec: () => set((state) => ({ count: state.count - 1 })),
@@ -31,13 +32,6 @@ export default function Index() {
       </div>
     </Fragment>
   );
-}
-
-type MyButtonChildren = string | React.ReactElement;
-
-interface MyButtonInterface {
-  children: MyButtonChildren;
-  onClick: () => void;
 }
 
 function MyButton({ children, onClick }: MyButtonInterface) {
