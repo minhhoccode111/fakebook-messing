@@ -90,19 +90,19 @@ return res.json({ userParam: req.userParam, posts });
 ### `POST /users/:userid/posts/:postid/likes`
 Like a post of a user, response all interactions with that post
 ```js
-return res.json({ ...post.toJSON(), likes, comments });
+return res.json({ post, likes, comments });
 ```
 
 ### `POST /users/:userid/posts/:postid/comments`
 Comment on a post of a specific user, response all interactions with that post
 ```js
-return res.json({ ...post.toJSON(), likes, comments });
+return res.json({ post, likes, comments });
 ```
 
 ### `POST /users/:userid/posts/:postid/comments/:commentid/likes`
 Like a comment on a post of a user, response all interactions with that post
 ```js
-return res.json({ ...post.toJSON(), likes, comments });
+return res.json({ post, likes, comments });
 ```
 
 ## Groups
@@ -190,4 +190,12 @@ res.json({ self: req.user, groupMembers });
 A member leave group (or get kicked), response all member of that group
 ```js
 res.json({ self: req.user, groupMembers });
+```
+
+## Some invalid response
+```js
+return res.sendStatus(400) // invalid data
+return res.sendStatus(403) // not allow
+return res.sendStatus(404) // for both 401 and 403 and 404
+return res.sendStatus(409) // conflict username or groupname
 ```

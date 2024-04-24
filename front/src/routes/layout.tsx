@@ -45,7 +45,7 @@ const Layout = () => {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <header className="">
+      <header className="flex gap-4 items-center justify-between p-4">
         <h1 className="">We are in: {pathname}</h1>
         <ModeToggle></ModeToggle>
       </header>
