@@ -1,21 +1,44 @@
 import { Button } from "@/components/ui/button";
 import { create } from "zustand";
 import { Fragment } from "react/jsx-runtime";
-import { CounterState, CounterActions } from "@/shared/types";
+import {
+  CounterStoreState,
+  CounterStoreActions,
+  PersonStoreState,
+  PersonStoreActions,
+} from "@/shared/types";
 import { MyButtonInterface } from "@/shared/interfaces";
 
-const useStore = create<CounterState & CounterActions>((set) => ({
-  count: 0,
-  inc: () => set((state) => ({ count: state.count + 1 })),
-  dec: () => set((state) => ({ count: state.count - 1 })),
-  reset: () => set({ count: 0 }),
+const useCounterStore = create<CounterStoreState & CounterStoreActions>(
+  (set) => ({
+    count: 0,
+    inc: () => set((state) => ({ count: state.count + 1 })),
+    dec: () => set((state) => ({ count: state.count - 1 })),
+    reset: () => set({ count: 0 }),
+  }),
+);
+
+const usePersonStore = create<PersonStoreState & PersonStoreActions>((set) => ({
+  firstname: "",
+  lastname: "",
+  updateFirstname: (firstname) => set(() => ({ firstname })),
+  updateLastname: (lastname) => set(() => ({ lastname })),
 }));
 
 export default function Index() {
-  const count = useStore((state) => state.count);
-  const inc = useStore((state) => state.inc);
-  const dec = useStore((state) => state.dec);
-  const reset = useStore((state) => state.reset);
+  // zustand store
+  const count = useCounterStore((state) => state.count);
+  const inc = useCounterStore((state) => state.inc);
+  const dec = useCounterStore((state) => state.dec);
+  const reset = useCounterStore((state) => state.reset);
+
+  const firstname = usePersonStore((state) => state.firstname);
+  const lastname = usePersonStore((state) => state.lastname);
+  const updateFirstname = usePersonStore((state) => state.updateFirstname);
+  const updateLastname = usePersonStore((state) => state.updateLastname);
+
+  console.log(`firstname belike: `, firstname);
+  console.log(`lastname belike: `, lastname);
 
   return (
     <Fragment>
@@ -28,12 +51,31 @@ export default function Index() {
       </div>
 
       <div className="">
-        <h2 className="font-bold text-2xl"></h2>
+        <h2 className="font-bold text-2xl">Inputs</h2>
+        <label>
+          <p className="">Firstname</p>
+          <input
+            type="text"
+            className=""
+            value={firstname}
+            onChange={(e) => updateFirstname(e.target.value)}
+          />
+        </label>
+        <label>
+          <p className="">Lastname</p>
+          <input
+            type="text"
+            className=""
+            value={lastname}
+            onChange={(e) => updateLastname(e.target.value)}
+          />
+        </label>
       </div>
     </Fragment>
   );
 }
 
+// typescript
 function MyButton({ children, onClick }: MyButtonInterface) {
   return <Button onClick={onClick}>{children}</Button>;
 }

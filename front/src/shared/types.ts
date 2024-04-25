@@ -11,12 +11,22 @@ export type ThemeProviderState = {
   setTheme: (theme: Theme) => void;
 };
 
-export type CounterState = {
+export type CounterStoreState = {
   count: number;
 };
 
-export type CounterActions = {
+export type CounterStoreActions = {
   inc: () => void;
   dec: () => void;
   reset: () => void;
+};
+
+export type PersonStoreState = {
+  firstname: string;
+  lastname: string;
+};
+
+export type PersonStoreActions = {
+  updateFirstname: (firstname: string) => void;
+  updateLastname: (lastname: string) => void;
 };
