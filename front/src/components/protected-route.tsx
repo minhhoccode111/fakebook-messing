@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Navigate } from "react-router-dom";
-import { useAuthStore } from "./auth-provider";
+import { useAuthStore } from "@/main";
 import { ReactPropChildren } from "@/shared/types";
 
 const ProtectedRoute = ({ children }: ReactPropChildren) => {

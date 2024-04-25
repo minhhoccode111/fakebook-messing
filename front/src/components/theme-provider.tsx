@@ -3,7 +3,7 @@ import { ReactPropChildren } from "@/shared/types";
 import { useThemeStore } from "@/main";
 
 // component to change root classes each time theme in store changes
-export function ThemeProvider({ children }: ReactPropChildren) {
+export default function ThemeProvider({ children }: ReactPropChildren) {
   const theme = useThemeStore((state) => state.theme);
 
   // a useEffect to change root classes when theme changes
