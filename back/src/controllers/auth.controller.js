@@ -63,6 +63,7 @@ const loginPost = [
       // return info for client to store on their localStorage and check of expire
       return res.json({
         token,
+        isLogin: true,
         self: userInfo,
         expiresIn,
         expiresInDate,
