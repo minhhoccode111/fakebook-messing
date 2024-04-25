@@ -1,14 +1,15 @@
 export type Theme = "dark" | "light" | "system";
 
-export type ThemeProviderProps = {
-  children: React.ReactNode;
-  defaultTheme?: Theme;
-  storageKey?: string;
+export type StateThemeStore = {
+  theme: Theme;
 };
 
-export type ThemeProviderState = {
-  theme: Theme;
+export type ActionThemeStore = {
   setTheme: (theme: Theme) => void;
+};
+
+export type ReactPropChildren = {
+  children: React.ReactNode;
 };
 
 export type CounterStoreState = {

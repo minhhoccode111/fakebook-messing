@@ -10,10 +10,10 @@ import {
 
 // useTheme can only be called inside the ThemeProvider wrapper
 // and return theme and setTheme state management
-import { useTheme } from "@/components/theme-provider";
+import { useThemeStore } from "@/components/theme-provider";
 
 export default function SetTheme() {
-  const { setTheme } = useTheme();
+  const setTheme = useThemeStore((state) => state.setTheme);
 
   return (
     <DropdownMenu>

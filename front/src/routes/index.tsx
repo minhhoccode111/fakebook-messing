@@ -37,9 +37,6 @@ export default function Index() {
   const updateFirstname = usePersonStore((state) => state.updateFirstname);
   const updateLastname = usePersonStore((state) => state.updateLastname);
 
-  console.log(`firstname belike: `, firstname);
-  console.log(`lastname belike: `, lastname);
-
   return (
     <Fragment>
       <h2 className="font-bold text-2xl">Counter</h2>

@@ -1,27 +1,33 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { Theme, ThemeProviderState, ThemeProviderProps } from "@/shared/types";
+import { Fragment, useEffect } from "react";
+import { create } from "zustand";
+import EnvVar from "@/constants";
+import {
+  Theme,
+  StateThemeStore,
+  ActionThemeStore,
+  ReactPropChildren,
+} from "@/shared/types";
 
-// a default initial state to create context
-const initialState: ThemeProviderState = {
-  theme: "system",
-  setTheme: () => null,
-};
+// const LOCAL_STORAGE_THEME_NAME = "fakebook-messing";
+const THEME_STORE_NAME = EnvVar.ThemeStoreName;
 
-// create a context with default initial state
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
+export const useThemeStore = create<StateThemeStore & ActionThemeStore>(
+  (set) => ({
+    // get data in local storage or use default
+    theme:
+      // `as Theme` make sure that the local storage data always valid theme
+      (localStorage.getItem(THEME_STORE_NAME) as Theme) || "system",
+    setTheme: (theme) => {
+      // theme changes also update local storage data
+      localStorage.setItem(THEME_STORE_NAME, theme);
+      set(() => ({ theme }));
+    },
+  }),
+);
 
-export function ThemeProvider({
-  children,
-  defaultTheme = "system",
-  storageKey = "vite-ui-theme",
-  ...props
-}: ThemeProviderProps) {
-  // a useState to work with themes
-  const [theme, setTheme] = useState<Theme>(
-    // first get the theme in local storage
-    // or use default theme when the app first load
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
-  );
+// component to change root classes each time theme in store changes
+export function ThemeProvider({ children }: ReactPropChildren) {
+  const theme = useThemeStore((state) => state.theme);
 
   // a useEffect to change root classes when theme changes
   useEffect(() => {
@@ -42,32 +48,5 @@ export function ThemeProvider({
     root.classList.add(theme);
   }, [theme]);
 
-  // a summary object to pass down context provider
-  const value = {
-    // get
-    theme,
-    // set the local storage and change current state
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
-      setTheme(theme);
-    },
-  };
-
-  return (
-    // this create a context for every child components to use
-    <ThemeProviderContext.Provider {...props} value={value}>
-      {children}
-    </ThemeProviderContext.Provider>
-  );
+  return <Fragment>{children}</Fragment>;
 }
-
-// call this inside the theme provider wrapper
-// will get a context object to manage states with theme and setTheme
-export const useTheme = () => {
-  const context = useContext(ThemeProviderContext);
-
-  if (context === undefined)
-    throw new Error("useTheme must be used within a ThemeProvider");
-
-  return context;
-};

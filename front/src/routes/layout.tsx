@@ -8,8 +8,8 @@ const Layout = () => {
   const { pathname } = useLocation();
 
   return (
-    // theme wrapper
-    <ThemeProvider defaultTheme="dark" storageKey="cv-application-top-theme">
+    // wrapper to change root classes each time theme changes
+    <ThemeProvider>
       <header className="flex gap-4 items-center justify-between p-4">
         <h1 className="">We are in: {pathname}</h1>
         {/* button toggle theme */}
