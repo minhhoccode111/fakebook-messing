@@ -10,6 +10,7 @@ export type ActionThemeStore = {
 
 export type AuthData = {
   // TODO: add types for auth data after logging in
+  isLogin?: boolean;
 };
 
 export type StateAuthStore = {

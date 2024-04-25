@@ -39,7 +39,7 @@ const Layout = () => {
         </header>
 
         <main className="flex-1">
-          <h2 className="">We are in: {pathname}</h2>
+          <h2 className="">At: {pathname}</h2>
           <Outlet></Outlet>
         </main>
 

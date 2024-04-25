@@ -4,7 +4,7 @@ import { useAuthStore } from "@/main";
 import { ReactPropChildren } from "@/shared/types";
 
 const ProtectedRoute = ({ children }: ReactPropChildren) => {
-  const isLogin = useAuthStore((state) => state.authData);
+  const isLogin = useAuthStore((state) => state.authData?.isLogin);
 
   if (!isLogin) {
     return <Navigate to="/" replace={true} />;
