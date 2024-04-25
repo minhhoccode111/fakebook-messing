@@ -10,9 +10,9 @@ import {
 
 // useTheme can only be called inside the ThemeProvider wrapper
 // and return theme and setTheme state management
-import { useThemeStore } from "@/components/theme-provider";
+import { useThemeStore } from "@/main";
 
-export default function SetTheme() {
+export default function ThemeToggler() {
   const setTheme = useThemeStore((state) => state.setTheme);
 
   return (
