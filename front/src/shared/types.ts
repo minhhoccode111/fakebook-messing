@@ -8,6 +8,18 @@ export type ActionThemeStore = {
   setTheme: (theme: Theme) => void;
 };
 
+export type AuthData = {
+  // TODO: add types for auth data after logging in
+};
+
+export type StateAuthStore = {
+  authData: AuthData;
+};
+
+export type ActionAuthStore = {
+  setAuthData: (data: AuthData) => void;
+};
+
 export type ReactPropChildren = {
   children: React.ReactNode;
 };

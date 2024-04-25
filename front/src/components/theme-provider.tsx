@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from "react";
 import { create } from "zustand";
-import EnvVar from "@/constants";
+import EnvVar from "@/shared/constants";
 import {
   Theme,
   StateThemeStore,
@@ -9,17 +9,17 @@ import {
 } from "@/shared/types";
 
 // const LOCAL_STORAGE_THEME_NAME = "fakebook-messing";
-const THEME_STORE_NAME = EnvVar.ThemeStoreName;
+const { ThemeStoreName } = EnvVar;
 
 export const useThemeStore = create<StateThemeStore & ActionThemeStore>(
   (set) => ({
-    // get data in local storage or use default
+    // get data in local forage or use default
     theme:
-      // `as Theme` make sure that the local storage data always valid theme
-      (localStorage.getItem(THEME_STORE_NAME) as Theme) || "system",
+      // `as Theme` make sure that the local forage data always valid theme
+      (localStorage.getItem(ThemeStoreName) as Theme) || "system",
     setTheme: (theme) => {
       // theme changes also update local storage data
-      localStorage.setItem(THEME_STORE_NAME, theme);
+      localStorage.setItem(ThemeStoreName, theme);
       set(() => ({ theme }));
     },
   }),
