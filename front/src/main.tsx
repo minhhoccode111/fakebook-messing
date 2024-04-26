@@ -37,13 +37,12 @@ export const useAuthStore = create<StateAuthStore & ActionAuthStore>((set) => {
 
   return {
     authData,
-    setAuthData: (data) =>
-      set(() => {
-        // TODO: turn off this console.log in production
-        console.log(`the authData is: `, data);
-        localStorage.setItem(AuthStoreName, JSON.stringify(data));
-        return { authData: data };
-      }),
+    setAuthData: (data) => {
+      // TODO: turn off this console.log in production
+      console.log(`the authData is: `, data);
+      localStorage.setItem(AuthStoreName, JSON.stringify(data));
+      set(() => ({ authData: data }));
+    },
   };
 });
 

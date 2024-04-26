@@ -4,7 +4,7 @@ import Layout from "@/routes/layout";
 import Index from "@/routes/index";
 import About from "@/routes/about";
 import Login from "@/routes/login";
-import Logout from "@/routes/logout";
+import { loader as logoutLoader } from "@/routes/logout";
 import Signup from "@/routes/signup";
 import Fakebook from "@/routes/fakebook";
 import FakebookLayout from "@/routes/fakebook-layout";
@@ -80,7 +80,7 @@ export default function Router() {
 
         {
           path: "logout",
-          element: <Logout />,
+          loader: logoutLoader,
         },
 
         {
