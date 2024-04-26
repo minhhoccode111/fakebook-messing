@@ -61,7 +61,8 @@ const Login = () => {
         setAuthData(res.data);
 
         setIsSuccess(true);
-      } catch (err) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
         console.log(err);
 
         // TODO: try to add err types AxiosError

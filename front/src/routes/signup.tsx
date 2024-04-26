@@ -46,7 +46,8 @@ const Signup = () => {
       console.log(res);
 
       setIsSuccess(true);
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
       console.log(err.response);
 
       // TODO: try to add err types AxiosError
