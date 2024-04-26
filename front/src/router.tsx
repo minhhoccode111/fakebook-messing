@@ -8,8 +8,12 @@ import Logout from "@/routes/logout";
 import Signup from "@/routes/signup";
 import Fakebook from "@/routes/fakebook";
 import FakebookLayout from "@/routes/fakebook-layout";
-import Messing from "@/routes/messing";
 import Profile from "@/routes/profile";
+import Messing from "@/routes/messing";
+import MessingLayout from "@/routes/messing-layout";
+import Chat from "@/routes/chat";
+
+import ProtectedRoute from "./components/protected-route";
 
 export default function Router() {
   const router = createBrowserRouter([
@@ -25,7 +29,12 @@ export default function Router() {
 
         {
           path: "fakebook",
-          element: <FakebookLayout />,
+          element: (
+            // authentication wrapper
+            <ProtectedRoute>
+              <FakebookLayout />,
+            </ProtectedRoute>
+          ),
           errorElement: <NotFound />,
           children: [
             {
@@ -42,7 +51,26 @@ export default function Router() {
 
         {
           path: "messing",
-          element: <Messing />,
+          element: (
+            // authentication wrapper
+            <ProtectedRoute>
+              <MessingLayout />
+            </ProtectedRoute>
+          ),
+          errorElement: <NotFound />,
+          children: [
+            {
+              index: true,
+              errorElement: <NotFound />,
+              element: <Messing />,
+            },
+            {
+              // path: ":groupid",
+              // path: ":userid",
+              path: ":chatid",
+              element: <Chat />,
+            },
+          ],
         },
 
         {

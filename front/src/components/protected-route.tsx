@@ -7,7 +7,7 @@ const ProtectedRoute = ({ children }: ReactPropChildren) => {
   const isLogin = useAuthStore((state) => state.authData?.isLogin);
 
   if (!isLogin) {
-    return <Navigate to="/" replace={true} />;
+    return <Navigate to="/login" replace={true} />;
   }
 
   return <Fragment>{children}</Fragment>;
