@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useAuthStore } from "@/main";
 
-const FakebookLayout = () => {
+const MessingLayout = () => {
   const authData = useAuthStore((state) => state.authData);
 
   return (
@@ -13,4 +13,4 @@ const FakebookLayout = () => {
   );
 };
 
-export default FakebookLayout;
+export default MessingLayout;

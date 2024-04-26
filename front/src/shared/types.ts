@@ -1,3 +1,19 @@
+export type StateAuthStore = {
+  authData: AuthData;
+};
+
+export type ActionAuthStore = {
+  setAuthData: (data: AuthData) => void;
+};
+
+export type AuthData = {
+  self?: {
+    fullname: string;
+  };
+  // TODO: add types for auth data after logging in
+  isLogin?: boolean;
+};
+
 export type Theme = "dark" | "light" | "system";
 
 export type StateThemeStore = {
@@ -8,39 +24,8 @@ export type ActionThemeStore = {
   setTheme: (theme: Theme) => void;
 };
 
-export type AuthData = {
-  // TODO: add types for auth data after logging in
-  isLogin?: boolean;
-};
-
-export type StateAuthStore = {
-  authData: AuthData;
-};
-
-export type ActionAuthStore = {
-  setAuthData: (data: AuthData) => void;
-};
-
 export type ReactPropChildren = {
   children: React.ReactNode;
 };
 
-export type CounterStoreState = {
-  count: number;
-};
-
-export type CounterStoreActions = {
-  inc: () => void;
-  dec: () => void;
-  reset: () => void;
-};
-
-export type PersonStoreState = {
-  firstname: string;
-  lastname: string;
-};
-
-export type PersonStoreActions = {
-  updateFirstname: (firstname: string) => void;
-  updateLastname: (lastname: string) => void;
-};
+// export type LoginStatus = "ready" | "loading" | "success";

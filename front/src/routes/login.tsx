@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Form, Navigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import { useAuthStore } from "@/main";
@@ -6,12 +6,14 @@ import { useAuthStore } from "@/main";
 import EnvVar from "@/shared/constants";
 const { ApiOrigin } = EnvVar;
 
-type LoginStatus = "ready" | "loading" | "error" | "success";
-
 const Login = () => {
-  const [loginStatus, setLoginStatus] = useState<LoginStatus>("ready");
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+
   const setAuthData = useAuthStore((state) => state.setAuthData);
 
+  // type pass to this specify which element this ref will be used on
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
@@ -22,7 +24,7 @@ const Login = () => {
     const password = passwordRef.current?.value;
 
     try {
-      setLoginStatus("loading");
+      setIsLoading(true);
 
       const res = await axios({
         // mode: 'cors',
@@ -39,19 +41,27 @@ const Login = () => {
 
       setAuthData(res.data);
 
-      setLoginStatus("success");
+      setIsSuccess(true);
     } catch (err) {
       console.log(err);
-      setLoginStatus("error");
+
+      // TODO: try to add err types AxiosError
+      if (err.response.status !== 400 && err.response.status !== 401)
+        setIsError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  console.log(`loginStatus belike: `, loginStatus);
+  // console.log(`isLoading: `, isLoading);
+  // console.log(`isError: `, isError);
+  // console.log(`isSuccess: `, isSuccess);
 
-  if (loginStatus === "success") return <Navigate to={"/fakebook"} />;
+  if (isSuccess) return <Navigate to={"/fakebook"} />;
 
   return (
     <Form onSubmit={handleLogin} className="">
+      <h2 className="">Please log in</h2>
       <label className="">
         <p className="">Username: </p>
         <input ref={usernameRef} name="username" type="text" className="" />
@@ -64,7 +74,8 @@ const Login = () => {
 
       <div className="">
         <button type="submit" className="">
-          {loginStatus}
+          {/*  TODO: display proper icons and disable button when error happens */}
+          {isError ? "error" : isLoading ? "loading" : "login"}
         </button>
       </div>
     </Form>

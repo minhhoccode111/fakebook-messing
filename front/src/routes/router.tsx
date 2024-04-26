@@ -13,7 +13,7 @@ import Messing from "@/routes/messing";
 import MessingLayout from "@/routes/messing-layout";
 import Chat from "@/routes/chat";
 
-import ProtectedRoute from "./components/protected-route";
+import ProtectedRoute from "@/components/protected-route";
 
 export default function Router() {
   const router = createBrowserRouter([
@@ -32,7 +32,7 @@ export default function Router() {
           element: (
             // authentication wrapper
             <ProtectedRoute>
-              <FakebookLayout />,
+              <FakebookLayout />
             </ProtectedRoute>
           ),
           errorElement: <NotFound />,

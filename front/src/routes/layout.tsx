@@ -12,13 +12,16 @@ const Layout = () => {
     <ThemeProvider>
       <div
         id="wrapper"
-        className="flex flex-col gap-2 h-screen min-h-screen bg-gray-200 dark:bg-gray-800"
+        className="flex flex-col gap-2 h-screen min-h-screen bg-gray-400 dark:bg-gray-800 p-4"
       >
         <header className="flex gap-2 items-center justify-between">
           <h1 className="font-bold">
             <Link to={"/"}>Fakebook Messing</Link>
           </h1>
           <nav className="flex gap-4">
+            <Button>
+              <NavLink to={"/"}>Home</NavLink>
+            </Button>
             <Button>
               <NavLink to={"fakebook"}>Fakebook</NavLink>
             </Button>
@@ -35,7 +38,9 @@ const Layout = () => {
               <NavLink to={"logout"}>Logout</NavLink>
             </Button>
           </nav>
-          <ThemeToggler />
+          <div className="">
+            <ThemeToggler />
+          </div>
         </header>
 
         <main className="flex-1">
