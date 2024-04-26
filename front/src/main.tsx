@@ -5,16 +5,19 @@ import "@/css/index.css";
 import "@/css/app.css";
 
 import { create } from "zustand";
-import {
-  Theme,
-  StateThemeStore,
-  ActionThemeStore,
-  StateAuthStore,
-  ActionAuthStore,
-} from "@/shared/types";
 
 import EnvVar from "@/shared/constants";
 const { ThemeStoreName, AuthStoreName } = EnvVar;
+
+export type Theme = "dark" | "light" | "system";
+
+export type StateThemeStore = {
+  theme: Theme;
+};
+
+export type ActionThemeStore = {
+  setTheme: (theme: Theme) => void;
+};
 
 // INIT ZUSTAND STORES HERE
 export const useThemeStore = create<StateThemeStore & ActionThemeStore>(
@@ -26,6 +29,22 @@ export const useThemeStore = create<StateThemeStore & ActionThemeStore>(
     },
   }),
 );
+
+export type StateAuthStore = {
+  authData: AuthData;
+};
+
+export type ActionAuthStore = {
+  setAuthData: (data: AuthData) => void;
+};
+
+export type AuthData = {
+  self?: {
+    fullname: string;
+  };
+  // TODO: add types for auth data after logging in
+  isLogin?: boolean;
+};
 
 export const useAuthStore = create<StateAuthStore & ActionAuthStore>((set) => {
   const authData =
