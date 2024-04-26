@@ -2,10 +2,12 @@ import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import ThemeProvider from "@/components/theme-provider";
 import ThemeToggler from "@/components/theme-toggler";
 import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/main";
 
 const Layout = () => {
   // display a path to current for debug
   const { pathname } = useLocation();
+  const isLogin = useAuthStore((state) => state.authData?.isLogin);
 
   return (
     // wrapper to change root classes each time theme changes
@@ -28,15 +30,20 @@ const Layout = () => {
             <Button>
               <NavLink to={"messing"}>Messing</NavLink>
             </Button>
-            <Button>
-              <NavLink to={"login"}>Login</NavLink>
-            </Button>
-            <Button>
-              <NavLink to={"signup"}>Signup</NavLink>
-            </Button>
-            <Button>
-              <NavLink to={"logout"}>Logout</NavLink>
-            </Button>
+            {!isLogin ? (
+              <>
+                <Button>
+                  <NavLink to={"signup"}>Signup</NavLink>
+                </Button>
+                <Button>
+                  <NavLink to={"login"}>Login</NavLink>
+                </Button>
+              </>
+            ) : (
+              <Button>
+                <NavLink to={"logout"}>Logout</NavLink>
+              </Button>
+            )}
           </nav>
           <div className="">
             <ThemeToggler />

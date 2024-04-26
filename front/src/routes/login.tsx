@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Form, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import { useAuthStore } from "@/main";
 
@@ -17,41 +17,52 @@ const Login = () => {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin =
+    (type = "normal") =>
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    const username = usernameRef.current?.value;
-    const password = passwordRef.current?.value;
+      let username;
+      let password;
 
-    try {
-      setIsLoading(true);
+      if (type === "normal") {
+        username = usernameRef.current?.value;
+        password = passwordRef.current?.value;
+      } else if (type === "random") {
+        // default account, check db populate script in backend
+        username = "asd" + Math.floor(Math.random() * 15);
+        password = "asd";
+      }
 
-      const res = await axios({
-        // mode: 'cors',
+      try {
+        setIsLoading(true);
 
-        url: ApiOrigin + "/auth/login",
-        method: "post",
-        data: {
-          username,
-          password,
-        },
-      });
+        const res = await axios({
+          // mode: 'cors',
 
-      // console.log(res);
+          url: ApiOrigin + "/auth/login",
+          method: "post",
+          data: {
+            username,
+            password,
+          },
+        });
 
-      setAuthData(res.data);
+        // console.log(res);
 
-      setIsSuccess(true);
-    } catch (err) {
-      console.log(err);
+        setAuthData(res.data);
 
-      // TODO: try to add err types AxiosError
-      if (err.response.status !== 400 && err.response.status !== 401)
-        setIsError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        setIsSuccess(true);
+      } catch (err) {
+        console.log(err);
+
+        // TODO: try to add err types AxiosError
+        if (err.response.status !== 400 && err.response.status !== 401)
+          setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   // console.log(`isLoading: `, isLoading);
   // console.log(`isError: `, isError);
@@ -60,25 +71,35 @@ const Login = () => {
   if (isSuccess) return <Navigate to={"/fakebook"} />;
 
   return (
-    <Form onSubmit={handleLogin} className="">
-      <h2 className="">Please log in</h2>
-      <label className="">
-        <p className="">Username: </p>
-        <input ref={usernameRef} name="username" type="text" className="" />
-      </label>
+    <>
+      <form onSubmit={handleLogin("normal")} className="">
+        <h2 className="">Please log in</h2>
+        <label className="">
+          <p className="">Username: </p>
+          <input ref={usernameRef} name="username" type="text" className="" />
+        </label>
 
-      <label className="">
-        <p className="">Password: </p>
-        <input ref={passwordRef} name="password" type="text" className="" />
-      </label>
+        <label className="">
+          <p className="">Password: </p>
+          <input ref={passwordRef} name="password" type="text" className="" />
+        </label>
 
-      <div className="">
-        <button type="submit" className="">
-          {/*  TODO: display proper icons and disable button when error happens */}
-          {isError ? "error" : isLoading ? "loading" : "login"}
-        </button>
-      </div>
-    </Form>
+        <div className="">
+          <button type="submit" className="">
+            {/*  TODO: display proper icons and disable button when error happens */}
+            {isError ? "error" : isLoading ? "loading" : "login"}
+          </button>
+        </div>
+      </form>
+      <form onSubmit={handleLogin("random")} className="">
+        <div className="">
+          <button type="submit" className="">
+            {/*  TODO: display proper icons and disable button when error happens */}
+            {isError ? "error" : isLoading ? "loading" : "random account"}
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 
