@@ -41,6 +41,7 @@ export type ActionAuthStore = {
 export type AuthData = {
   self?: {
     fullname: string;
+    id: string;
   };
   // TODO: add types for auth data after logging in
   isLogin?: boolean;

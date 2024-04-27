@@ -1,8 +1,11 @@
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import ThemeProvider from "@/components/theme-provider";
 import ThemeToggler from "@/components/theme-toggler";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/main";
+import Custom from "@/components/custom";
+
+const MyNavLink = Custom.MyNavLink;
 
 const Layout = () => {
   // display a path to current for debug
@@ -21,30 +24,25 @@ const Layout = () => {
             <Link to={"/"}>Fakebook Messing</Link>
           </h1>
           <nav className="flex gap-4">
-            <Button>
-              <NavLink to={"/"}>Home</NavLink>
-            </Button>
-            <Button>
-              <NavLink to={"fakebook"}>Fakebook</NavLink>
-            </Button>
-            <Button>
-              <NavLink to={"messing"}>Messing</NavLink>
-            </Button>
+            <MyNavLink to="/">home</MyNavLink>
+
+            <MyNavLink to="fakebook">fakebook</MyNavLink>
+
+            <MyNavLink to="messing">messing</MyNavLink>
+
+            <MyNavLink to="about">about</MyNavLink>
+
             {!isLogin ? (
               <>
-                <Button>
-                  <NavLink to={"signup"}>Signup</NavLink>
-                </Button>
-                <Button>
-                  <NavLink to={"login"}>Login</NavLink>
-                </Button>
+                <MyNavLink to="login">login</MyNavLink>
+
+                <MyNavLink to="signup">signup</MyNavLink>
               </>
             ) : (
-              <Button>
-                <NavLink to={"logout"}>Logout</NavLink>
-              </Button>
+              <MyNavLink to="logout">logout</MyNavLink>
             )}
           </nav>
+
           <div className="">
             <ThemeToggler />
           </div>

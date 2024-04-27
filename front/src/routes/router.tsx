@@ -7,9 +7,19 @@ import Login from "@/routes/login";
 import Signup from "@/routes/signup";
 import { loader as logoutLoader } from "@/routes/logout";
 
-import FakebookLayout from "@/routes/fakebook/fakebook-layout";
-import Feed from "@/routes/fakebook/feed";
+import FakebookLayout, {
+  loader as loaderFakebookLayout,
+} from "@/routes/fakebook/fakebook-layout";
+import FakebookFeed from "@/routes/fakebook/fakebook-feed";
 import ProfileLayout from "@/routes/fakebook/profile/profile-layout";
+import ProfileToUserid, {
+  loaderUseridToInfo,
+} from "@/routes/fakebook/profile/profile-navigate";
+
+import UserLayout from "@/routes/fakebook/profile/user/user-layout";
+import UserInfo from "@/routes/fakebook/profile/user/user-info";
+import UserPosts from "@/routes/fakebook/profile/user/user-posts";
+import UserConnections from "@/routes/fakebook/profile/user/user-connections";
 
 import IndexMessing from "@/routes/messing/index-messing";
 import LayoutMessing from "@/routes/messing/layout-messing";
@@ -42,30 +52,53 @@ export default function Router() {
           children: [
             {
               index: true,
-              // loader: goToFeed
+              loader: loaderFakebookLayout,
             },
 
             {
               path: "feed",
-              element: <Feed />,
+              element: <FakebookFeed />,
             },
 
             {
-              path: ":userid",
-              element: <ProfileLayout />,
+              path: "profile",
+              // TODO: should this layout contain all connections with self?
+              element: <ProfileLayout />, // just a simple Outlet
               errorElement: <NotFound />,
               children: [
                 {
                   index: true,
-                  // loader: goToInfo
+                  //  navigate to current user /:userid using component
+                  //  because we have to access useAuthStore of zustand
+                  //  which can only be called inside a component (?)
+
+                  element: <ProfileToUserid />,
                 },
+
                 {
-                  path: "info",
-                  // element: <FakebookProfileInfo/>
-                },
-                {
-                  path: "posts",
-                  // element: <FakebookProfilePosts/>
+                  path: ":userid",
+                  element: <UserLayout />,
+                  children: [
+                    {
+                      index: true,
+                      loader: loaderUseridToInfo,
+                    },
+
+                    {
+                      path: "info",
+                      element: <UserInfo />,
+                    },
+
+                    {
+                      path: "posts",
+                      element: <UserPosts />,
+                    },
+
+                    {
+                      path: "connections",
+                      element: <UserConnections />,
+                    },
+                  ],
                 },
               ],
             },
@@ -87,10 +120,14 @@ export default function Router() {
               errorElement: <NotFound />,
               element: <IndexMessing />,
             },
+
             {
-              // path: ":groupid",
-              // path: ":userid",
-              path: ":chatid",
+              path: "users/:userid",
+              element: <ChatMessing />,
+            },
+
+            {
+              path: "groups/:groupid",
               element: <ChatMessing />,
             },
           ],

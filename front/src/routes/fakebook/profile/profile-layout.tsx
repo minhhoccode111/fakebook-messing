@@ -1,8 +1,6 @@
-import { useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
-const ProfileLayout = () => {
-  const { pathname } = useLocation();
+// just pass everything continuously
+const ProfileLayout = () => <Outlet></Outlet>;
 
-  return <section>{pathname}</section>;
-};
 export default ProfileLayout;

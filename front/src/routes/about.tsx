@@ -1,3 +1,5 @@
-export default function About() {
-  return <section className=""></section>;
-}
+const About = () => {
+  return <section className="">hello world</section>;
+};
+
+export default About;
