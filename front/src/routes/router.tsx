@@ -4,14 +4,16 @@ import Layout from "@/routes/layout";
 import Index from "@/routes/index";
 import About from "@/routes/about";
 import Login from "@/routes/login";
-import { loader as logoutLoader } from "@/routes/logout";
 import Signup from "@/routes/signup";
-import Fakebook from "@/routes/fakebook";
-import FakebookLayout from "@/routes/fakebook-layout";
-import Profile from "@/routes/profile";
-import Messing from "@/routes/messing";
-import MessingLayout from "@/routes/messing-layout";
-import Chat from "@/routes/chat";
+import { loader as logoutLoader } from "@/routes/logout";
+
+import FakebookLayout from "@/routes/fakebook/fakebook-layout";
+import Feed from "@/routes/fakebook/feed";
+import ProfileLayout from "@/routes/fakebook/profile/profile-layout";
+
+import IndexMessing from "@/routes/messing/index-messing";
+import LayoutMessing from "@/routes/messing/layout-messing";
+import ChatMessing from "@/routes/messing/chat-messing";
 
 import ProtectedRoute from "@/components/protected-route";
 
@@ -25,6 +27,7 @@ export default function Router() {
         {
           index: true,
           element: <Index />,
+          // loader: goToAbout?
         },
 
         {
@@ -39,12 +42,32 @@ export default function Router() {
           children: [
             {
               index: true,
-              errorElement: <NotFound />,
-              element: <Fakebook />,
+              // loader: goToFeed
             },
+
+            {
+              path: "feed",
+              element: <Feed />,
+            },
+
             {
               path: ":userid",
-              element: <Profile />,
+              element: <ProfileLayout />,
+              errorElement: <NotFound />,
+              children: [
+                {
+                  index: true,
+                  // loader: goToInfo
+                },
+                {
+                  path: "info",
+                  // element: <FakebookProfileInfo/>
+                },
+                {
+                  path: "posts",
+                  // element: <FakebookProfilePosts/>
+                },
+              ],
             },
           ],
         },
@@ -54,7 +77,7 @@ export default function Router() {
           element: (
             // authentication wrapper
             <ProtectedRoute>
-              <MessingLayout />
+              <LayoutMessing />
             </ProtectedRoute>
           ),
           errorElement: <NotFound />,
@@ -62,13 +85,13 @@ export default function Router() {
             {
               index: true,
               errorElement: <NotFound />,
-              element: <Messing />,
+              element: <IndexMessing />,
             },
             {
               // path: ":groupid",
               // path: ":userid",
               path: ":chatid",
-              element: <Chat />,
+              element: <ChatMessing />,
             },
           ],
         },

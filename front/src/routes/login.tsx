@@ -99,7 +99,7 @@ const Login = () => {
         <div className="">
           <button type="submit" className="">
             {/*  TODO: display proper icons and disable button when error happens */}
-            {isError ? "error" : isLoading ? "loading" : "login"}
+            {isError ? "error" : isLoading ? "loading..." : "login"}
           </button>
         </div>
       </form>
@@ -107,7 +107,11 @@ const Login = () => {
         <div className="">
           <button type="submit" className="">
             {/*  TODO: display proper icons and disable button when error happens */}
-            {isError ? "error" : isLoading ? "loading" : "use random account"}
+            {isError
+              ? "error"
+              : isLoading
+                ? "loading..."
+                : "use random account"}
           </button>
         </div>
       </form>

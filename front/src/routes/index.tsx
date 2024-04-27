@@ -5,6 +5,7 @@ export default function Index() {
     <Fragment>
       {/*  */}
       <h2 className="">Inside Index</h2>
+      <h2 className="">welcome to fakebook</h2>
     </Fragment>
   );
 }

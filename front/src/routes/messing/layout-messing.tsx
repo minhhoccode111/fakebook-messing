@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useAuthStore } from "@/main";
 
-const MessingLayout = () => {
+const LayoutMessing = () => {
   const authData = useAuthStore((state) => state.authData);
 
   return (
@@ -13,4 +13,4 @@ const MessingLayout = () => {
   );
 };
 
-export default MessingLayout;
+export default LayoutMessing;

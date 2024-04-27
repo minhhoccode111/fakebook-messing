@@ -1,7 +1,8 @@
 import { useLocation } from "react-router-dom";
 
-export default function Profile() {
+const ProfileLayout = () => {
   const { pathname } = useLocation();
 
   return <section>{pathname}</section>;
-}
+};
+export default ProfileLayout;

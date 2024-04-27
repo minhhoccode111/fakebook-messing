@@ -164,7 +164,7 @@ const Signup = () => {
       <div className="">
         <button type="submit" className="">
           {/*  TODO: display proper icons and disable button when error happens */}
-          {isError ? "error" : isLoading ? "loading" : "signup"}
+          {isError ? "error" : isLoading ? "loading..." : "signup"}
         </button>
       </div>
     </Form>
