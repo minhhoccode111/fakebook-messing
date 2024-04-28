@@ -21,32 +21,35 @@ const debug = require("./../constants/debug");
 
 const getAllUsersHelper = asyncHandler(async (req, res) => {
   const self = req.selfUser;
-  // all users have connection with self
-  const connections = await Follow.find(
-    {
-      $or: [
-        // self is follower
-        { follower: self.id },
-        // self is followed
-        { following: self.id },
-      ],
-    },
-    "follower following",
-  )
-    .populate("follower", "-password -username -__v")
-    .populate("following", "-password -username -__v")
-    .exec();
 
-  const followers = [];
-  const followings = [];
+  const [selfIsFollower, selfIsBeingFollowed] = await Promise.all([
+    Follow.find({ follower: self.id }, "follower following")
+      .populate("following", "-password -username -__v")
+      .exec(),
+    Follow.find({ following: self.id }, "follower following")
+      .populate("follower", "-password -username -__v")
+      .exec(),
+  ]);
+
+  // TODO: maybe get all ref that self involve
+  // then create a set for all refs follower
+  // then create a set for all refs followings
+  // then create a set intersection 2 sets above, that's friends
+
+  // const followers = [];
+  // const followings = [];
+  const followers = new Set();
+  const followings = new Set();
 
   for (let i = 0, len = connections.length; i < len; i++) {
     if (connections[i].follower.id === self.id) {
       // if self is follower
-      followings.push(connections[i].following);
+      // followings.push(connections[i].following);
+      followings.add(connections[i].following);
     } else {
       // else self is following
-      followers.push(connections[i].follower);
+      // followers.push(connections[i].follower);
+      followers.add(connections[i].follower);
     }
   }
 
