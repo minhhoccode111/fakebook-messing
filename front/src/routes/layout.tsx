@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import ThemeProvider from "@/components/theme-provider";
 import ThemeToggler from "@/components/theme-toggler";
 // import { Button } from "@/components/ui/button";
@@ -23,6 +23,11 @@ const Layout = () => {
           <h1 className="font-bold">
             <Link to={"/"}>Fakebook Messing</Link>
           </h1>
+
+          <div className="">
+            <ThemeToggler />
+          </div>
+
           <nav className="flex gap-4">
             <MyNavLink to="/">home</MyNavLink>
 
@@ -42,15 +47,11 @@ const Layout = () => {
               <MyNavLink to="logout">logout</MyNavLink>
             )}
           </nav>
-
-          <div className="">
-            <ThemeToggler />
-          </div>
         </header>
 
         <main className="flex-1">
-          <h2 className="">At: {pathname}</h2>
           <Outlet></Outlet>
+          <h2 className="">At: {pathname}</h2>
         </main>
 
         <footer className="">

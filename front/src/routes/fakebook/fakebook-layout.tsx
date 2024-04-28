@@ -15,21 +15,19 @@ const FakebookLayout = () => {
   return (
     <section>
       <header className="">
-        <h2 className="">fakebook</h2>
-
-        <nav className="flex gap-4">
+        <nav className="flex justify-end gap-4">
           <MyNavLink to="feed">feed</MyNavLink>
 
           <MyNavLink to="profile">profile</MyNavLink>
         </nav>
       </header>
 
-      <aside className="">
+      <Outlet></Outlet>
+
+      <footer className="">
         <h2 className="">Is logged in: {authData.isLogin ? "yes" : "no"}</h2>
         <h2 className="">User fullname: {authData.self?.fullname}</h2>
-      </aside>
-
-      <Outlet></Outlet>
+      </footer>
     </section>
   );
 };

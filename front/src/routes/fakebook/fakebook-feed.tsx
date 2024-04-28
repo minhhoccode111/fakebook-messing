@@ -1,54 +1,61 @@
-import { create } from "zustand";
-import { Await, defer, userLoaderData } from "react-router-dom";
+import { Await, defer, useLoaderData } from "react-router-dom";
+import { useAuthStore } from "@/main";
+import { Suspense } from "react";
+import axios from "axios";
 
-// export type User = {
-//   fullname: string;
-//   status: string;
-//   avatarLink: string;
-// };
+import EnvVar from "@/shared/constants";
+const { ApiOrigin } = EnvVar;
 
-// export type Post = {
-//   creator: User;
-//   content: string;
-// };
-
-// export type Connections = {
-//   self: User;
-//   followers: User[];
-//   followings: User[];
-//   mayknows: User[];
-//   friends: User[];
-// };
-
-// export type StateFeedStore = {
-//   posts: Post[];
-//   followers: User[];
-//   followings: User[];
-//   mayknows: User[];
-//   friends: User[];
-// };
-
-// export type ActionFeedStore = {
-//   setPosts: (posts: Post[]) => void;
-//   setConnections: (connections: Connections) => void;
-// };
-
-// export const useFeedStore = create<StateFeedStore & ActionFeedStore>((set) => ({
-//   posts: [],
-//   followers: [],
-//   followings: [],
-//   mayknows: [],
-//   friends: [],
-//   setPosts: (posts: Post[]) => set(() => ({ posts })),
-//   setConnections: (connections: Connections) => set(() => ({ ...connections })),
-// }));
-
+// dangerous because using localStorage info?
 export const loaderFakebookFeed = async () => {
   return null;
 };
 
+const useFetchFeed = async () => {
+  const token = useAuthStore((state) => state.authData.token);
+
+  const res = await axios({
+    method: "get",
+    url: ApiOrigin + "/users", // TODO: /feed
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const {
+    self,
+    followers,
+    followings,
+    mayknows,
+    friends,
+    // posts
+  } = res.data;
+
+  // TODO: add friends
+  // TODO: feed api
+
+  return defer({
+    ...res.data,
+  });
+};
+
 const FakebookFeed = () => {
-  return <></>;
+  const data = useFetchFeed();
+  return (
+    <Suspense fallback={<p>Loading package location...</p>}>
+      <Await
+        resolve={data}
+        errorElement={<p>Error loading package location!</p>}
+      >
+        {(data) => (
+          <>
+            <h2 className="">khong dieu kien</h2>
+            {/* <h2 className="">{data}</h2> */}
+          </>
+        )}
+      </Await>
+    </Suspense>
+  );
 };
 
 export default FakebookFeed;

@@ -45,6 +45,7 @@ export type AuthData = {
   };
   // TODO: add types for auth data after logging in
   isLogin?: boolean;
+  token?: string;
 };
 
 export const useAuthStore = create<StateAuthStore & ActionAuthStore>((set) => {

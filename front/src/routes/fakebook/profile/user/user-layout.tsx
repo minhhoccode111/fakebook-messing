@@ -7,9 +7,7 @@ const UserLayout = () => {
   return (
     <section>
       <header className="">
-        <h2 className="">profile</h2>
-
-        <nav className="flex gap-4">
+        <nav className="flex justify-end gap-4">
           <MyNavLink to={"info"}>info</MyNavLink>
 
           <MyNavLink to={"posts"}>posts</MyNavLink>
