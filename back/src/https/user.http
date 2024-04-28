@@ -1,6 +1,9 @@
 GET {{url}}/users
 Authorization: {{token}}
 
+GET {{url}}/users/feed
+Authorization: {{token}}
+
 # 
 GET {{url}}/users/{{other}}
 Authorization: {{token}}

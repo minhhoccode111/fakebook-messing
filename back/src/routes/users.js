@@ -7,6 +7,8 @@ const UsersController = require("./../controllers/user.controller");
 
 router.get("/", UsersController.selfGetAllUsers);
 
+router.get("/feed", UsersController.getFeed);
+
 router.get("/:userid", UsersController.getUser);
 
 router.put("/:userid", UsersController.putUser);

@@ -106,6 +106,67 @@ const userGetAllUsers = [
   getAllUsersHelper,
 ];
 
+// GET /feed
+const getFeed = asyncHandler(async (req, res) => {
+  // get all users that self is following
+  const selfIsFollower = await Follow.find(
+    { follower: req.user.id },
+    "follower following",
+  )
+    .populate("following", "-password -username -__v") // security
+    .exec();
+
+  // extract all users that are being followed
+  const usersAreBeingFollowed = selfIsFollower.map((ref) =>
+    ref.following.toJSON(),
+  );
+
+  const posts = [];
+
+  // loop through all users
+  for (let i = 0, len = usersAreBeingFollowed.length; i < len; i++) {
+    // current user is creator
+    const creator = usersAreBeingFollowed[i];
+
+    // find all post of current user
+    const userPosts = await Post.find({ creator }, "-creator -__v").exec();
+
+    // loop through each post of current user
+    for (let j = 0, lenJ = userPosts.length; j < lenJ; j++) {
+      // current post of current user
+      const post = userPosts[j];
+
+      // find all comments and count likes of current post
+      const [postComments, postLikes] = await Promise.all([
+        Comment.find({ post }, "-post -__v")
+          .populate("creator", "_id fullname status avatarLink") // security
+          .sort({ createdAt: -1 })
+          .exec(),
+        LikePost.countDocuments({ post }).exec(),
+      ]);
+
+      const comments = [];
+      // loop through each comment of current post of current user
+      for (let k = 0, lenK = postComments.length; k < lenK; k++) {
+        // current comment
+        const comment = postComments[k];
+
+        // count comment
+        const commentLikes = await LikeComment.countDocuments({
+          comment,
+        }).exec();
+
+        comments.push({ ...comment.toJSON(), likes: commentLikes });
+      }
+
+      // override post's creator because it's not populated
+      posts.push({ ...post.toJSON(), creator, comments, likes: postLikes });
+    }
+  }
+
+  return res.json(posts.sort((a, b) => b.createdAt - a.createdAt));
+});
+
 // GET /users/:userid
 const getUser = [
   mongo.userid,
@@ -249,7 +310,9 @@ const getUserPosts = [
   asyncHandler(async (req, res) => {
     const creator = req.userParam;
 
-    const userPosts = await Post.find({ creator }, "-creator -__v").exec();
+    const userPosts = await Post.find({ creator }, "-creator -__v")
+      .sort({ createdAt: -1 })
+      .exec();
 
     // debug(`the posts after retrieve database belike: `, userPosts);
 
@@ -259,6 +322,7 @@ const getUserPosts = [
       const [postComments, postLikes] = await Promise.all([
         Comment.find({ post }, "-post -__v")
           .populate("creator", "_id fullname status avatarLink") // security
+          .sort({ createdAt: -1 })
           .exec(),
         LikePost.countDocuments({ post }).exec(),
       ]);
@@ -429,6 +493,7 @@ const postUserCommentLikes = [
 ];
 
 module.exports = {
+  getFeed,
   selfGetAllUsers,
   userGetAllUsers,
   getUser,
