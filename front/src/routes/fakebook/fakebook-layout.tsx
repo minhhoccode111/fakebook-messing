@@ -5,7 +5,7 @@ import Custom from "@/components/custom";
 const { MyNavLink } = Custom;
 
 // route /fakebook not implemented
-export const loader = () => {
+export const loaderFakebookLayout = () => {
   return redirect("/fakebook/feed");
 };
 

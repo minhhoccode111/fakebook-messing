@@ -8,9 +8,11 @@ import Signup from "@/routes/signup";
 import { loader as logoutLoader } from "@/routes/logout";
 
 import FakebookLayout, {
-  loader as loaderFakebookLayout,
+  loaderFakebookLayout,
 } from "@/routes/fakebook/fakebook-layout";
-import FakebookFeed from "@/routes/fakebook/fakebook-feed";
+import FakebookFeed, {
+  loaderFakebookFeed,
+} from "@/routes/fakebook/fakebook-feed";
 import ProfileLayout from "@/routes/fakebook/profile/profile-layout";
 import ProfileToUserid, {
   loaderUseridToInfo,
@@ -58,6 +60,7 @@ export default function Router() {
             {
               path: "feed",
               element: <FakebookFeed />,
+              loader: loaderFakebookFeed,
             },
 
             {
