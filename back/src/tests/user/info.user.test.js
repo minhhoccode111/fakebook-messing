@@ -93,8 +93,9 @@ describe(`User Info Testing`, () => {
         expect(res.status).toBe(200);
         expect(res.headers["content-type"]).toMatch(/json/);
 
-        expect(res.body.followers.length).toBe(1); // asd1
-        expect(res.body.followings.length).toBe(1); // asd1
+        expect(res.body.followers.length).toBe(0);
+        expect(res.body.followings.length).toBe(0);
+        expect(res.body.friends.length).toBe(1);
         expect(res.body.mayknows.length).toBe(1); // qwe0
       });
 
@@ -249,8 +250,9 @@ describe(`User Info Testing`, () => {
           .set("Authorization", `Bearer ${asdBody0.token}`);
 
         expect(followRes0.status).toBe(200);
-        expect(followRes0.body.followings.length).toBe(2); // asd1, qwe0
-        expect(followRes0.body.followers.length).toBe(1); // asd1
+        expect(followRes0.body.followings.length).toBe(1); // asd1, qwe0
+        expect(followRes0.body.friends.length).toBe(1); // asd1, qwe0
+        expect(followRes0.body.followers.length).toBe(0); // asd1
         expect(followRes0.body.mayknows.length).toBe(0);
 
         const qwe0GetAll = await request(app)

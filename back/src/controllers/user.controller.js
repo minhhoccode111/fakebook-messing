@@ -24,33 +24,37 @@ const getAllUsersHelper = asyncHandler(async (req, res) => {
 
   const [selfIsFollower, selfIsBeingFollowed] = await Promise.all([
     Follow.find({ follower: self.id }, "follower following")
-      .populate("following", "-password -username -__v")
+      .populate("following", "-password -username -__v") // security
       .exec(),
     Follow.find({ following: self.id }, "follower following")
-      .populate("follower", "-password -username -__v")
+      .populate("follower", "-password -username -__v") // security
       .exec(),
   ]);
 
-  // TODO: maybe get all ref that self involve
-  // then create a set for all refs follower
-  // then create a set for all refs followings
-  // then create a set intersection 2 sets above, that's friends
+  const allFollowerIds = {};
+  for (const ref of selfIsBeingFollowed) {
+    allFollowerIds[ref.follower.id] = ref.follower;
+  }
+  const allFollowingIds = {};
+  for (const ref of selfIsFollower) {
+    allFollowingIds[ref.following.id] = ref.following;
+  }
 
-  // const followers = [];
-  // const followings = [];
-  const followers = new Set();
-  const followings = new Set();
+  const friends = [];
+  const followers = [];
+  const followings = [];
 
-  for (let i = 0, len = connections.length; i < len; i++) {
-    if (connections[i].follower.id === self.id) {
-      // if self is follower
-      // followings.push(connections[i].following);
-      followings.add(connections[i].following);
-    } else {
-      // else self is following
-      // followers.push(connections[i].follower);
-      followers.add(connections[i].follower);
-    }
+  for (const id in allFollowerIds) {
+    // follower intersection following
+    if (allFollowingIds[id]) friends.push(allFollowerIds[id]);
+    // follower difference following
+    else followers.push(allFollowerIds[id]);
+  }
+
+  for (const id in allFollowingIds) {
+    if (allFollowerIds[id]) continue;
+    // following difference follower
+    else followings.push(allFollowingIds[id]);
   }
 
   // then mayknow will be the ones with no connection
@@ -71,10 +75,15 @@ const getAllUsersHelper = asyncHandler(async (req, res) => {
           $nin: followings, // not followings
         },
       },
+      {
+        _id: {
+          $nin: friends, // not friends
+        },
+      },
     ],
   }).exec();
 
-  return res.json({ self, followers, followings, mayknows });
+  return res.json({ self, followers, followings, mayknows, friends });
 });
 
 // GET /users
