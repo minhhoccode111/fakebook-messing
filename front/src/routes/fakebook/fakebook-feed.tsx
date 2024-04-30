@@ -1,5 +1,4 @@
 import { Await, defer, useLoaderData } from "react-router-dom";
-import { useAuthStore } from "@/main";
 import { Suspense, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -7,7 +6,7 @@ import Custom from "@/components/custom";
 const { MyAvatar } = Custom;
 
 import EnvVar from "@/shared/constants";
-const { ApiOrigin } = EnvVar;
+const { ApiOrigin, AuthStoreName } = EnvVar;
 
 type User = {
   fullname: string;
@@ -37,148 +36,70 @@ type Comment = {
 //   isErrorFeed: boolean;
 // }>;
 
-// dangerous because using localStorage info?
 export const loaderFakebookFeed = async () => {
-  return null;
+  const authData = JSON.parse(localStorage.getItem(AuthStoreName) as string);
+  const token = authData.token;
+
+  const feed = axios({
+    url: ApiOrigin + `/users/feed`,
+    method: "get",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const connections = axios({
+    url: ApiOrigin + `/users`,
+    method: "get",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return defer({ feed, connections });
 };
 
-const useFetchFeed = () => {
-  const token = useAuthStore((state) => state.authData?.token);
-
-  const [isLoadingFeed, setIsLoadingFeed] = useState(false);
-  const [isErrorFeed, setIsErrorFeed] = useState(false);
-  const [feed, setFeed] = useState([]);
-
-  useEffect(() => {
-    const tmp = async () => {
-      try {
-        setIsLoadingFeed(true);
-        const res = await axios({
-          method: "get",
-          url: ApiOrigin + "/users/feed",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log(res.data);
-
-        setFeed(res.data);
-      } catch (err) {
-        console.log(err);
-
-        setIsErrorFeed(true);
-      } finally {
-        setIsLoadingFeed(false);
-      }
-    };
-
-    tmp();
-  }, [token]);
-
-  return { feed, isLoadingFeed, isErrorFeed };
-};
-
-const useFetchConnections = () => {
-  const token = useAuthStore((state) => state.authData?.token);
-
-  const [isLoadingConnections, setIsLoadingConnections] = useState(false);
-  const [isErrorConnections, setIsErrorConnections] = useState(false);
-  const [connections, setConnections] = useState({});
-
-  useEffect(() => {
-    const tmp = async () => {
-      try {
-        setIsLoadingConnections(true);
-        const res = await axios({
-          method: "get",
-          url: ApiOrigin + "/users",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        console.log(res.data);
-
-        setConnections(res.data);
-      } catch (err) {
-        console.log(err);
-
-        setIsErrorConnections(true);
-      } finally {
-        setIsLoadingConnections(false);
-      }
-    };
-
-    tmp();
-  }, [token]);
-
-  return { connections, isLoadingConnections, isErrorConnections };
+type LoaderData = {
+  feed: Post[];
+  connections: object;
 };
 
 const FakebookFeed = () => {
-  const { feed, isLoadingFeed, isErrorFeed } = useFetchFeed();
-  const { connections, isLoadingConnections, isErrorConnections } =
-    useFetchConnections();
+  const data = useLoaderData() as LoaderData;
 
   return (
     <div className="">
-      <h2 className="">news feed</h2>
+      <h2 className="">Welcome to Fakebook feed</h2>
+      <Suspense fallback={<p className="">Loading feed...</p>}>
+        <Await
+          resolve={data.feed}
+          errorElement={<p className="">Error loader feed!</p>}
+        >
+          {/* this is the response  */}
+          {(feed) => (
+            <>
+              <p className="">{feed?.length}</p>
+            </>
+          )}
+        </Await>
+      </Suspense>
 
-      {isErrorFeed ? (
-        "error loading feed."
-      ) : isLoadingFeed ? (
-        "loading feed..."
-      ) : (
-        <ul className="">
-          {feed.map((post: Post, index: number) => {
-            const {
-              creator: { fullname, status, avatarLink },
-              comments,
-              content,
-              createdAtFormatted,
-              likes,
-            } = post;
-            return (
-              <li key={index}>
-                <h3 className="font-bold">Post</h3>
-                <p className="font-bold">{content}</p>
-                <p className="">Likes: {likes}</p>
-                <div className="">
-                  <h3 className="font-bold">Post's Creator</h3>
-                  <p className="">{fullname}</p>
-                  <p className="">{status}</p>
-                  <MyAvatar src={avatarLink} fallback={"zz"} />
-                </div>
-
-                <ul className="">
-                  <h3 className="font-bold">Comments</h3>
-                  {comments.map((comment: Comment, index: number) => {
-                    const {
-                      creator: { fullname, status, avatarLink },
-                      content,
-                      createdAtFormatted,
-                      likes,
-                    } = comment;
-                    return (
-                      <li key={index}>
-                        <p className="">{content}</p>
-                        <p className="">{likes}</p>
-                        <p className="">{createdAtFormatted}</p>
-                        <p className="">Creator: {fullname}</p>
-                        <p className="">{status}</p>
-                        <MyAvatar src={avatarLink} fallback={"zz"} />
-                      </li>
-                    );
-                  })}
-                </ul>
-                <p className="">Created: {createdAtFormatted}</p>
-                <hr className="" />
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      <Suspense fallback={<p className="">Loading connections...</p>}>
+        <Await
+          resolve={data.connections}
+          errorElement={<p className="">Error loader connections!</p>}
+        >
+          {(connections) => (
+            <>
+              {/* <p className="">Self: {connections.self.fullname}</p> */}
+              <p className="">{connections?.friends?.length}</p>
+              <p className="">{connections?.followings?.length}</p>
+              <p className="">{connections?.followers?.length}</p>
+              <p className="">{connections?.mayknows?.length}</p>
+            </>
+          )}
+        </Await>
+      </Suspense>
     </div>
   );
 };
