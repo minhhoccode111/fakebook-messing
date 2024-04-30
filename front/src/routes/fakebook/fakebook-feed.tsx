@@ -79,8 +79,47 @@ const useFetchFeed = () => {
   return { feed, isLoadingFeed, isErrorFeed };
 };
 
+const useFetchConnections = () => {
+  const token = useAuthStore((state) => state.authData?.token);
+
+  const [isLoadingConnections, setIsLoadingConnections] = useState(false);
+  const [isErrorConnections, setIsErrorConnections] = useState(false);
+  const [connections, setConnections] = useState({});
+
+  useEffect(() => {
+    const tmp = async () => {
+      try {
+        setIsLoadingConnections(true);
+        const res = await axios({
+          method: "get",
+          url: ApiOrigin + "/users",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        console.log(res.data);
+
+        setConnections(res.data);
+      } catch (err) {
+        console.log(err);
+
+        setIsErrorConnections(true);
+      } finally {
+        setIsLoadingConnections(false);
+      }
+    };
+
+    tmp();
+  }, [token]);
+
+  return { connections, isLoadingConnections, isErrorConnections };
+};
+
 const FakebookFeed = () => {
   const { feed, isLoadingFeed, isErrorFeed } = useFetchFeed();
+  const { connections, isLoadingConnections, isErrorConnections } =
+    useFetchConnections();
 
   return (
     <div className="">
