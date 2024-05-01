@@ -79,6 +79,11 @@ describe(`User Post Testing`, () => {
     // expect(likeComments.length).toBe(48); // 1 like/user/comment
   });
 
+  // TODO:
+  describe(`GET /users/feed`, () => {
+    // TODO: add some tests here
+  });
+
   describe(`GET /users/:userid/posts`, () => {
     /*
      * {
@@ -128,25 +133,29 @@ describe(`User Post Testing`, () => {
           // debug(`the post in for...of test`, post);
           expect(post.likes).toEqual(2);
           // 2 comments/user/post
-          expect(post.comments.length).toEqual(4);
+          expect(post.commentsPreview.length).toEqual(2);
+          expect(post.commentsLength).toEqual(4);
 
           // 1 like/user/comment
-          // debug(post.comments);
-          expect(post.comments.every((comment) => comment.likes === 2)).toBe(
-            true,
-          );
+          // debug(`post.commentsPreview belike: `, post.commentsPreview);
+          expect(
+            post.commentsPreview.every((comment) => comment.likes === 2),
+          ).toBe(true);
 
           //
           // debug(post.comments);
           expect(
-            post.comments.some(
+            post.commentsPreview.some(
               (comment) => comment.creator.fullname === qweBody.self.fullname,
-            ),
+            ) ||
+              post.commentsPreview.some(
+                (comment) => comment.creator.fullname === asdBody.self.fullname,
+              ),
           ).toBe(true);
 
           expect(post.content).toBeDefined();
 
-          post.comments.forEach((comment) =>
+          post.commentsPreview.forEach((comment) =>
             expect(comment.content).toBeDefined(),
           );
         }
@@ -191,6 +200,29 @@ describe(`User Post Testing`, () => {
         expect(posts.length).toBe(4);
         expect(posts.some((post) => post.content === content)).toBe(true);
         expect(userParam.fullname).toBe(asdBody.self.fullname);
+      });
+    });
+  });
+
+  describe(`GET /users/:userid/posts/:postid`, () => {
+    describe(`INVALID CASES`, () => {
+      // TODO:
+    });
+
+    describe(`VALID CASES`, () => {
+      test(`asd GET /users/:userid/posts/:postid`, async () => {
+        const asdPost = await Post.findOne(
+          { creator: asdBody.self.id },
+          "_id content",
+        ).exec();
+
+        const res = await request(app)
+          .get(`/api/v1/users/${asdBody.self.id}/posts/${asdPost.id}`)
+          .set("Authorization", `Bearer ${asdBody.token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.id).toEqual(asdPost.id);
+        expect(res.body.content).toEqual(asdPost.content);
       });
     });
   });

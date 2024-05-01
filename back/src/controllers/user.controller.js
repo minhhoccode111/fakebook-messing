@@ -417,17 +417,14 @@ const getUserPost = [
       .sort({ createdAt: -1 })
       .exec();
 
-    // debug(`the postComments belike: `, postComments);
-    // manually add a comment likes count
-    const comments = await postComments.reduce(async (allComments, comment) => {
+    const comments = [];
+    for (let i = 0, len = postComments.length; i < len; i++) {
+      const comment = postComments[i];
+
       const likes = await LikeComment.countDocuments({ comment }).exec();
 
-      const total = await allComments;
-
-      return [...total, { ...comment.toJSON(), likes }];
-    }, Promise.resolve([]));
-
-    // debug(`the comments belike: `, comments);
+      comments.push({ ...comment.toJSON(), likes });
+    }
 
     return res.json({ ...post, likes, comments });
   }),
