@@ -136,20 +136,23 @@ const getFeed = asyncHandler(async (req, res) => {
       // current post of current user
       const post = userPosts[j];
 
-      // find all comments and count likes of current post
-      const [postComments, postLikes] = await Promise.all([
-        Comment.find({ post }, "-post -__v")
-          .populate("creator", "_id fullname status avatarLink") // security
-          .sort({ createdAt: -1 })
-          .exec(),
-        LikePost.countDocuments({ post }).exec(),
-      ]);
+      // only 2 comments to display preview, display number of post's comments to clickbait
+      const [postCommentsPreview, postCommentsLength, postLikes] =
+        await Promise.all([
+          Comment.find({ post }, "-post -__v")
+            .populate("creator", "_id fullname status avatarLink") // security
+            .sort({ createdAt: -1 })
+            .limit(2)
+            .exec(),
+          Comment.countDocuments({ post }).exec(),
+          LikePost.countDocuments({ post }).exec(),
+        ]);
 
       const comments = [];
       // loop through each comment of current post of current user
-      for (let k = 0, lenK = postComments.length; k < lenK; k++) {
+      for (let k = 0, lenK = postCommentsPreview.length; k < lenK; k++) {
         // current comment
-        const comment = postComments[k];
+        const comment = postCommentsPreview[k];
 
         // count comment
         const commentLikes = await LikeComment.countDocuments({
@@ -160,10 +163,17 @@ const getFeed = asyncHandler(async (req, res) => {
       }
 
       // override post's creator because it's not populated
-      posts.push({ ...post.toJSON(), creator, comments, likes: postLikes });
+      posts.push({
+        ...post.toJSON(),
+        creator,
+        likes: postLikes,
+        postCommentsLength,
+        commentsPreview: postCommentsPreview,
+      });
     }
   }
 
+  // manually sort because it's from multiple creators
   return res.json(posts.sort((a, b) => b.createdAt - a.createdAt));
 });
 
@@ -314,36 +324,41 @@ const getUserPosts = [
       .sort({ createdAt: -1 })
       .exec();
 
-    // debug(`the posts after retrieve database belike: `, userPosts);
+    const posts = [];
+    for (let i = 0, postsLength = userPosts.length; i < postsLength; i++) {
+      const post = userPosts[i];
+      const [postCommentsPreview, commentsLength, postLikes] =
+        await Promise.all([
+          Comment.find({ post }, "-post -__v")
+            .populate("creator", "_id fullname status avatarLink") // security
+            .sort({ createdAt: -1 })
+            .limit(2)
+            .exec(),
+          Comment.countDocuments({ post }),
+          LikePost.countDocuments({ post }).exec(),
+        ]);
 
-    // NOTE: this could be done with a simple `for...loop`
-    // but for learning purpose a reduce with promises is good
-    const posts = await userPosts.reduce(async (totalPosts, post) => {
-      const [postComments, postLikes] = await Promise.all([
-        Comment.find({ post }, "-post -__v")
-          .populate("creator", "_id fullname status avatarLink") // security
-          .sort({ createdAt: -1 })
-          .exec(),
-        LikePost.countDocuments({ post }).exec(),
-      ]);
+      const commentsPreview = [];
+      for (
+        let j = 0, commentsLength = postCommentsPreview.length;
+        j < commentsLength;
+        j++
+      ) {
+        const comment = postCommentsPreview[j];
+        const commentLikes = await LikeComment.countDocuments({
+          comment,
+        }).exec();
 
-      const comments = await postComments.reduce(
-        async (totalComments, comment) => {
-          const commentLikes = await LikeComment.countDocuments({
-            comment,
-          }).exec();
+        commentsPreview.push({ ...comment.toJSON(), likes: commentLikes });
+      }
 
-          const total = await totalComments;
-
-          return [...total, { ...comment.toJSON(), likes: commentLikes }];
-        },
-        Promise.resolve([]),
-      );
-
-      const total = await totalPosts;
-
-      return [...total, { ...post.toJSON(), comments, likes: postLikes }];
-    }, Promise.resolve([]));
+      posts.push({
+        ...post.toJSON(),
+        commentsPreview,
+        commentsLength,
+        likes: postLikes,
+      });
+    }
 
     return res.json({ userParam: req.userParam, posts });
   }),
