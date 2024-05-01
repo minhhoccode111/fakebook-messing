@@ -384,36 +384,39 @@ const deleteUserPost = [
   getUserPosts[2],
 ];
 
-// we don't implement GET a specific post route handling
-// we just want to reuse this after interaction with a post
-const getUserPostHelper = asyncHandler(async (req, res) => {
-  // No validation needed since this will be called after everything is done
-  const post = req.postParam;
-  const likes = await LikePost.countDocuments({ post }).exec();
-  const postComments = await Comment.find(
-    {
-      post,
-    },
-    "-__v",
-  )
-    .populate("creator", "_id fullname status avatarLink")
-    // TODO: add sorting
-    .exec();
+// GET /users/:userid/posts/:postid
+const getUserPost = [
+  mongo.userid,
+  mongo.postid,
+  param.postid,
+  asyncHandler(async (req, res) => {
+    const post = req.postParam;
+    const likes = await LikePost.countDocuments({ post }).exec();
+    const postComments = await Comment.find(
+      {
+        post,
+      },
+      "-__v",
+    )
+      .populate("creator", "_id fullname status avatarLink")
+      .sort({ createdAt: -1 })
+      .exec();
 
-  // debug(`the postComments belike: `, postComments);
-  // manually add a comment likes count
-  const comments = await postComments.reduce(async (allComments, comment) => {
-    const likes = await LikeComment.countDocuments({ comment }).exec();
+    // debug(`the postComments belike: `, postComments);
+    // manually add a comment likes count
+    const comments = await postComments.reduce(async (allComments, comment) => {
+      const likes = await LikeComment.countDocuments({ comment }).exec();
 
-    const total = await allComments;
+      const total = await allComments;
 
-    return [...total, { ...comment.toJSON(), likes }];
-  }, Promise.resolve([]));
+      return [...total, { ...comment.toJSON(), likes }];
+    }, Promise.resolve([]));
 
-  // debug(`the comments belike: `, comments);
+    // debug(`the comments belike: `, comments);
 
-  return res.json({ ...post, likes, comments });
-});
+    return res.json({ ...post, likes, comments });
+  }),
+];
 
 // POST /users/:userid/posts/:postid/likes
 const postUserPostLikes = [
@@ -438,7 +441,7 @@ const postUserPostLikes = [
     next();
   }),
 
-  getUserPostHelper,
+  getUserPost[3],
 ];
 
 // POST /users/:userid/posts/:postid/comments
@@ -456,7 +459,7 @@ const postUserPostComments = [
     next();
   }),
 
-  getUserPostHelper,
+  getUserPost[3],
 ];
 
 // POST /users/:userid/posts/:postid/comments/:commentid/likes
@@ -489,7 +492,7 @@ const postUserCommentLikes = [
     next();
   }),
 
-  getUserPostHelper,
+  getUserPost[3],
 ];
 
 module.exports = {
@@ -506,6 +509,7 @@ module.exports = {
   // deleteUserMessage
   getUserPosts,
   postUserPosts,
+  getUserPost,
   deleteUserPost,
   // putUserPost
   postUserPostLikes,

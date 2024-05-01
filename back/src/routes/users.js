@@ -7,6 +7,7 @@ const UsersController = require("./../controllers/user.controller");
 
 router.get("/", UsersController.selfGetAllUsers);
 
+// get all posts of users that self is following
 router.get("/feed", UsersController.getFeed);
 
 router.get("/:userid", UsersController.getUser);
@@ -24,9 +25,12 @@ router.get("/:userid/messages", UsersController.getUserMessages);
 
 router.post("/:userid/messages", UsersController.postUserMessages);
 
-router.get("/:userid/posts", UsersController.getUserPosts); // remember to get likes and comments all posts too
+// remember to get likes and comments all posts too
+router.get("/:userid/posts", UsersController.getUserPosts);
 
 router.post("/:userid/posts", UsersController.postUserPosts);
+
+router.get("/:userid/posts/:postid", UsersController.getUserPost);
 
 router.delete("/:userid/posts/:postid", UsersController.deleteUserPost);
 
