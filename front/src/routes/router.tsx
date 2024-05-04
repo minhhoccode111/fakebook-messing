@@ -65,7 +65,6 @@ export default function Router() {
 
             {
               path: "profile",
-              // TODO: should this layout contain all connections with self?
               element: <ProfileLayout />, // just a simple Outlet
               errorElement: <NotFound />,
               children: [

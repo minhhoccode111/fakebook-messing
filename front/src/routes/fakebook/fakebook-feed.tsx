@@ -76,11 +76,21 @@ const FakebookFeed = () => {
           errorElement={<p className="">Error loader feed!</p>}
         >
           {/* this is the response  */}
-          {(feed) => (
-            <>
-              <p className="">{feed?.length}</p>
-            </>
-          )}
+          {({ data }) => {
+            // console.log(data);
+
+            return (
+              <>
+                <ul className="">
+                  {data.map((post, index) => (
+                    <li className="list-disc" key={index}>
+                      {post.content}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            );
+          }}
         </Await>
       </Suspense>
 
@@ -89,15 +99,19 @@ const FakebookFeed = () => {
           resolve={data.connections}
           errorElement={<p className="">Error loader connections!</p>}
         >
-          {(connections) => (
-            <>
-              {/* <p className="">Self: {connections.self.fullname}</p> */}
-              <p className="">{connections?.friends?.length}</p>
-              <p className="">{connections?.followings?.length}</p>
-              <p className="">{connections?.followers?.length}</p>
-              <p className="">{connections?.mayknows?.length}</p>
-            </>
-          )}
+          {({ data }) => {
+            // console.log(data);
+
+            return (
+              <>
+                <p className="">Self: {data.self.fullname}</p>
+                <p className="">{}</p>
+                <p className="">{data?.followings?.length}</p>
+                <p className="">{data?.followers?.length}</p>
+                <p className="">{data?.mayknows?.length}</p>
+              </>
+            );
+          }}
         </Await>
       </Suspense>
     </div>
