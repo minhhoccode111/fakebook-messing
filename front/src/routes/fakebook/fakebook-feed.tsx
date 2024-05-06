@@ -1,5 +1,4 @@
-import { Await, defer, useLoaderData } from "react-router-dom";
-import { Suspense, useEffect, useState } from "react";
+import useSWR from "swr";
 import axios from "axios";
 
 import Custom from "@/components/custom";
@@ -7,6 +6,8 @@ const { MyAvatar } = Custom;
 
 import EnvVar from "@/shared/constants";
 const { ApiOrigin, AuthStoreName } = EnvVar;
+
+import { useAuthStore } from "@/main";
 
 type User = {
   fullname: string;
@@ -30,91 +31,70 @@ type Comment = {
   createdAtFormatted: string;
 };
 
-// type FetchFeed = () => Promise<{
-//   feed: null | Post[];
-//   isLoadingFeed: boolean;
-//   isErrorFeed: boolean;
-// }>;
-
-export const loaderFakebookFeed = async () => {
-  const authData = JSON.parse(localStorage.getItem(AuthStoreName) as string);
-  const token = authData.token;
-
-  const feed = axios({
-    url: ApiOrigin + `/users/feed`,
+const connectionsFetcher = (token: string) => (url: string) =>
+  axios({
+    url,
     method: "get",
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  });
+  }).then((res) => res.data);
 
-  const connections = axios({
-    url: ApiOrigin + `/users`,
-    method: "get",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+const ConnectionsFeed = () => {
+  const { token } = useAuthStore((state) => state.authData);
+  const url = import.meta.env.VITE_API_ORIGIN + `/users`;
+  const { data, error, isLoading } = useSWR(
+    url,
+    connectionsFetcher(token as string),
+  );
 
-  return defer({ feed, connections });
-};
-
-type LoaderData = {
-  feed: Post[];
-  connections: object;
-};
-
-const FakebookFeed = () => {
-  const data = useLoaderData() as LoaderData;
+  console.log(data);
 
   return (
     <div className="">
-      <h2 className="">Welcome to Fakebook feed</h2>
-      <Suspense fallback={<p className="">Loading feed...</p>}>
-        <Await
-          resolve={data.feed}
-          errorElement={<p className="">Error loader feed!</p>}
-        >
-          {/* this is the response  */}
-          {({ data }) => {
-            // console.log(data);
-
-            return (
-              <>
-                <ul className="">
-                  {data.map((post, index) => (
-                    <li className="list-disc" key={index}>
-                      {post.content}
-                    </li>
-                  ))}
-                </ul>
-              </>
-            );
-          }}
-        </Await>
-      </Suspense>
-
-      <Suspense fallback={<p className="">Loading connections...</p>}>
-        <Await
-          resolve={data.connections}
-          errorElement={<p className="">Error loader connections!</p>}
-        >
-          {({ data }) => {
-            // console.log(data);
-
-            return (
-              <>
-                <p className="">Self: {data.self.fullname}</p>
-                <p className="">{}</p>
-                <p className="">{data?.followings?.length}</p>
-                <p className="">{data?.followers?.length}</p>
-                <p className="">{data?.mayknows?.length}</p>
-              </>
-            );
-          }}
-        </Await>
-      </Suspense>
+      <h2 className="">All connections in feed</h2>
+      <div className="">
+        {error ? "error occurs" : isLoading ? "loading..." : "data connections"}
+      </div>
     </div>
+  );
+};
+
+const PostsFeed = () => {
+  const { token } = useAuthStore((state) => state.authData);
+  const url = import.meta.env.VITE_API_ORIGIN + `/users/feed`;
+  const { data, error, isLoading } = useSWR(
+    url,
+    connectionsFetcher(token as string),
+  );
+
+  console.log(data);
+
+  return (
+    <div className="">
+      <h2 className="">All posts in feed</h2>
+      <div className="">
+        {error ? "error occurs" : isLoading ? "loading..." : "data posts"}
+      </div>
+    </div>
+  );
+};
+
+const NewPost = () => {
+  return (
+    <div className="">
+      <h2 className="">Create a new post</h2>
+    </div>
+  );
+};
+
+const FakebookFeed = () => {
+  return (
+    <main className="grid gap-2">
+      <NewPost></NewPost>
+      <ConnectionsFeed></ConnectionsFeed>
+      <PostsFeed></PostsFeed>
+    </main>
   );
 };
 

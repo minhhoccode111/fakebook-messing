@@ -51,7 +51,7 @@ const Layout = () => {
 
         <main className="flex-1">
           <Outlet></Outlet>
-          <h2 className="">At: {pathname}</h2>
+          <p className="">At: {pathname}</p>
         </main>
 
         <footer className="">

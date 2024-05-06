@@ -13,7 +13,7 @@ const FakebookLayout = () => {
   const authData = useAuthStore((state) => state.authData);
 
   return (
-    <section>
+    <section className="">
       <header className="">
         <nav className="flex justify-end gap-4">
           <MyNavLink to="feed">feed</MyNavLink>
