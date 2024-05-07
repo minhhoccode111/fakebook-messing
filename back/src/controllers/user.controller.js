@@ -167,8 +167,8 @@ const getFeed = asyncHandler(async (req, res) => {
         ...post.toJSON(),
         creator,
         likes: postLikes,
-        postCommentsLength,
-        commentsPreview: postCommentsPreview,
+        commentsLength: postCommentsLength,
+        comments,
       });
     }
   }
@@ -338,7 +338,7 @@ const getUserPosts = [
           LikePost.countDocuments({ post }).exec(),
         ]);
 
-      const commentsPreview = [];
+      const comments = [];
       for (
         let j = 0, commentsLength = postCommentsPreview.length;
         j < commentsLength;
@@ -349,12 +349,12 @@ const getUserPosts = [
           comment,
         }).exec();
 
-        commentsPreview.push({ ...comment.toJSON(), likes: commentLikes });
+        comments.push({ ...comment.toJSON(), likes: commentLikes });
       }
 
       posts.push({
         ...post.toJSON(),
-        commentsPreview,
+        comments,
         commentsLength,
         likes: postLikes,
       });
