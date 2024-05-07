@@ -9,9 +9,9 @@ export const loader = async () => {
 
   useAuthStore.setState({ authData: data });
 
-  console.log("user logged out.");
-
   localStorage.setItem(AuthStoreName, JSON.stringify(data));
+
+  console.log("user logged out.");
 
   return redirect("/login");
 };

@@ -4,8 +4,6 @@ import axios from "axios";
 
 import { ApiOrigin } from "@/shared/constants";
 
-import NewPostFeed from "@/components/custom/new-post-feed";
-
 import { create } from "zustand";
 
 import { StatePostsFeedStore, ActionPostsFeedStore } from "@/shared/types";
@@ -70,10 +68,6 @@ const PostsFeed = ({
   return (
     <div className={"" + " " + className}>
       {children}
-
-      {/* TODO: display create new post form in this? */}
-
-      <NewPostFeed></NewPostFeed>
 
       <ul className="">
         {postsFeed.map((post, index: number) => (

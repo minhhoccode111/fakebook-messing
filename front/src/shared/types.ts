@@ -13,6 +13,7 @@ export type PostType = {
   commentsLength: number;
   likes: number;
   createdAtFormatted: string;
+  id: string;
 };
 
 export type CommentType = {

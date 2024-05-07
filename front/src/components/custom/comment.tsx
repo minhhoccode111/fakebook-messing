@@ -7,6 +7,7 @@ const Comment = ({ comment }: { comment: CommentType }) => {
   // console.log(comment);
 
   return (
+    // TODO: add markdown parser
     <li>
       <div className="">
         <p className="">{creator.fullname}</p>
