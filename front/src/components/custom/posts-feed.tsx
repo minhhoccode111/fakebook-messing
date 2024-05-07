@@ -2,8 +2,24 @@ import { useAuthStore } from "@/main";
 import useSWR from "swr";
 import axios from "axios";
 
-import EnvVar from "@/shared/constants";
-const { ApiOrigin } = EnvVar;
+import { ApiOrigin } from "@/shared/constants";
+
+import NewPostFeed from "@/components/custom/new-post-feed";
+
+import { create } from "zustand";
+
+import { StatePostsFeedStore, ActionPostsFeedStore } from "@/shared/types";
+
+import { useEffect } from "react";
+
+import Post from "@/components/custom/post";
+
+export const usePostsFeedStore = create<
+  StatePostsFeedStore & ActionPostsFeedStore
+>((set) => ({
+  postsFeed: [],
+  setPostsFeed: (newPosts) => set(() => ({ postsFeed: newPosts })),
+}));
 
 const postsFetcher = (token: string) => (url: string) =>
   axios({
@@ -14,19 +30,56 @@ const postsFetcher = (token: string) => (url: string) =>
     },
   }).then((res) => res.data);
 
-const PostsFeed = ({ className }: { className: string }) => {
+const PostsFeed = ({
+  className,
+  children,
+}: {
+  className: string;
+  children: React.ReactNode;
+}) => {
   const { token } = useAuthStore((state) => state.authData);
-  const url = ApiOrigin + `/users/feed`;
-  const { data, error, isLoading } = useSWR(url, postsFetcher(token as string));
 
-  console.log(data);
+  const url = ApiOrigin + `/users/feed`;
+
+  const { postsFeed, setPostsFeed } = usePostsFeedStore();
+
+  const { data, error } = useSWR(url, postsFetcher(token as string));
+
+  useEffect(() => {
+    if (data) setPostsFeed(data);
+  }, [data, setPostsFeed]);
+
+  if (error)
+    return (
+      <div className={"" + " " + className}>
+        {children}
+        <p className="">loading posts error!</p>
+      </div>
+    );
+
+  if (!data)
+    return (
+      <div className={"" + " " + className}>
+        {children}
+        <p className="">loading posts...</p>
+      </div>
+    );
+
+  // console.log(data);
 
   return (
     <div className={"" + " " + className}>
-      <h2 className="">All posts in feed</h2>
-      <div className="">
-        {error ? "error occurs" : isLoading ? "loading..." : "data posts"}
-      </div>
+      {children}
+
+      {/* TODO: display create new post form in this? */}
+
+      <NewPostFeed></NewPostFeed>
+
+      <ul className="">
+        {postsFeed.map((post, index: number) => (
+          <Post key={index} post={post} />
+        ))}
+      </ul>
     </div>
   );
 };

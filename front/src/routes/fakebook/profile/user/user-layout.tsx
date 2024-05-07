@@ -1,7 +1,5 @@
-import { Outlet, useOutletContext, useLoaderData } from "react-router-dom";
-import Custom from "@/components/custom";
-
-const { MyNavLink } = Custom;
+import { Outlet, useLoaderData } from "react-router-dom";
+import MyNavLink from "@/components/custom/my-nav-link";
 
 export const profileCheckUserid = async ({ request, params }) => {
   // check :userid existed

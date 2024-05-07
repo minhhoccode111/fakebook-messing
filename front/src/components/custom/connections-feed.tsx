@@ -3,8 +3,7 @@ import { useAuthStore } from "@/main";
 import useSWR from "swr";
 import { useEffect } from "react";
 
-import EnvVar from "@/shared/constants";
-const { ApiOrigin } = EnvVar;
+import { ApiOrigin } from "@/shared/constants";
 
 import { create } from "zustand";
 
@@ -52,10 +51,7 @@ const ConnectionsFeed = ({
 
   const url = ApiOrigin + `/users`;
 
-  const { data, error, isLoading } = useSWR(
-    url,
-    connectionsFetcher(token as string),
-  );
+  const { data, error } = useSWR(url, connectionsFetcher(token as string));
 
   const { connectionsFeed, setConnectionsFeed } = useConnectionsFeedStore();
 
@@ -70,15 +66,15 @@ const ConnectionsFeed = ({
     return (
       <div className={"" + " " + className}>
         {children}
-        <p className="">error occurs</p>
+        <p className="">loading connections error!</p>
       </div>
     );
 
-  if (isLoading)
+  if (!data)
     return (
       <div className={"" + " " + className}>
         {children}
-        <p className="">loading...</p>
+        <p className="">loading connections...</p>
       </div>
     );
 

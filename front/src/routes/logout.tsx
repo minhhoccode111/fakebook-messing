@@ -2,8 +2,7 @@ import { Navigate, redirect } from "react-router-dom";
 
 import { useAuthStore } from "@/main";
 
-import EnvVar from "@/shared/constants";
-const { AuthStoreName } = EnvVar;
+import { AuthStoreName } from "@/shared/constants";
 
 export const loader = async () => {
   const data = {};

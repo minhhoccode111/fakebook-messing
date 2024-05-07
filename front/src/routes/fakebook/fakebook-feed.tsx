@@ -4,7 +4,9 @@ import PostsFeed from "@/components/custom/posts-feed";
 const FakebookFeed = () => {
   return (
     <div className="flex gap-2">
-      <PostsFeed className="flex-1"></PostsFeed>
+      <PostsFeed className="flex-1">
+        <h2 className="">All posts in feed</h2>
+      </PostsFeed>
 
       <ConnectionsFeed className="">
         <h2 className="">All connections in feed</h2>

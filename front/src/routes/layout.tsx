@@ -3,9 +3,8 @@ import ThemeProvider from "@/components/theme-provider";
 import ThemeToggler from "@/components/theme-toggler";
 // import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/main";
-import Custom from "@/components/custom";
 
-const MyNavLink = Custom.MyNavLink;
+import MyNavLink from "@/components/custom/my-nav-link";
 
 const Layout = () => {
   // display a path to current for debug

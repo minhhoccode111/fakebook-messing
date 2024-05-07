@@ -1,7 +1,6 @@
 import { redirect } from "react-router-dom";
 
-import EnvVar from "@/shared/constants";
-const { AuthStoreName } = EnvVar;
+import { AuthStoreName } from "@/shared/constants";
 
 export const useridNavigateToInfo = () => {
   return redirect("info");

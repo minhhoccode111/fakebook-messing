@@ -6,8 +6,7 @@ import "@/css/app.css";
 
 import { create } from "zustand";
 
-import EnvVar from "@/shared/constants";
-const { ThemeStoreName, AuthStoreName } = EnvVar;
+import { ThemeStoreName, AuthStoreName } from "@/shared/constants";
 
 export type Theme = "dark" | "light" | "system";
 

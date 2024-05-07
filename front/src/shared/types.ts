@@ -6,15 +6,16 @@ export type User = {
   id: string;
 };
 
-export type Post = {
+export type PostType = {
   content: string;
   creator: User;
-  comments: Comment[];
+  comments: CommentType[];
+  commentsLength: number;
   likes: number;
   createdAtFormatted: string;
 };
 
-export type Comment = {
+export type CommentType = {
   creator: User;
   likes: number;
   content: string;
@@ -41,4 +42,12 @@ export type StateConnectionsFeedStore = {
 
 export type ActionConnectionsFeedStore = {
   setConnectionsFeed: (newConnections: Connections) => void;
+};
+
+export type StatePostsFeedStore = {
+  postsFeed: PostType[];
+};
+
+export type ActionPostsFeedStore = {
+  setPostsFeed: (newPosts: PostType[]) => void;
 };

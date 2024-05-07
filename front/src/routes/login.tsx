@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuthStore } from "@/main";
@@ -9,8 +9,7 @@ type LoginFormData = {
   password: string;
 };
 
-import EnvVar from "@/shared/constants";
-const { ApiOrigin } = EnvVar;
+import { ApiOrigin } from "@/shared/constants";
 
 const Login = () => {
   const { register, handleSubmit, reset } = useForm<LoginFormData>();

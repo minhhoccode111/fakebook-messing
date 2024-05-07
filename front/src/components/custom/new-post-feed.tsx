@@ -1,9 +1,10 @@
-const NewPost = () => {
+const NewPostFeed = () => {
   return (
     <div className="">
-      <h2 className="">Create a new post</h2>
+      <p className="">Create a new post</p>
+      {/* TODO: create new post form go here */}
     </div>
   );
 };
 
-export default NewPost;
+export default NewPostFeed;

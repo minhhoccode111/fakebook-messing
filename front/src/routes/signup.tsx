@@ -3,8 +3,7 @@ import { Form, Navigate } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import EnvVar from "@/shared/constants";
-const { ApiOrigin } = EnvVar;
+import { ApiOrigin } from "@/shared/constants";
 
 // This type will be called with `useForm` and `handleSubmit`
 type SignupData = {

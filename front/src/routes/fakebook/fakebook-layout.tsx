@@ -1,8 +1,7 @@
 import { Outlet, redirect } from "react-router-dom";
 import { useAuthStore } from "@/main";
-import Custom from "@/components/custom";
 
-const { MyNavLink } = Custom;
+import MyNavLink from "@/components/custom/my-nav-link";
 
 export const fakebookNavigateToFeed = () => {
   return redirect("feed");
