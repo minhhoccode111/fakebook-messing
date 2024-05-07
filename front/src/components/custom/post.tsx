@@ -159,6 +159,7 @@ const Post = ({ post }: { post: PostType }) => {
           <button
             onClick={() => {
               setWillFetchFull(true);
+              setIsShowLess((state) => !state);
             }}
             className=""
           >
