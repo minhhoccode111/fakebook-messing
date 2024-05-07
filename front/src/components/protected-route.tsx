@@ -3,10 +3,11 @@ import { Navigate } from "react-router-dom";
 import { useAuthStore } from "@/main";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const isLogin = useAuthStore((state) => state.authData?.isLogin);
+  const authData = useAuthStore((state) => state.authData);
 
-  if (!isLogin) {
-    return <Navigate to="/login" replace={true} />;
+  // any of these in valid will be a logout
+  if (!authData.isLogin || !authData.token || !authData.self) {
+    return <Navigate to="/logout" replace={true} />;
   }
 
   return <Fragment>{children}</Fragment>;

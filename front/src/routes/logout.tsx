@@ -14,7 +14,7 @@ export const loader = async () => {
 
   localStorage.setItem(AuthStoreName, JSON.stringify(data));
 
-  return redirect("/");
+  return redirect("/login");
 };
 
 // eslint-disable-next-line react-refresh/only-export-components, @typescript-eslint/no-unused-vars

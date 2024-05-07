@@ -8,15 +8,18 @@ import Signup from "@/routes/signup";
 import { loader as logoutLoader } from "@/routes/logout";
 
 import FakebookLayout, {
-  loaderFakebookLayout,
+  fakebookNavigateToFeed,
 } from "@/routes/fakebook/fakebook-layout";
 import FakebookFeed from "@/routes/fakebook/fakebook-feed";
 import ProfileLayout from "@/routes/fakebook/profile/profile-layout";
-import ProfileToUserid, {
-  loaderUseridToInfo,
+import {
+  profileNavigateToUserid,
+  useridNavigateToInfo,
 } from "@/routes/fakebook/profile/profile-navigate";
 
-import UserLayout from "@/routes/fakebook/profile/user/user-layout";
+import UserLayout, {
+  profileCheckUserid,
+} from "@/routes/fakebook/profile/user/user-layout";
 import UserInfo from "@/routes/fakebook/profile/user/user-info";
 import UserPosts from "@/routes/fakebook/profile/user/user-posts";
 import UserConnections from "@/routes/fakebook/profile/user/user-connections";
@@ -52,7 +55,8 @@ export default function Router() {
           children: [
             {
               index: true,
-              loader: loaderFakebookLayout,
+              // /fakebook go to /feed by default
+              loader: fakebookNavigateToFeed,
             },
 
             {
@@ -67,20 +71,20 @@ export default function Router() {
               children: [
                 {
                   index: true,
-                  //  navigate to current user /:userid using component
-                  //  because we have to access useAuthStore of zustand
-                  //  which can only be called inside a component (?)
-
-                  element: <ProfileToUserid />,
+                  // /profile go to /:userid by default
+                  loader: profileNavigateToUserid,
                 },
 
                 {
                   path: ":userid",
+                  // first check :userid existed
+                  loader: profileCheckUserid,
                   element: <UserLayout />,
                   children: [
                     {
                       index: true,
-                      loader: loaderUseridToInfo,
+                      // /:userid go to /info by default
+                      loader: useridNavigateToInfo,
                     },
 
                     {

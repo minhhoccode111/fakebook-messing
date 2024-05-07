@@ -1,9 +1,18 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext, useLoaderData } from "react-router-dom";
 import Custom from "@/components/custom";
 
 const { MyNavLink } = Custom;
 
+export const profileCheckUserid = async ({ request, params }) => {
+  // check :userid existed
+  //  TODO: work on this after /feed
+  return null;
+};
 const UserLayout = () => {
+  // extract :userid's data
+  //  TODO: work on this after /feed
+  const user = useLoaderData();
+
   return (
     <section>
       <header className="">
@@ -15,7 +24,8 @@ const UserLayout = () => {
           <MyNavLink to={"connections"}>connections</MyNavLink>
         </nav>
       </header>
-
+      {/* pass user data down to outlet */}
+      // TODO: work on this after /feed
       <Outlet></Outlet>
     </section>
   );
