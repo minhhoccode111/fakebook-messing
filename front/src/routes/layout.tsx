@@ -17,7 +17,7 @@ const Layout = () => {
     <ThemeProvider>
       <div
         id="wrapper"
-        className="flex flex-col gap-2 h-screen min-h-screen bg-gray-400 dark:bg-gray-800 p-4"
+        className="flex flex-1 flex-col gap-2 bg-gray-400 dark:bg-gray-800 p-4"
       >
         <header className="flex gap-2 items-center justify-between">
           <h1 className="font-bold">

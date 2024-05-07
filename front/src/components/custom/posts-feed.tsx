@@ -14,7 +14,7 @@ const postsFetcher = (token: string) => (url: string) =>
     },
   }).then((res) => res.data);
 
-const PostsFeed = () => {
+const PostsFeed = ({ className }: { className: string }) => {
   const { token } = useAuthStore((state) => state.authData);
   const url = ApiOrigin + `/users/feed`;
   const { data, error, isLoading } = useSWR(url, postsFetcher(token as string));
@@ -22,7 +22,7 @@ const PostsFeed = () => {
   console.log(data);
 
   return (
-    <div className="">
+    <div className={"" + " " + className}>
       <h2 className="">All posts in feed</h2>
       <div className="">
         {error ? "error occurs" : isLoading ? "loading..." : "data posts"}
