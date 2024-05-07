@@ -1,10 +1,67 @@
-import { CommentType } from "@/shared/types";
-import MyAvatar from "@/components/custom/my-avatar";
+import axios from "axios";
+import { useAuthStore } from "@/main";
+import { ApiOrigin } from "@/shared/constants";
+import { PostType, CommentType } from "@/shared/types";
 
-const Comment = ({ comment }: { comment: CommentType }) => {
+import MyAvatar from "@/components/custom/my-avatar";
+import LoadingWrapper from "@/components/custom/loading-wrapper";
+
+type Comment = {
+  comment: CommentType;
+  creatorid: string;
+  postid: string;
+  localPost: PostType;
+  setLocalPost: (current: PostType) => void;
+  isLoading: boolean;
+  isError: boolean;
+  setIsLoading: (newState: boolean) => void;
+  setIsError: (newState: boolean) => void;
+};
+
+const Comment = ({
+  postid,
+  comment,
+  creatorid,
+
+  // to set local post after we like a post
+  setLocalPost,
+  localPost,
+
+  // use the same loading state with post
+  isError,
+  setIsError,
+  isLoading,
+  setIsLoading,
+}: Comment) => {
   const { likes, creator, content } = comment;
 
-  // console.log(comment);
+  const authData = useAuthStore((state) => state.authData);
+
+  const handleLikeComment = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axios({
+        method: "post",
+        url:
+          ApiOrigin +
+          `/users/${creatorid}/posts/${postid}/comments/${comment.id}/likes`,
+        headers: {
+          Authorization: `Bearer ${authData.token}`,
+        },
+      });
+
+      const responsePost = res.data;
+      console.log(responsePost);
+
+      setLocalPost({ ...localPost, ...responsePost });
+    } catch (err) {
+      console.error(err);
+
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     // TODO: add markdown parser
@@ -23,7 +80,15 @@ const Comment = ({ comment }: { comment: CommentType }) => {
       </div>
 
       <div className="">
-        <button className="font-bold">{likes} up</button>
+        <p className="font-bold flex items-center">
+          <LoadingWrapper isLoading={isLoading} isError={isError}>
+            <button onClick={handleLikeComment} className="text-xl">
+              ^
+            </button>
+          </LoadingWrapper>
+
+          <span className="">{likes}</span>
+        </p>
       </div>
     </li>
   );

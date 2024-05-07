@@ -1,9 +1,11 @@
-import axios from "axios";
 import { Form, Navigate } from "react-router-dom";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import axios from "axios";
 
 import { ApiOrigin } from "@/shared/constants";
+
+import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 // This type will be called with `useForm` and `handleSubmit`
 type SignupData = {
@@ -162,8 +164,9 @@ const Signup = () => {
 
       <div className="">
         <button type="submit" className="">
-          {/*  TODO: display proper icons and disable button when error happens */}
-          {isError ? "error" : isLoading ? "loading..." : "signup"}
+          <LoadingWrapper isLoading={isLoading} isError={isError}>
+            signup
+          </LoadingWrapper>
         </button>
       </div>
     </Form>

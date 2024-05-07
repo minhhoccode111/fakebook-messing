@@ -21,6 +21,7 @@ export type CommentType = {
   likes: number;
   content: string;
   createdAtFormatted: string;
+  id: string;
 };
 
 export type ConnectionsLabel =

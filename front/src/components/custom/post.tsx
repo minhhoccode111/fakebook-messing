@@ -1,12 +1,13 @@
-import { PostType } from "@/shared/types";
-import MyAvatar from "@/components/custom/my-avatar";
-import Comment from "@/components/custom/comment";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 import { ApiOrigin } from "@/shared/constants";
-
+import { PostType } from "@/shared/types";
 import { useAuthStore } from "@/main";
+
+import MyAvatar from "@/components/custom/my-avatar";
+import Comment from "@/components/custom/comment";
+import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 const Post = ({ post }: { post: PostType }) => {
   const authData = useAuthStore((state) => state.authData);
@@ -27,7 +28,7 @@ const Post = ({ post }: { post: PostType }) => {
   // to know we once fetch full post once
   const [isFetchedFull, setIsFetchedFull] = useState(false);
 
-  const [iLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   // hide some contents if post is not expand
@@ -143,27 +144,45 @@ const Post = ({ post }: { post: PostType }) => {
 
       <div className="flex gap-2 items-center justify-evenly font-bold">
         <p className="flex items-center justify-between gap-2">
-          <button onClick={handleLikePost} className="text-2xl">
-            ^
-          </button>
+          <LoadingWrapper isLoading={isLoading} isError={isError}>
+            <button onClick={handleLikePost} className="text-2xl">
+              ^
+            </button>
+          </LoadingWrapper>
           <span className="">{likes}</span>
         </p>
 
-        <button
-          onClick={() => {
-            setWillFetchFull(true);
-          }}
-          className=""
-        >
-          {commentsLength} comments
-        </button>
+        <LoadingWrapper isLoading={isLoading} isError={isError}>
+          <button
+            onClick={() => {
+              setWillFetchFull(true);
+            }}
+            className=""
+          >
+            {commentsLength} comments
+          </button>
+        </LoadingWrapper>
       </div>
 
       <ul className="">
         {comments.map((comment, index: number) => (
-          <Comment key={index} comment={comment} />
+          <Comment
+            key={index}
+            comment={comment}
+            creatorid={creator.id}
+            postid={localPost.id}
+            // to update after user like a comment
+            setLocalPost={setLocalPost}
+            localPost={localPost}
+            isLoading={isLoading}
+            isError={isError}
+            setIsLoading={setIsLoading}
+            setIsError={setIsError}
+          />
         ))}
       </ul>
+
+      {/* TODO: form to add comment*/}
     </li>
   );
 };

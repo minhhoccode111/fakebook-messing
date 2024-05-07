@@ -13,6 +13,7 @@ import {
 } from "@/shared/types";
 
 import ConnectionsKind from "@/components/custom/connections-kind";
+import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 // store all connections with self
 const useConnectionsFeedStore = create<
@@ -51,7 +52,10 @@ const ConnectionsFeed = ({
 
   const url = ApiOrigin + `/users`;
 
-  const { data, error } = useSWR(url, connectionsFetcher(token as string));
+  const { data, error, isLoading } = useSWR(
+    url,
+    connectionsFetcher(token as string),
+  );
 
   const { connectionsFeed, setConnectionsFeed } = useConnectionsFeedStore();
 
@@ -62,49 +66,38 @@ const ConnectionsFeed = ({
 
   // console.log(data);
 
-  if (error)
-    return (
-      <div className={"" + " " + className}>
-        {children}
-        <p className="">loading connections error!</p>
-      </div>
-    );
-
-  if (!data)
-    return (
-      <div className={"" + " " + className}>
-        {children}
-        <p className="">loading connections...</p>
-      </div>
-    );
-
   return (
     <div className={"" + " " + className}>
-      <p className="">data connections ready</p>
-      <div className="">
-        <p className="font-bold">self</p>
-        <p className="">{connectionsFeed?.self?.fullname}</p>
-      </div>
+      {children}
+      <LoadingWrapper isLoading={isLoading} isError={error}>
+        <>
+          <p className="">data connections ready</p>
+          <div className="">
+            <p className="font-bold">self</p>
+            <p className="">{connectionsFeed?.self?.fullname}</p>
+          </div>
 
-      <ConnectionsKind
-        label="friends"
-        connections={connectionsFeed.friends}
-      ></ConnectionsKind>
+          <ConnectionsKind
+            label="friends"
+            connections={connectionsFeed.friends}
+          ></ConnectionsKind>
 
-      <ConnectionsKind
-        label="followings"
-        connections={connectionsFeed.followings}
-      ></ConnectionsKind>
+          <ConnectionsKind
+            label="followings"
+            connections={connectionsFeed.followings}
+          ></ConnectionsKind>
 
-      <ConnectionsKind
-        label="followers"
-        connections={connectionsFeed.followers}
-      ></ConnectionsKind>
+          <ConnectionsKind
+            label="followers"
+            connections={connectionsFeed.followers}
+          ></ConnectionsKind>
 
-      <ConnectionsKind
-        label="mayknows"
-        connections={connectionsFeed.mayknows}
-      ></ConnectionsKind>
+          <ConnectionsKind
+            label="mayknows"
+            connections={connectionsFeed.mayknows}
+          ></ConnectionsKind>
+        </>
+      </LoadingWrapper>
     </div>
   );
 };

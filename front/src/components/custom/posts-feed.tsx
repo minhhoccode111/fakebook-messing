@@ -11,6 +11,7 @@ import { StatePostsFeedStore, ActionPostsFeedStore } from "@/shared/types";
 import { useEffect } from "react";
 
 import Post from "@/components/custom/post";
+import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 export const usePostsFeedStore = create<
   StatePostsFeedStore & ActionPostsFeedStore
@@ -41,27 +42,11 @@ const PostsFeed = ({
 
   const { postsFeed, setPostsFeed } = usePostsFeedStore();
 
-  const { data, error } = useSWR(url, postsFetcher(token as string));
+  const { data, error, isLoading } = useSWR(url, postsFetcher(token as string));
 
   useEffect(() => {
     if (data) setPostsFeed(data);
   }, [data, setPostsFeed]);
-
-  if (error)
-    return (
-      <div className={"" + " " + className}>
-        {children}
-        <p className="">loading posts error!</p>
-      </div>
-    );
-
-  if (!data)
-    return (
-      <div className={"" + " " + className}>
-        {children}
-        <p className="">loading posts...</p>
-      </div>
-    );
 
   // console.log(data);
 
@@ -69,11 +54,13 @@ const PostsFeed = ({
     <div className={"" + " " + className}>
       {children}
 
-      <ul className="">
-        {postsFeed.map((post, index: number) => (
-          <Post key={index} post={post} />
-        ))}
-      </ul>
+      <LoadingWrapper isLoading={isLoading} isError={error}>
+        <ul className="">
+          {postsFeed.map((post, index: number) => (
+            <Post key={index} post={post} />
+          ))}
+        </ul>
+      </LoadingWrapper>
     </div>
   );
 };

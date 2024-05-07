@@ -1,8 +1,11 @@
-import axios from "axios";
 import { Navigate } from "react-router-dom";
-import { useState } from "react";
-import { useAuthStore } from "@/main";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import axios from "axios";
+
+import { useAuthStore } from "@/main";
+
+import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 type LoginFormData = {
   username: string;
@@ -97,20 +100,18 @@ const Login = () => {
 
         <div className="">
           <button type="submit" className="">
-            {/*  TODO: display proper icons and disable button when error happens */}
-            {isError ? "error" : isLoading ? "loading..." : "login"}
+            <LoadingWrapper isLoading={isLoading} isError={isError}>
+              login
+            </LoadingWrapper>
           </button>
         </div>
       </form>
       <form onSubmit={handleSubmit(handleLogin("random"))} className="">
         <div className="">
           <button type="submit" className="">
-            {/*  TODO: display proper icons and disable button when error happens */}
-            {isError
-              ? "error"
-              : isLoading
-                ? "loading..."
-                : "use random account"}
+            <LoadingWrapper isLoading={isLoading} isError={isError}>
+              random
+            </LoadingWrapper>
           </button>
         </div>
       </form>
