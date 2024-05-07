@@ -7,7 +7,7 @@ import { useAuthStore } from "@/main";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
-type LoginFormData = {
+type LoginDataType = {
   username: string;
   password: string;
 };
@@ -15,7 +15,7 @@ type LoginFormData = {
 import { ApiOrigin } from "@/shared/constants";
 
 const Login = () => {
-  const { register, handleSubmit, reset } = useForm<LoginFormData>();
+  const { register, handleSubmit, reset } = useForm<LoginDataType>();
 
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,7 +25,7 @@ const Login = () => {
 
   const handleLogin =
     (type = "normal") =>
-    async (data: LoginFormData) => {
+    async (data: LoginDataType) => {
       let username;
       let password;
 

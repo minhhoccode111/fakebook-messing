@@ -6,16 +6,22 @@ import { PostType, CommentType } from "@/shared/types";
 import MyAvatar from "@/components/custom/my-avatar";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
-type Comment = {
+type CommentPropsType = {
   comment: CommentType;
+
   creatorid: string;
   postid: string;
+
   localPost: PostType;
   setLocalPost: (current: PostType) => void;
+
   isLoading: boolean;
-  isError: boolean;
   setIsLoading: (newState: boolean) => void;
+  isError: boolean;
   setIsError: (newState: boolean) => void;
+
+  setIsShowLess: (newState: boolean) => void;
+  setIsFetchedFull: (newState: boolean) => void;
 };
 
 const Comment = ({
@@ -32,7 +38,10 @@ const Comment = ({
   setIsError,
   isLoading,
   setIsLoading,
-}: Comment) => {
+
+  setIsFetchedFull,
+  setIsShowLess,
+}: CommentPropsType) => {
   const { likes, creator, content } = comment;
 
   const authData = useAuthStore((state) => state.authData);
@@ -54,6 +63,10 @@ const Comment = ({
       console.log(responsePost);
 
       setLocalPost({ ...localPost, ...responsePost });
+
+      setIsShowLess(false);
+
+      setIsFetchedFull(true);
     } catch (err) {
       console.error(err);
 

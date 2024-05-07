@@ -8,6 +8,7 @@ import { useAuthStore } from "@/main";
 import MyAvatar from "@/components/custom/my-avatar";
 import Comment from "@/components/custom/comment";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
+import CommentAddForm from "@/components/custom/comment-add-form";
 
 const Post = ({ post }: { post: PostType }) => {
   const authData = useAuthStore((state) => state.authData);
@@ -15,8 +16,8 @@ const Post = ({ post }: { post: PostType }) => {
   // local post state after fetch full
   const [localPost, setLocalPost] = useState(post);
 
+  // destruct variables
   const { creator, likes, commentsLength } = localPost;
-
   let { content, comments } = localPost;
 
   // display everything in a post and display preview only
@@ -28,6 +29,7 @@ const Post = ({ post }: { post: PostType }) => {
   // to know we once fetch full post once
   const [isFetchedFull, setIsFetchedFull] = useState(false);
 
+  // simple tracking states
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -127,19 +129,20 @@ const Post = ({ post }: { post: PostType }) => {
       </div>
 
       <div className="">
-        <p className="">
-          {content}
-
-          <button
-            onClick={() => {
-              setIsShowLess((state) => !state);
-              setWillFetchFull(true);
-            }}
-            className=""
-          >
-            {isShowLess ? "more" : "less"}
-          </button>
-        </p>
+        <p className="">{content}</p>
+        <button
+          onClick={() => {
+            setIsShowLess((state) => !state);
+            setWillFetchFull(true);
+          }}
+          className=""
+        >
+          {isShowLess ? (
+            <span className="">more</span>
+          ) : (
+            <span className="">show less</span>
+          )}
+        </button>
       </div>
 
       <div className="flex gap-2 items-center justify-evenly font-bold">
@@ -178,11 +181,24 @@ const Post = ({ post }: { post: PostType }) => {
             isError={isError}
             setIsLoading={setIsLoading}
             setIsError={setIsError}
+            setIsShowLess={setIsShowLess}
+            setIsFetchedFull={setIsFetchedFull}
           />
         ))}
       </ul>
 
-      {/* TODO: form to add comment*/}
+      {!isShowLess && (
+        <CommentAddForm
+          creatorid={creator.id}
+          postid={localPost.id}
+          setLocalPost={setLocalPost}
+          localPost={localPost}
+          isLoading={isLoading}
+          isError={isError}
+          setIsLoading={setIsLoading}
+          setIsError={setIsError}
+        />
+      )}
     </li>
   );
 };

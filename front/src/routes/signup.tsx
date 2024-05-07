@@ -8,7 +8,7 @@ import { ApiOrigin } from "@/shared/constants";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 // This type will be called with `useForm` and `handleSubmit`
-type SignupData = {
+type SignupDataType = {
   fullname: string;
   username: string;
   password: string;
@@ -21,7 +21,7 @@ const Signup = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupData>();
+  } = useForm<SignupDataType>();
 
   const password = watch("password");
 
@@ -30,7 +30,7 @@ const Signup = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isConflict, setIsConflict] = useState<boolean>(false);
 
-  const handleSignup = async (data: SignupData) => {
+  const handleSignup = async (data: SignupDataType) => {
     try {
       setIsLoading(true);
 
