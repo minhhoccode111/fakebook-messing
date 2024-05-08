@@ -4,6 +4,7 @@ import axios from "axios";
 import { ApiOrigin } from "@/shared/constants";
 import { useAuthStore } from "@/main";
 import LoadingWrapper from "./loading-wrapper";
+import { usePostsFeedStore } from "./posts-feed";
 
 type CommentAddDataType = {
   content: string;
@@ -11,9 +12,7 @@ type CommentAddDataType = {
 
 type CommentAddFormPropsType = {
   creatorid: string;
-  postid: string;
-  localPost: PostType;
-  setLocalPost: (current: PostType) => void;
+  post: PostType;
 
   isLoading: boolean;
   setIsLoading: (newState: boolean) => void;
@@ -22,12 +21,8 @@ type CommentAddFormPropsType = {
 };
 
 const CommentAddForm = ({
-  postid,
+  post,
   creatorid,
-
-  // to set local post after we like a post
-  setLocalPost,
-  localPost,
 
   // use the same loading state with post
   isError,
@@ -37,6 +32,9 @@ const CommentAddForm = ({
 }: CommentAddFormPropsType) => {
   const authData = useAuthStore((state) => state.authData);
 
+  const postsFeed = usePostsFeedStore((state) => state.postsFeed) as PostType[];
+  const setPostsFeed = usePostsFeedStore((state) => state.setPostsFeed);
+
   const {
     reset,
     register,
@@ -45,7 +43,7 @@ const CommentAddForm = ({
   } = useForm<CommentAddDataType>();
 
   const handleAddComment = async (data: CommentAddDataType) => {
-    const url = ApiOrigin + `/users/${creatorid}/posts/${postid}/comments`;
+    const url = ApiOrigin + `/users/${creatorid}/posts/${post.id}/comments`;
 
     try {
       setIsLoading(true);
@@ -59,11 +57,14 @@ const CommentAddForm = ({
         data: { ...data }, // only content field
       });
 
+      // console.log(res.data);
+
       const responsePost = res.data;
-
-      // console.log(responsePost);
-
-      setLocalPost({ ...localPost, ...responsePost });
+      const newPost = Object.assign({}, post, responsePost); // merge
+      const newPostsFeed = postsFeed.map((p) =>
+        p.id === post.id ? newPost : p,
+      );
+      setPostsFeed(newPostsFeed);
 
       reset();
     } catch (err) {

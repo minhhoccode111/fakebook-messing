@@ -52,3 +52,11 @@ export type StateConnectionsFeedStore = {
 export type ActionConnectionsFeedStore = {
   setConnectionsFeed: (newConnections: Connections) => void;
 };
+
+export type StatePostsFeedStore = {
+  postsFeed: undefined | PostType[];
+};
+
+export type ActionPostsFeedStore = {
+  setPostsFeed: (newPosts: PostType[]) => void;
+};

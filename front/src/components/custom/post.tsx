@@ -4,6 +4,7 @@ import axios from "axios";
 import { ApiOrigin } from "@/shared/constants";
 import { PostType } from "@/shared/types";
 import { useAuthStore } from "@/main";
+import { usePostsFeedStore } from "./posts-feed";
 
 // NOTE: consider using index file to fast import everything in /custom dir
 import MyAvatar from "@/components/custom/my-avatar";
@@ -15,13 +16,13 @@ const Post = ({ post }: { post: PostType }) => {
   // global states
   const authData = useAuthStore((state) => state.authData);
 
-  // local post state after fetch full
-  const [localPost, setLocalPost] = useState(post);
+  const setPostsFeed = usePostsFeedStore((state) => state.setPostsFeed);
+  const postsFeed = usePostsFeedStore((state) => state.postsFeed) as PostType[];
 
   // destruct variables
-  const { creator, likes, commentsLength } = localPost;
+  const { creator, likes, commentsLength } = post;
   // this will be changed
-  let { content, comments } = localPost;
+  let { content, comments } = post;
 
   // display everything in a post and display preview only
   const [isShowLess, setIsShowLess] = useState(true);
@@ -53,21 +54,20 @@ const Post = ({ post }: { post: PostType }) => {
 
         const res = await axios({
           method: "get",
-          url: ApiOrigin + `/users/${creator.id}/posts/${localPost.id}`,
+          url: ApiOrigin + `/users/${creator.id}/posts/${post.id}`,
           headers: {
             Authorization: `Bearer ${authData.token}`,
           },
         });
 
+        // console.log(res.data);
+
         const responsePost = res.data;
-
-        // console.log(responsePost);
-
-        // merge old one with newly responsed one
-        // because the responsed one doesn't populate creator field
-        // or it is init preview state
-        const newPost = { ...post, ...responsePost };
-        setLocalPost(newPost);
+        const newPost = Object.assign({}, post, responsePost); // merge
+        const newPostsFeed = postsFeed.map((p) =>
+          p.id === post.id ? newPost : p,
+        );
+        setPostsFeed(newPostsFeed);
 
         // since the response post contain everything
         setIsFetchedFull(true);
@@ -85,14 +85,7 @@ const Post = ({ post }: { post: PostType }) => {
 
     // only fetch full post data once
     if (willFetchFull && !isFetchedFull) tmp();
-  }, [
-    willFetchFull,
-    isFetchedFull,
-    creator.id,
-    localPost.id,
-    authData.token,
-    post,
-  ]);
+  }, [willFetchFull, isFetchedFull, creator.id, post.id, authData.token, post]);
 
   const handleLikePost = async () => {
     try {
@@ -100,21 +93,20 @@ const Post = ({ post }: { post: PostType }) => {
 
       const res = await axios({
         method: "post",
-        url: ApiOrigin + `/users/${creator.id}/posts/${localPost.id}/likes`,
+        url: ApiOrigin + `/users/${creator.id}/posts/${post.id}/likes`,
         headers: {
           Authorization: `Bearer ${authData.token}`,
         },
       });
 
+      // console.log(res.data);
+
       const responsePost = res.data;
-
-      // console.log(responsePost);
-
-      // merge old one with newly responsed one
-      // because the responsed one doesn't populate creator field
-      // or it is init preview state
-      const newPost = { ...post, ...responsePost };
-      setLocalPost(newPost);
+      const newPost = Object.assign({}, post, responsePost); // merge
+      const newPostsFeed = postsFeed.map((p) =>
+        p.id === post.id ? newPost : p,
+      );
+      setPostsFeed(newPostsFeed);
 
       setIsFetchedFull(true);
 
@@ -192,10 +184,7 @@ const Post = ({ post }: { post: PostType }) => {
             comment={comment}
             // to like the right comment of a post of a usesr
             creatorid={creator.id}
-            postid={localPost.id}
-            // to update after user like a comment
-            setLocalPost={setLocalPost}
-            localPost={localPost}
+            post={post}
             // to display fetching state after user like a comment
             isLoading={isLoading}
             isError={isError}
@@ -213,10 +202,7 @@ const Post = ({ post }: { post: PostType }) => {
         <CommentAddForm
           // send comment to the rigth post of a user
           creatorid={creator.id}
-          postid={localPost.id}
-          // to update local post after posting a comment
-          setLocalPost={setLocalPost}
-          localPost={localPost}
+          post={post}
           // to display fetching state when create a new comment
           isLoading={isLoading}
           isError={isError}

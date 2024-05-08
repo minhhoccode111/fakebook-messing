@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useAuthStore } from "@/main";
 import { ApiOrigin } from "@/shared/constants";
-import { PostType, CommentType } from "@/shared/types";
+import { CommentType, PostType } from "@/shared/types";
+import { usePostsFeedStore } from "@/components/custom/posts-feed";
 
 import MyAvatar from "@/components/custom/my-avatar";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
@@ -10,10 +11,7 @@ type CommentPropsType = {
   comment: CommentType;
 
   creatorid: string;
-  postid: string;
-
-  localPost: PostType;
-  setLocalPost: (current: PostType) => void;
+  post: PostType;
 
   isLoading: boolean;
   setIsLoading: (newState: boolean) => void;
@@ -25,13 +23,9 @@ type CommentPropsType = {
 };
 
 const Comment = ({
-  postid,
+  post,
   comment,
   creatorid,
-
-  // to set local post after we like a post
-  setLocalPost,
-  localPost,
 
   // use the same loading state with post
   isError,
@@ -44,6 +38,9 @@ const Comment = ({
 }: CommentPropsType) => {
   const { likes, creator, content } = comment;
 
+  const setPostsFeed = usePostsFeedStore((state) => state.setPostsFeed);
+  const postsFeed = usePostsFeedStore((state) => state.postsFeed) as PostType[];
+
   const authData = useAuthStore((state) => state.authData);
 
   const handleLikeComment = async () => {
@@ -53,16 +50,20 @@ const Comment = ({
         method: "post",
         url:
           ApiOrigin +
-          `/users/${creatorid}/posts/${postid}/comments/${comment.id}/likes`,
+          `/users/${creatorid}/posts/${post.id}/comments/${comment.id}/likes`,
         headers: {
           Authorization: `Bearer ${authData.token}`,
         },
       });
 
-      const responsePost = res.data;
-      console.log(responsePost);
+      // console.log(res.data);
 
-      setLocalPost({ ...localPost, ...responsePost });
+      const responsePost = res.data;
+      const newPost = Object.assign({}, post, responsePost); // merge
+      const newPostsFeed = postsFeed.map((p) =>
+        p.id === post.id ? newPost : p,
+      );
+      setPostsFeed(newPostsFeed);
 
       setIsShowLess(false);
 

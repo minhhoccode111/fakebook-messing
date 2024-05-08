@@ -1,21 +1,30 @@
-import { useAuthStore } from "@/main";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { create } from "zustand";
 
 import { ApiOrigin } from "@/shared/constants";
-
-import { PostType } from "@/shared/types";
-
-import { useEffect, useState } from "react";
-
-import Post from "@/components/custom/post";
+import {
+  StatePostsFeedStore,
+  ActionPostsFeedStore,
+  PostType,
+} from "@/shared/types";
+import { useAuthStore } from "@/main";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
+import Post from "@/components/custom/post";
+
+export const usePostsFeedStore = create<
+  StatePostsFeedStore & ActionPostsFeedStore
+>((set) => ({
+  postsFeed: undefined,
+  setPostsFeed: (newPosts) => set(() => ({ postsFeed: newPosts })),
+}));
 
 const usePostsFetcher = () => {
   const token = useAuthStore((state) => state.authData.token);
 
   const [isError, setIsError] = useState(false);
-  const [postsFeed, setPostsFeed] = useState<undefined | PostType[]>();
+  const setPostsFeed = usePostsFeedStore((state) => state.setPostsFeed);
 
   useEffect(() => {
     const tmp = async () => {
@@ -39,7 +48,7 @@ const usePostsFetcher = () => {
     tmp();
   }, [token]);
 
-  return { isError, postsFeed };
+  return { isError };
 };
 
 const PostsFeed = ({
@@ -49,7 +58,9 @@ const PostsFeed = ({
   className: string;
   children: React.ReactNode;
 }) => {
-  const { isError, postsFeed } = usePostsFetcher();
+  const { isError } = usePostsFetcher();
+
+  const postsFeed = usePostsFeedStore((state) => state.postsFeed);
 
   return (
     <div className={"" + " " + className}>
