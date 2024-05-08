@@ -1,15 +1,12 @@
-import { Outlet, useLoaderData, Navigate } from "react-router-dom";
-import type { LoaderFunctionArgs } from "react-router-dom";
+import { Outlet, Navigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { create } from "zustand";
 
-import { ApiOrigin, AuthStoreName } from "@/shared/constants";
+import { ApiOrigin } from "@/shared/constants";
 import MyNavLink from "@/components/custom/my-nav-link";
-import {
-  ActionParamUserStore,
-  StateParamUserStore,
-  User,
-} from "@/shared/types";
+import { ActionParamUserStore, StateParamUserStore } from "@/shared/types";
+import { useAuthStore } from "@/main";
+import { useEffect, useState } from "react";
 
 const useParamUserStore = create<StateParamUserStore & ActionParamUserStore>(
   (set) => ({
@@ -18,50 +15,46 @@ const useParamUserStore = create<StateParamUserStore & ActionParamUserStore>(
   }),
 );
 
-// check :userid existed
-export const profileCheckUserid = async ({ params }: LoaderFunctionArgs) => {
-  const { userid } = params;
+const useCheckParamUserid = () => {
+  const { userid } = useParams();
 
-  // protected route component already checked the localstorage, we can trust
-  const authDataLocalStorage = localStorage.getItem(AuthStoreName) as string;
-  const authData = JSON.parse(authDataLocalStorage);
+  const token = useAuthStore((state) => state.authData.token);
+  const setParamUser = useParamUserStore((state) => state.setParamUser);
 
-  let paramUser;
-  let isError;
+  const [isError, setIsError] = useState(false);
 
-  try {
-    const res = await axios({
-      url: ApiOrigin + `/users/${userid}`,
-      method: "get",
-      headers: {
-        Authorization: `Bearer ${authData.token}`,
-      },
-    });
+  useEffect(() => {
+    const tmp = async () => {
+      try {
+        const res = await axios({
+          url: ApiOrigin + `/users/${userid}`,
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    // console.log(res.data);
+        // console.log(res.data);
 
-    paramUser = res.data;
-  } catch (err) {
-    // console.log(err);
+        setParamUser(res.data);
+      } catch (err) {
+        // console.log(err);
 
-    isError = true;
-  }
+        setIsError(true);
+      }
+    };
 
-  return { paramUser, isError };
+    tmp();
+  }, []);
+
+  return { isError };
 };
 
 const UserLayout = () => {
-  const { paramUser, isError } = useLoaderData() as {
-    isError: boolean;
-    paramUser: User;
-  };
+  const { isError } = useCheckParamUserid();
 
   // anything bad happens will be a logout
   if (isError) return <Navigate to={"/logout"}></Navigate>;
-
-  // else set valid :userid user to global store
-  const setParamUser = useParamUserStore((state) => state.setParamUser);
-  setParamUser(paramUser);
 
   // console.log(`paramUser? `, paramUser);
   // console.log(`isError? `, isError);
@@ -77,6 +70,7 @@ const UserLayout = () => {
           <MyNavLink to={"connections"}>connections</MyNavLink>
         </nav>
       </header>
+
       {/* pass user data down to outlet */}
       <Outlet></Outlet>
     </section>

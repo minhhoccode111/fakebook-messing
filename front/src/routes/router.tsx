@@ -17,9 +17,7 @@ import {
   useridNavigateToInfo,
 } from "@/routes/fakebook/profile/profile-navigate";
 
-import UserLayout, {
-  profileCheckUserid,
-} from "@/routes/fakebook/profile/user/user-layout";
+import UserLayout from "@/routes/fakebook/profile/user/user-layout";
 import UserInfo from "@/routes/fakebook/profile/user/user-info";
 import UserPosts from "@/routes/fakebook/profile/user/user-posts";
 import UserConnections from "@/routes/fakebook/profile/user/user-connections";
@@ -77,8 +75,7 @@ export default function Router() {
 
                 {
                   path: ":userid",
-                  // first check :userid existed
-                  loader: profileCheckUserid,
+                  // layout and check :userid existed
                   element: <UserLayout />,
                   children: [
                     {
