@@ -74,7 +74,7 @@ const Login = () => {
         setIsLoading(false);
 
         // reset form inputs to prevent spam
-        reset({ username: "", password: "" });
+        reset();
       }
     };
 
@@ -99,20 +99,26 @@ const Login = () => {
         </label>
 
         <div className="">
-          <button type="submit" className="">
-            <LoadingWrapper isLoading={isLoading} isError={isError}>
+          <LoadingWrapper isLoading={isLoading} isError={isError}>
+            <button onClick={() => reset()} type="button" className="">
+              clearn
+            </button>
+          </LoadingWrapper>
+
+          <LoadingWrapper isLoading={isLoading} isError={isError}>
+            <button type="submit" className="">
               login
-            </LoadingWrapper>
-          </button>
+            </button>
+          </LoadingWrapper>
         </div>
       </form>
       <form onSubmit={handleSubmit(handleLogin("random"))} className="">
         <div className="">
-          <button type="submit" className="">
-            <LoadingWrapper isLoading={isLoading} isError={isError}>
+          <LoadingWrapper isLoading={isLoading} isError={isError}>
+            <button type="submit" className="">
               random
-            </LoadingWrapper>
-          </button>
+            </button>
+          </LoadingWrapper>
         </div>
       </form>
     </>

@@ -2,6 +2,7 @@ import { redirect } from "react-router-dom";
 
 import { AuthStoreName } from "@/shared/constants";
 
+// /:userid go to /info by default
 export const useridNavigateToInfo = () => {
   return redirect("info");
 };

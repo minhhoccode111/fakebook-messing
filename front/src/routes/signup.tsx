@@ -18,6 +18,7 @@ type SignupDataType = {
 const Signup = () => {
   const {
     watch,
+    reset,
     register,
     handleSubmit,
     formState: { errors },
@@ -47,6 +48,9 @@ const Signup = () => {
       console.log(res);
 
       setIsSuccess(true);
+
+      reset();
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       console.log(err.response);
@@ -163,11 +167,17 @@ const Signup = () => {
       {isConflict && <p className="">That username is already existed.</p>}
 
       <div className="">
-        <button type="submit" className="">
-          <LoadingWrapper isLoading={isLoading} isError={isError}>
+        <LoadingWrapper isLoading={isLoading} isError={isError}>
+          <button onClick={() => reset()} type="button" className="">
+            clear
+          </button>
+        </LoadingWrapper>
+
+        <LoadingWrapper isLoading={isLoading} isError={isError}>
+          <button type="submit" className="">
             signup
-          </LoadingWrapper>
-        </button>
+          </button>
+        </LoadingWrapper>
       </div>
     </Form>
   );

@@ -1,15 +1,53 @@
-import { Outlet, useLoaderData } from "react-router-dom";
+import { Outlet, useLoaderData, Navigate } from "react-router-dom";
+import type { LoaderFunctionArgs } from "react-router-dom";
 import MyNavLink from "@/components/custom/my-nav-link";
+import axios from "axios";
+import { ApiOrigin, AuthStoreName } from "@/shared/constants";
+import { User } from "@/shared/types";
 
-export const profileCheckUserid = async ({ request, params }) => {
-  // check :userid existed
-  //  TODO: work on this after /feed
-  return null;
+// check :userid existed
+export const profileCheckUserid = async ({ params }: LoaderFunctionArgs) => {
+  const { userid } = params;
+
+  // protected route component already checked the localstorage, we can trust
+  const authDataLocalStorage = localStorage.getItem(AuthStoreName) as string;
+  const authData = JSON.parse(authDataLocalStorage);
+
+  let paramUser;
+  let isError;
+
+  try {
+    const res = await axios({
+      url: ApiOrigin + `/users/${userid}`,
+      method: "get",
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+      },
+    });
+
+    // console.log(res.data);
+
+    paramUser = res.data;
+  } catch (err) {
+    // console.log(err);
+
+    isError = true;
+  }
+
+  return { paramUser, isError };
 };
+
 const UserLayout = () => {
-  // extract :userid's data
-  //  TODO: work on this after /feed
-  const user = useLoaderData();
+  const { paramUser, isError } = useLoaderData() as {
+    isError: boolean;
+    paramUser: User;
+  };
+
+  // console.log(`paramUser? `, paramUser);
+  // console.log(`isError? `, isError);
+
+  // anything bad happens will be a logout
+  if (isError) return <Navigate to={"/logout"}></Navigate>;
 
   return (
     <section>
@@ -23,8 +61,7 @@ const UserLayout = () => {
         </nav>
       </header>
       {/* pass user data down to outlet */}
-      // TODO: work on this after /feed
-      <Outlet></Outlet>
+      <Outlet context={{ paramUser }}></Outlet>
     </section>
   );
 };

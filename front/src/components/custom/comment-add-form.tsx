@@ -38,6 +38,7 @@ const CommentAddForm = ({
   const authData = useAuthStore((state) => state.authData);
 
   const {
+    reset,
     register,
     handleSubmit,
     formState: { errors },
@@ -60,9 +61,11 @@ const CommentAddForm = ({
 
       const responsePost = res.data;
 
-      console.log(responsePost);
+      // console.log(responsePost);
 
       setLocalPost({ ...localPost, ...responsePost });
+
+      reset();
     } catch (err) {
       setIsError(true);
     } finally {
@@ -85,6 +88,12 @@ const CommentAddForm = ({
       </label>
 
       <div className="">
+        <LoadingWrapper isLoading={isLoading} isError={isError}>
+          <button onClick={() => reset()} type="button" className="">
+            clear
+          </button>
+        </LoadingWrapper>
+
         <LoadingWrapper isLoading={isLoading} isError={isError}>
           <button type="submit" className="">
             send
