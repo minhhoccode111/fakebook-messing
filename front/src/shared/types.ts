@@ -46,10 +46,10 @@ export type ActionConnectionsFeedStore = {
   setConnectionsFeed: (newConnections: Connections) => void;
 };
 
-export type StatePostsFeedStore = {
-  postsFeed: PostType[];
-};
+// export type StatePostsFeedStore = {
+//   postsFeed: PostType[];
+// };
 
-export type ActionPostsFeedStore = {
-  setPostsFeed: (newPosts: PostType[]) => void;
-};
+// export type ActionPostsFeedStore = {
+//   setPostsFeed: (newPosts: PostType[]) => void;
+// };

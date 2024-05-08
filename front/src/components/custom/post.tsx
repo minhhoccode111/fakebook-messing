@@ -5,12 +5,14 @@ import { ApiOrigin } from "@/shared/constants";
 import { PostType } from "@/shared/types";
 import { useAuthStore } from "@/main";
 
+// NOTE: consider using index file to fast import everything in /custom dir
 import MyAvatar from "@/components/custom/my-avatar";
 import Comment from "@/components/custom/comment";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 import CommentAddForm from "@/components/custom/comment-add-form";
 
 const Post = ({ post }: { post: PostType }) => {
+  // global states
   const authData = useAuthStore((state) => state.authData);
 
   // local post state after fetch full
@@ -18,6 +20,7 @@ const Post = ({ post }: { post: PostType }) => {
 
   // destruct variables
   const { creator, likes, commentsLength } = localPost;
+  // this will be changed
   let { content, comments } = localPost;
 
   // display everything in a post and display preview only
@@ -42,7 +45,7 @@ const Post = ({ post }: { post: PostType }) => {
     comments = comments.slice(0, 2);
   }
 
-  // only fetch full a post once when willFetchFull === true and isFetchedFull === false
+  // fetch full post and only do it once
   useEffect(() => {
     const tmp = async () => {
       try {
@@ -60,10 +63,16 @@ const Post = ({ post }: { post: PostType }) => {
 
         // console.log(responsePost);
 
-        setLocalPost({ ...post, ...responsePost });
+        // merge old one with newly responsed one
+        // because the responsed one doesn't populate creator field
+        // or it is init preview state
+        const newPost = { ...post, ...responsePost };
+        setLocalPost(newPost);
 
+        // since the response post contain everything
         setIsFetchedFull(true);
 
+        // expand the post to let user know every data is fetched
         setIsShowLess(false);
       } catch (err) {
         console.error(err);
@@ -74,6 +83,7 @@ const Post = ({ post }: { post: PostType }) => {
       }
     };
 
+    // only fetch full post data once
     if (willFetchFull && !isFetchedFull) tmp();
   }, [
     willFetchFull,
@@ -100,7 +110,11 @@ const Post = ({ post }: { post: PostType }) => {
 
       // console.log(responsePost);
 
-      setLocalPost({ ...post, ...responsePost });
+      // merge old one with newly responsed one
+      // because the responsed one doesn't populate creator field
+      // or it is init preview state
+      const newPost = { ...post, ...responsePost };
+      setLocalPost(newPost);
 
       setIsFetchedFull(true);
 
@@ -148,6 +162,7 @@ const Post = ({ post }: { post: PostType }) => {
       <div className="flex gap-2 items-center justify-evenly font-bold">
         <p className="flex items-center justify-between gap-2">
           <LoadingWrapper isLoading={isLoading} isError={isError}>
+            {/* click button to like post */}
             <button onClick={handleLikePost} className="text-2xl">
               ^
             </button>
@@ -156,6 +171,7 @@ const Post = ({ post }: { post: PostType }) => {
         </p>
 
         <LoadingWrapper isLoading={isLoading} isError={isError}>
+          {/* click button to expand everything and fetch full post */}
           <button
             onClick={() => {
               setWillFetchFull(true);
@@ -172,16 +188,21 @@ const Post = ({ post }: { post: PostType }) => {
         {comments.map((comment, index: number) => (
           <Comment
             key={index}
+            // comment to display itself
             comment={comment}
+            // to like the right comment of a post of a usesr
             creatorid={creator.id}
             postid={localPost.id}
             // to update after user like a comment
             setLocalPost={setLocalPost}
             localPost={localPost}
+            // to display fetching state after user like a comment
             isLoading={isLoading}
             isError={isError}
             setIsLoading={setIsLoading}
             setIsError={setIsError}
+            // also expand and fetch full the post data after user like a comment
+            // because they can like the 2 preview comments when the post no expand yet
             setIsShowLess={setIsShowLess}
             setIsFetchedFull={setIsFetchedFull}
           />
@@ -190,10 +211,13 @@ const Post = ({ post }: { post: PostType }) => {
 
       {!isShowLess && (
         <CommentAddForm
+          // send comment to the rigth post of a user
           creatorid={creator.id}
           postid={localPost.id}
+          // to update local post after posting a comment
           setLocalPost={setLocalPost}
           localPost={localPost}
+          // to display fetching state when create a new comment
           isLoading={isLoading}
           isError={isError}
           setIsLoading={setIsLoading}

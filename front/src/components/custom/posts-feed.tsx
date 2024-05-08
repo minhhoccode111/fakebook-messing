@@ -1,33 +1,50 @@
 import { useAuthStore } from "@/main";
-import useSWR from "swr";
 import axios from "axios";
 
 import { ApiOrigin } from "@/shared/constants";
 
-import { create } from "zustand";
+import { PostType } from "@/shared/types";
 
-import { StatePostsFeedStore, ActionPostsFeedStore } from "@/shared/types";
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Post from "@/components/custom/post";
+
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
-export const usePostsFeedStore = create<
-  StatePostsFeedStore & ActionPostsFeedStore
->((set) => ({
-  postsFeed: [],
-  setPostsFeed: (newPosts) => set(() => ({ postsFeed: newPosts })),
-}));
+const usePostsFetcher = () => {
+  const token = useAuthStore((state) => state.authData.token);
 
-const postsFetcher = (token: string) => (url: string) =>
-  axios({
-    url,
-    method: "get",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).then((res) => res.data);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [postsFeed, setPostsFeed] = useState([]);
+
+  useEffect(() => {
+    const tmp = async () => {
+      try {
+        setIsLoading(true);
+        const res = await axios({
+          url: ApiOrigin + `/users/feed`,
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        console.log(res.data);
+
+        setPostsFeed(res.data);
+      } catch (err) {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    tmp();
+  }, [token]);
+
+  return { isLoading, isError, postsFeed };
+};
 
 const PostsFeed = ({
   className,
@@ -36,27 +53,15 @@ const PostsFeed = ({
   className: string;
   children: React.ReactNode;
 }) => {
-  const { token } = useAuthStore((state) => state.authData);
-
-  const url = ApiOrigin + `/users/feed`;
-
-  const { postsFeed, setPostsFeed } = usePostsFeedStore();
-
-  const { data, error, isLoading } = useSWR(url, postsFetcher(token as string));
-
-  useEffect(() => {
-    if (data) setPostsFeed(data);
-  }, [data, setPostsFeed]);
-
-  // console.log(data);
+  const { isLoading, isError, postsFeed } = usePostsFetcher();
 
   return (
     <div className={"" + " " + className}>
       {children}
 
-      <LoadingWrapper isLoading={isLoading} isError={error}>
+      <LoadingWrapper isLoading={isLoading} isError={isError}>
         <ul className="">
-          {postsFeed.map((post, index: number) => (
+          {postsFeed?.map((post: PostType, index: number) => (
             <Post key={index} post={post} />
           ))}
         </ul>
