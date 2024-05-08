@@ -53,6 +53,8 @@ const useCheckParamUserid = () => {
 const UserLayout = () => {
   const { isError } = useCheckParamUserid();
 
+  const paramUser = useParamUserStore((state) => state.paramUser);
+
   // anything bad happens will be a logout
   if (isError) return <Navigate to={"/logout"}></Navigate>;
 
@@ -70,7 +72,7 @@ const UserLayout = () => {
       </nav>
 
       {/* only pass user data down to outlet if existed */}
-      {<Outlet></Outlet>}
+      {paramUser && <Outlet></Outlet>}
     </div>
   );
 };

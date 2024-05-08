@@ -19,32 +19,25 @@ import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
 import { useCurrentConnectionStore } from "@/components/custom/connection";
 
 const UserInfo = () => {
-  const { self } = useAuthStore((state) => state.authData);
-
-  const { connectionsFeed, setConnectionsFeed } = useConnectionsFeedStore();
-
-  const paramUser = useParamUserStore((state) => state.paramUser) as User;
-
   // identify authorization of current profile
+  const { self } = useAuthStore((state) => state.authData);
+  const paramUser = useParamUserStore((state) => state.paramUser) as User;
   const isSelf = paramUser?.id === self?.id;
 
+  // update connections after follow user
+  const { connectionsFeed, setConnectionsFeed } = useConnectionsFeedStore();
+
+  // keep track of fetching states
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
+  // show or hide update info section
   const [isUpdating, setIsUpdating] = useState(false);
 
-  // console.log(isSelf);
-
+  //
   const followButtonText = useCurrentConnectionStore(
     (state) => state.selfActionWithConnection,
   );
-
-  if (paramUser === undefined)
-    return (
-      <div className="max-w-[70ch]">
-        <p className="">loading</p>
-      </div>
-    );
 
   return (
     <div className="max-w-[70ch]">

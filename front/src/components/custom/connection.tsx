@@ -78,6 +78,8 @@ const Connection = ({ user, text }: { user: User; text: ConnectionsText }) => {
       <div className="flex gap-2 items-center justify-between">
         {/* change route to /profile */}
         <Link
+          // click will set connection with self on a global store
+          // to display better follow button text when we view their profile
           onClick={() => setSelfActionWithConnection(followButtonText)}
           to={`/fakebook/profile/${user.id}`}
         >
