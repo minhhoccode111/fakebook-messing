@@ -4,17 +4,34 @@ import { useEffect, useState } from "react";
 
 import { ApiOrigin } from "@/shared/constants";
 
-import { Connections } from "@/shared/types";
+import {
+  StateConnectionsFeedStore,
+  ActionConnectionsFeedStore,
+  Connections,
+} from "@/shared/types";
 
 import ConnectionsKind from "@/components/custom/connections-kind";
+
+import { create } from "zustand";
+import MyAvatar from "@/components/custom/my-avatar";
+
+const useConnectionsFeedStore = create<
+  StateConnectionsFeedStore & ActionConnectionsFeedStore
+>((set) => ({
+  connectionsFeed: undefined,
+  setConnectionsFeed: (newConnections) =>
+    set(() => ({ connectionsFeed: newConnections })),
+}));
 
 const useConnectionsFetch = () => {
   const token = useAuthStore((state) => state.authData.token);
 
   const [isError, setIsError] = useState(false);
-  const [connectionsFeed, setConnectionsFeed] = useState<
-    undefined | Connections
-  >();
+
+  // to set global connections store
+  const setConnectionsFeed = useConnectionsFeedStore(
+    (state) => state.setConnectionsFeed,
+  );
 
   useEffect(() => {
     const tmp = async () => {
@@ -38,7 +55,7 @@ const useConnectionsFetch = () => {
     tmp();
   }, [token]);
 
-  return { isError, connectionsFeed };
+  return { isError };
 };
 
 const ConnectionsFeed = ({
@@ -48,12 +65,13 @@ const ConnectionsFeed = ({
   className: string;
   children: React.ReactNode;
 }) => {
-  const { isError, connectionsFeed } = useConnectionsFetch();
+  const { isError } = useConnectionsFetch();
 
-  // NOTE: don't know why can't use LoadingWrapper because
-  // it's tell Connections.friends can possibly be undefined
-  // but if it's undefined then it will not be rendered
-  // and loading will be rendered instead, weird
+  // to user global connections store
+  const connectionsFeed = useConnectionsFeedStore(
+    (state) => state.connectionsFeed,
+  ) as Connections;
+
   if (isError) return;
   <div className={"" + " " + className}>
     {children}
@@ -66,34 +84,35 @@ const ConnectionsFeed = ({
     <p className="">loading</p>
   </div>;
 
+  const { self, friends, followers, followings, mayknows } = connectionsFeed;
+
   return (
     <div className={"" + " " + className}>
       {children}
 
       <p className="">data connections ready</p>
       <div className="">
-        <p className="font-bold">self</p>
-        <p className="">{connectionsFeed?.self?.fullname}</p>
+        <p className="">{self.fullname}</p>
+        <p className="">{self.status}</p>
+
+        <MyAvatar src={self.avatarLink!} fallback={self.fullname.charAt(0)!} />
       </div>
 
-      <ConnectionsKind
-        label="friends"
-        connections={connectionsFeed.friends}
-      ></ConnectionsKind>
+      <ConnectionsKind label="friends" connections={friends}></ConnectionsKind>
 
       <ConnectionsKind
         label="followings"
-        connections={connectionsFeed.followings}
+        connections={followings}
       ></ConnectionsKind>
 
       <ConnectionsKind
         label="followers"
-        connections={connectionsFeed.followers}
+        connections={followers}
       ></ConnectionsKind>
 
       <ConnectionsKind
         label="mayknows"
-        connections={connectionsFeed.mayknows}
+        connections={mayknows}
       ></ConnectionsKind>
     </div>
   );

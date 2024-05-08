@@ -31,7 +31,7 @@ export type ConnectionsLabel =
   | "mayknows";
 
 export type Connections = {
-  self?: User;
+  self: User;
   friends: User[];
   followers: User[];
   followings: User[];
@@ -43,4 +43,12 @@ export type StateParamUserStore = {
 };
 export type ActionParamUserStore = {
   setParamUser: (newUser: User) => void;
+};
+
+export type StateConnectionsFeedStore = {
+  connectionsFeed: undefined | Connections;
+};
+
+export type ActionConnectionsFeedStore = {
+  setConnectionsFeed: (newConnections: Connections) => void;
 };
