@@ -1,45 +1,45 @@
 import axios from "axios";
 import { useAuthStore } from "@/main";
-import useSWR from "swr";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { ApiOrigin } from "@/shared/constants";
 
-import { create } from "zustand";
-
-import {
-  StateConnectionsFeedStore,
-  ActionConnectionsFeedStore,
-} from "@/shared/types";
+import { Connections } from "@/shared/types";
 
 import ConnectionsKind from "@/components/custom/connections-kind";
-import LoadingWrapper from "@/components/custom/loading-wrapper";
 
-// store all connections with self
-const useConnectionsFeedStore = create<
-  StateConnectionsFeedStore & ActionConnectionsFeedStore
->((set) => ({
-  connectionsFeed: {
-    friends: [],
-    followers: [],
-    followings: [],
-    mayknows: [],
-  },
-  setConnectionsFeed: (newConnections) =>
-    set(() => ({
-      connectionsFeed: newConnections,
-    })),
-}));
+const useConnectionsFetch = () => {
+  const token = useAuthStore((state) => state.authData.token);
 
-// fetch all connections with self
-const connectionsFetcher = (token: string) => (url: string) =>
-  axios({
-    url,
-    method: "get",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }).then((res) => res.data);
+  const [isError, setIsError] = useState(false);
+  const [connectionsFeed, setConnectionsFeed] = useState<
+    undefined | Connections
+  >();
+
+  useEffect(() => {
+    const tmp = async () => {
+      try {
+        const res = await axios({
+          url: ApiOrigin + `/users`,
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // console.log(res.data);
+
+        setConnectionsFeed(res.data);
+      } catch (err) {
+        setIsError(true);
+      }
+    };
+
+    tmp();
+  }, [token]);
+
+  return { isError, connectionsFeed };
+};
 
 const ConnectionsFeed = ({
   className,
@@ -48,56 +48,53 @@ const ConnectionsFeed = ({
   className: string;
   children: React.ReactNode;
 }) => {
-  const { token } = useAuthStore((state) => state.authData);
+  const { isError, connectionsFeed } = useConnectionsFetch();
 
-  const url = ApiOrigin + `/users`;
+  // NOTE: don't know why can't use LoadingWrapper because
+  // it's tell Connections.friends can possibly be undefined
+  // but if it's undefined then it will not be rendered
+  // and loading will be rendered instead, weird
+  if (isError) return;
+  <div className={"" + " " + className}>
+    {children}
+    <p className="">error</p>
+  </div>;
 
-  const { data, error, isLoading } = useSWR(
-    url,
-    connectionsFetcher(token as string),
-  );
-
-  const { connectionsFeed, setConnectionsFeed } = useConnectionsFeedStore();
-
-  // everytime data change will change global all connections global state
-  useEffect(() => {
-    if (data) setConnectionsFeed(data);
-  }, [data, setConnectionsFeed]);
-
-  // console.log(data);
+  if (!connectionsFeed) return;
+  <div className={"" + " " + className}>
+    {children}
+    <p className="">loading</p>
+  </div>;
 
   return (
     <div className={"" + " " + className}>
       {children}
-      <LoadingWrapper isLoading={isLoading} isError={error}>
-        <>
-          <p className="">data connections ready</p>
-          <div className="">
-            <p className="font-bold">self</p>
-            <p className="">{connectionsFeed?.self?.fullname}</p>
-          </div>
 
-          <ConnectionsKind
-            label="friends"
-            connections={connectionsFeed.friends}
-          ></ConnectionsKind>
+      <p className="">data connections ready</p>
+      <div className="">
+        <p className="font-bold">self</p>
+        <p className="">{connectionsFeed?.self?.fullname}</p>
+      </div>
 
-          <ConnectionsKind
-            label="followings"
-            connections={connectionsFeed.followings}
-          ></ConnectionsKind>
+      <ConnectionsKind
+        label="friends"
+        connections={connectionsFeed.friends}
+      ></ConnectionsKind>
 
-          <ConnectionsKind
-            label="followers"
-            connections={connectionsFeed.followers}
-          ></ConnectionsKind>
+      <ConnectionsKind
+        label="followings"
+        connections={connectionsFeed.followings}
+      ></ConnectionsKind>
 
-          <ConnectionsKind
-            label="mayknows"
-            connections={connectionsFeed.mayknows}
-          ></ConnectionsKind>
-        </>
-      </LoadingWrapper>
+      <ConnectionsKind
+        label="followers"
+        connections={connectionsFeed.followers}
+      ></ConnectionsKind>
+
+      <ConnectionsKind
+        label="mayknows"
+        connections={connectionsFeed.mayknows}
+      ></ConnectionsKind>
     </div>
   );
 };

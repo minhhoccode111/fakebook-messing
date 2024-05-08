@@ -37,19 +37,3 @@ export type Connections = {
   followings: User[];
   mayknows: User[];
 };
-
-export type StateConnectionsFeedStore = {
-  connectionsFeed: Connections;
-};
-
-export type ActionConnectionsFeedStore = {
-  setConnectionsFeed: (newConnections: Connections) => void;
-};
-
-// export type StatePostsFeedStore = {
-//   postsFeed: PostType[];
-// };
-
-// export type ActionPostsFeedStore = {
-//   setPostsFeed: (newPosts: PostType[]) => void;
-// };
