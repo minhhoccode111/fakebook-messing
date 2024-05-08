@@ -1,9 +1,22 @@
 import { Outlet, useLoaderData, Navigate } from "react-router-dom";
 import type { LoaderFunctionArgs } from "react-router-dom";
-import MyNavLink from "@/components/custom/my-nav-link";
 import axios from "axios";
+import { create } from "zustand";
+
 import { ApiOrigin, AuthStoreName } from "@/shared/constants";
-import { User } from "@/shared/types";
+import MyNavLink from "@/components/custom/my-nav-link";
+import {
+  ActionParamUserStore,
+  StateParamUserStore,
+  User,
+} from "@/shared/types";
+
+const useParamUserStore = create<StateParamUserStore & ActionParamUserStore>(
+  (set) => ({
+    paramUser: undefined,
+    setParamUser: (newUser) => set(() => ({ paramUser: newUser })),
+  }),
+);
 
 // check :userid existed
 export const profileCheckUserid = async ({ params }: LoaderFunctionArgs) => {
@@ -43,11 +56,15 @@ const UserLayout = () => {
     paramUser: User;
   };
 
-  // console.log(`paramUser? `, paramUser);
-  // console.log(`isError? `, isError);
-
   // anything bad happens will be a logout
   if (isError) return <Navigate to={"/logout"}></Navigate>;
+
+  // else set valid :userid user to global store
+  const setParamUser = useParamUserStore((state) => state.setParamUser);
+  setParamUser(paramUser);
+
+  // console.log(`paramUser? `, paramUser);
+  // console.log(`isError? `, isError);
 
   return (
     <section>
@@ -61,7 +78,7 @@ const UserLayout = () => {
         </nav>
       </header>
       {/* pass user data down to outlet */}
-      <Outlet context={{ paramUser }}></Outlet>
+      <Outlet></Outlet>
     </section>
   );
 };
