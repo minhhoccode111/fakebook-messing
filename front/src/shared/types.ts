@@ -4,6 +4,8 @@ export type User = {
   bio: string;
   avatarLink: string;
   id: string;
+  createdAtFormatted: string;
+  updatedAtFormatted: string;
 };
 
 export type PostType = {
@@ -24,7 +26,7 @@ export type CommentType = {
   id: string;
 };
 
-export type ConnectionsLabel =
+export type ConnectionsText =
   | "friends"
   | "followers"
   | "followings"
@@ -43,20 +45,4 @@ export type StateParamUserStore = {
 };
 export type ActionParamUserStore = {
   setParamUser: (newUser: User) => void;
-};
-
-export type StateConnectionsFeedStore = {
-  connectionsFeed: undefined | Connections;
-};
-
-export type ActionConnectionsFeedStore = {
-  setConnectionsFeed: (newConnections: Connections) => void;
-};
-
-export type StatePostsFeedStore = {
-  postsFeed: undefined | PostType[];
-};
-
-export type ActionPostsFeedStore = {
-  setPostsFeed: (newPosts: PostType[]) => void;
 };

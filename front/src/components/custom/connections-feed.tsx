@@ -5,16 +5,19 @@ import { Link } from "react-router-dom";
 
 import { ApiOrigin } from "@/shared/constants";
 
-import {
-  StateConnectionsFeedStore,
-  ActionConnectionsFeedStore,
-  Connections,
-} from "@/shared/types";
+import { Connections } from "@/shared/types";
 
 import ConnectionsKind from "@/components/custom/connections-kind";
 
 import { create } from "zustand";
 import MyAvatar from "@/components/custom/my-avatar";
+
+type StateConnectionsFeedStore = {
+  connectionsFeed: undefined | Connections;
+};
+type ActionConnectionsFeedStore = {
+  setConnectionsFeed: (newConnections: Connections) => void;
+};
 
 export const useConnectionsFeedStore = create<
   StateConnectionsFeedStore & ActionConnectionsFeedStore
@@ -105,22 +108,19 @@ const ConnectionsFeed = ({
         </div>
       </div>
 
-      <ConnectionsKind label="friends" connections={friends}></ConnectionsKind>
+      <ConnectionsKind text="friends" connections={friends}></ConnectionsKind>
 
       <ConnectionsKind
-        label="followings"
+        text="followings"
         connections={followings}
       ></ConnectionsKind>
 
       <ConnectionsKind
-        label="followers"
+        text="followers"
         connections={followers}
       ></ConnectionsKind>
 
-      <ConnectionsKind
-        label="mayknows"
-        connections={mayknows}
-      ></ConnectionsKind>
+      <ConnectionsKind text="mayknows" connections={mayknows}></ConnectionsKind>
     </div>
   );
 };

@@ -60,20 +60,18 @@ const UserLayout = () => {
   // console.log(`isError? `, isError);
 
   return (
-    <section className="border border-black flex-1">
-      <header className="">
-        <nav className="flex justify-end gap-4">
-          <MyNavLink to={"info"}>info</MyNavLink>
+    <div className="border border-black flex-1">
+      <nav className="flex justify-end gap-4">
+        <MyNavLink to={"info"}>info</MyNavLink>
 
-          <MyNavLink to={"posts"}>posts</MyNavLink>
+        <MyNavLink to={"posts"}>posts</MyNavLink>
 
-          <MyNavLink to={"connections"}>connections</MyNavLink>
-        </nav>
-      </header>
+        <MyNavLink to={"connections"}>connections</MyNavLink>
+      </nav>
 
-      {/* pass user data down to outlet */}
-      <Outlet></Outlet>
-    </section>
+      {/* only pass user data down to outlet if existed */}
+      {<Outlet></Outlet>}
+    </div>
   );
 };
 export default UserLayout;

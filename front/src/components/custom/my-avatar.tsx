@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type MyAvatar = {
-  src: string;
-  fallback: string;
+  src: undefined | string;
+  fallback: undefined | string;
 };
 
 const MyAvatar = ({ src, fallback }: MyAvatar) => {

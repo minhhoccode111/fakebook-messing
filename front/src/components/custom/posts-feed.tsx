@@ -3,15 +3,18 @@ import axios from "axios";
 import { create } from "zustand";
 
 import { ApiOrigin } from "@/shared/constants";
-import {
-  StatePostsFeedStore,
-  ActionPostsFeedStore,
-  PostType,
-} from "@/shared/types";
+import { PostType } from "@/shared/types";
 import { useAuthStore } from "@/main";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 import Post from "@/components/custom/post";
+
+type StatePostsFeedStore = {
+  postsFeed: undefined | PostType[];
+};
+type ActionPostsFeedStore = {
+  setPostsFeed: (newPosts: PostType[]) => void;
+};
 
 export const usePostsFeedStore = create<
   StatePostsFeedStore & ActionPostsFeedStore

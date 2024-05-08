@@ -1,18 +1,18 @@
-import { ConnectionsLabel, User } from "@/shared/types";
+import { ConnectionsText, User } from "@/shared/types";
 import Connection from "@/components/custom/connection";
 
 type ConnectionsKindPropsType = {
-  label: ConnectionsLabel;
+  text: ConnectionsText;
   connections: User[];
 };
 
-const ConnectionsKind = ({ label, connections }: ConnectionsKindPropsType) => {
+const ConnectionsKind = ({ text, connections }: ConnectionsKindPropsType) => {
   return (
     <div className="">
-      <p className="font-bold">{label}</p>
+      <p className="font-bold">{text}</p>
       <ul className="">
         {connections.map((user, index) => (
-          <Connection key={index} user={user} label={label}></Connection>
+          <Connection key={index} user={user} text={text}></Connection>
         ))}
       </ul>
     </div>

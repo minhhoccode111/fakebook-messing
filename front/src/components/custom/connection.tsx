@@ -1,4 +1,4 @@
-import { User, ConnectionsLabel } from "@/shared/types";
+import { User, ConnectionsText } from "@/shared/types";
 import { Link } from "react-router-dom";
 import MyAvatar from "@/components/custom/my-avatar";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
@@ -7,17 +7,32 @@ import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
 import { ApiOrigin } from "@/shared/constants";
 import { useAuthStore } from "@/main";
 import axios from "axios";
+import { create } from "zustand";
 
-const Connection = ({
-  user,
-  label,
-}: {
-  user: User;
-  label: ConnectionsLabel;
-}) => {
+type ActionConnection = "follow" | "unfollow";
+
+type StateCurrentConnectionStore = {
+  selfActionWithConnection: ActionConnection;
+};
+
+type ActionCurrentConnectionStore = {
+  setSelfActionWithConnection: (newAction: ActionConnection) => void;
+};
+
+export const useCurrentConnectionStore = create<
+  StateCurrentConnectionStore & ActionCurrentConnectionStore
+>((set) => ({
+  selfActionWithConnection: "follow",
+  setSelfActionWithConnection: (newAction) =>
+    set(() => ({ selfActionWithConnection: newAction })),
+}));
+
+const Connection = ({ user, text }: { user: User; text: ConnectionsText }) => {
   const setConnectionsFeed = useConnectionsFeedStore(
     (state) => state.setConnectionsFeed,
   );
+
+  const { setSelfActionWithConnection } = useCurrentConnectionStore();
 
   const token = useAuthStore((state) => state.authData.token);
 
@@ -48,6 +63,9 @@ const Connection = ({
     }
   };
 
+  const followButtonText =
+    text === "friends" || text === "followings" ? "unfollow" : "follow";
+
   return (
     <li className="">
       <div className="">
@@ -59,13 +77,16 @@ const Connection = ({
 
       <div className="flex gap-2 items-center justify-between">
         {/* change route to /profile */}
-        <Link to={`/fakebook/profile/${user.id}`}>view profile</Link>
+        <Link
+          onClick={() => setSelfActionWithConnection(followButtonText)}
+          to={`/fakebook/profile/${user.id}`}
+        >
+          view profile
+        </Link>
 
         <LoadingWrapper isLoading={isLoading} isError={isError}>
           <button type="button" onClick={handleFollowClick}>
-            {label === "friends" || label === "followings"
-              ? "unfollow"
-              : "follow"}
+            {followButtonText}
           </button>
         </LoadingWrapper>
       </div>
