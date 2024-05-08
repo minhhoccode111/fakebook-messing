@@ -8,12 +8,12 @@ import { ActionParamUserStore, StateParamUserStore } from "@/shared/types";
 import { useAuthStore } from "@/main";
 import { useEffect, useState } from "react";
 
-const useParamUserStore = create<StateParamUserStore & ActionParamUserStore>(
-  (set) => ({
-    paramUser: undefined,
-    setParamUser: (newUser) => set(() => ({ paramUser: newUser })),
-  }),
-);
+export const useParamUserStore = create<
+  StateParamUserStore & ActionParamUserStore
+>((set) => ({
+  paramUser: undefined,
+  setParamUser: (newUser) => set(() => ({ paramUser: newUser })),
+}));
 
 const useCheckParamUserid = () => {
   const { userid } = useParams();

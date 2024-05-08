@@ -11,16 +11,16 @@ import FakebookLayout, {
   fakebookNavigateToFeed,
 } from "@/routes/fakebook/fakebook-layout";
 import FakebookFeed from "@/routes/fakebook/fakebook-feed";
-import ProfileLayout from "@/routes/fakebook/profile/profile-layout";
+import ProfileLayout from "@/routes/fakebook/profile-layout";
 import {
   profileNavigateToUserid,
   useridNavigateToInfo,
-} from "@/routes/fakebook/profile/profile-navigate";
+} from "@/routes/fakebook/profile-navigate";
 
-import UserLayout from "@/routes/fakebook/profile/user/user-layout";
-import UserInfo from "@/routes/fakebook/profile/user/user-info";
-import UserPosts from "@/routes/fakebook/profile/user/user-posts";
-import UserConnections from "@/routes/fakebook/profile/user/user-connections";
+import UserLayout from "@/routes/fakebook/user-layout";
+import UserInfo from "@/routes/fakebook/user-info";
+import UserPosts from "@/routes/fakebook/user-posts";
+import UserConnections from "@/routes/fakebook/user-connections";
 
 import IndexMessing from "@/routes/messing/index-messing";
 import LayoutMessing from "@/routes/messing/layout-messing";
