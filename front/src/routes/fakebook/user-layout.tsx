@@ -60,7 +60,7 @@ const UserLayout = () => {
   // console.log(`isError? `, isError);
 
   return (
-    <section>
+    <section className="border border-black flex-1">
       <header className="">
         <nav className="flex justify-end gap-4">
           <MyNavLink to={"info"}>info</MyNavLink>
