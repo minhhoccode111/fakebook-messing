@@ -1,6 +1,4 @@
-import { useParamUserStore } from "@/routes/fakebook/user-layout";
-import { useAuthStore } from "@/main";
-import MyAvatar from "@/components/custom/my-avatar";
+import { useState } from "react";
 
 import {
   Table,
@@ -12,33 +10,45 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { User } from "@/shared/types";
-import { useState } from "react";
+import { useAuthStore } from "@/main";
+import { ConnectionsText, User } from "@/shared/types";
+import { useParamUserStore } from "@/routes/fakebook/user-layout";
 
-import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
-import { useCurrentConnectionStore } from "@/components/custom/connection";
+import MyAvatar from "@/components/custom/my-avatar";
 import FollowButton from "@/components/custom/follow-button";
+import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
 
 const UserInfo = () => {
   // identify authorization of current profile
-  const { self } = useAuthStore((state) => state.authData);
+  const self = useAuthStore((state) => state.authData.self);
   const paramUser = useParamUserStore((state) => state.paramUser) as User;
   const isSelf = paramUser?.id === self?.id;
 
   // update connections after follow user
-  const { connectionsFeed, setConnectionsFeed } = useConnectionsFeedStore();
-
-  // keep track of fetching states
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const connectionsFeed = useConnectionsFeedStore(
+    (state) => state.connectionsFeed,
+  );
 
   // show or hide update info section
   const [isUpdating, setIsUpdating] = useState(false);
 
-  //
-  const followButtonText = useCurrentConnectionStore(
-    (state) => state.selfActionWithConnection,
-  );
+  let connectionType;
+
+  // identify current user's connection vs. self
+  for (const key in connectionsFeed) {
+    if (key === "self") continue;
+
+    const type = connectionsFeed[key as ConnectionsText];
+
+    for (const user of type) {
+      if (user.id === paramUser.id) connectionType = key;
+    }
+  }
+
+  const followButtonText =
+    connectionType === "friends" || connectionType === "followings"
+      ? "unfollow"
+      : "follow";
 
   return (
     <div className="max-w-[70ch]">
@@ -52,13 +62,7 @@ const UserInfo = () => {
       {/* TODO: handle follow */}
       <div className="">
         {!isSelf && (
-          // button to follow or unfollow if not self
-          // <button className="">{followButtonText}</button>
-          // TODO: fix not update follow button text after we follow the user
-          <FollowButton
-            followButtonText={followButtonText}
-            user={paramUser}
-          ></FollowButton>
+          <FollowButton followButtonText={followButtonText} user={paramUser} />
         )}
       </div>
 
@@ -89,6 +93,13 @@ const UserInfo = () => {
             </TableRow>
 
             <TableRow>
+              <TableCell className="font-medium">date of birth</TableCell>
+              <TableCell className="text-right">
+                {paramUser.dateOfBirthFormatted.split(" - ")[0]}
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
               <TableCell className="font-medium">created at</TableCell>
               <TableCell className="text-right">
                 {paramUser.createdAtFormatted}
@@ -111,7 +122,7 @@ const UserInfo = () => {
               onClick={() => setIsUpdating((state) => !state)}
               className=""
             >
-              update info
+              {isUpdating ? "cancel" : "update"}
             </button>
           )}
         </div>

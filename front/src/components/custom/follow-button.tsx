@@ -1,10 +1,12 @@
-import LoadingWrapper from "@/components/custom/loading-wrapper";
-import { useAuthStore } from "@/main";
-import { ApiOrigin } from "@/shared/constants";
 import axios from "axios";
 import { useState } from "react";
-import { useConnectionsFeedStore } from "./connections-feed";
+
+import { useAuthStore } from "@/main";
 import { User } from "@/shared/types";
+import { ApiOrigin } from "@/shared/constants";
+
+import LoadingWrapper from "@/components/custom/loading-wrapper";
+import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
 
 type FollowButtonPropsType = {
   user: User;

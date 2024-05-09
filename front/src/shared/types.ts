@@ -1,4 +1,5 @@
 export type User = {
+  dateOfBirthFormatted: string;
   fullname: string;
   status: string;
   bio: string;
