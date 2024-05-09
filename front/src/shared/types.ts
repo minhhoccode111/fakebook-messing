@@ -1,5 +1,4 @@
 export type User = {
-  dateOfBirthFormatted: string;
   fullname: string;
   status: string;
   bio: string;
@@ -7,6 +6,8 @@ export type User = {
   id: string;
   createdAtFormatted: string;
   updatedAtFormatted: string;
+  dateOfBirthFormatted: string;
+  dateOfBirthIso: string;
 };
 
 export type PostType = {

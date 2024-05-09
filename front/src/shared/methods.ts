@@ -1,15 +1,17 @@
 // parse escaped string from server to html dom
-export function domParser(str: string) {
+export const domParser = (str: string) => {
   if (!str) return "";
   // console.log(`the str in dom parser belike: `, str);
 
   const parser = new DOMParser();
 
   // unescaped special characters from server
-  return parser.parseFromString(str, "text/html").documentElement.textContent;
-}
+  return (
+    parser.parseFromString(str, "text/html").documentElement.textContent || ""
+  );
+};
 
-export function markdownParser(str: string) {
+export const markdownParser = (str: string) => {
   if (!str) return "";
 
   const rules = [
@@ -84,4 +86,4 @@ export function markdownParser(str: string) {
   // console.log(`final str belike: `, str);
 
   return str;
-}
+};

@@ -56,7 +56,7 @@ const useCheckParamUserid = () => {
     // only fetch is current userid param is not self
     if (!isSelf) tmp();
     else setParamUser(authData.self as User);
-  }, [userid]);
+  }, [userid, authData.self]);
 
   return { isError };
 };

@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { domParser } from "@/shared/methods";
 
 type MyAvatar = {
   src: undefined | string;
@@ -8,7 +9,7 @@ type MyAvatar = {
 const MyAvatar = ({ src, fallback }: MyAvatar) => {
   return (
     <Avatar>
-      <AvatarImage src={src} />
+      <AvatarImage src={domParser(src as string)} />
       <AvatarFallback>{fallback}</AvatarFallback>
     </Avatar>
   );
