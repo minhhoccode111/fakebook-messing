@@ -41,7 +41,7 @@ const useUserPostsFetcher = () => {
     tmp();
   }, [token]);
 
-  return { isError, userPosts };
+  return { isError, userPosts, setUserPosts };
 };
 
 const UserPosts = () => {
@@ -50,7 +50,7 @@ const UserPosts = () => {
   const paramUser = useParamUserStore((state) => state.paramUser) as User;
   const isSelf = paramUser?.id === self?.id;
 
-  const { isError, userPosts } = useUserPostsFetcher();
+  const { isError, userPosts, setUserPosts } = useUserPostsFetcher();
 
   if (isError) return <div className="">error</div>;
   if (!userPosts) return <div className="">loading</div>;
@@ -62,7 +62,14 @@ const UserPosts = () => {
 
       <ul className="">
         {userPosts.map((post, index: number) => (
-          <Post key={index} post={{ ...post, creator: paramUser }} />
+          // get all posts of a user is not populated the creator field
+          // because we already knew that user if the posts' creator
+          <Post
+            key={index}
+            post={{ ...post, creator: paramUser }}
+            allPostsState={userPosts}
+            setAllPostsState={setUserPosts}
+          />
         ))}
       </ul>
     </div>

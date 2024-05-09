@@ -50,12 +50,7 @@ const UserInfo = () => {
 
       {/* TODO: handle follow */}
       <div className="">
-        {isSelf ? (
-          // button to update info if self
-          <button onClick={() => setIsUpdating((state) => !state)} className="">
-            update info
-          </button>
-        ) : (
+        {!isSelf && (
           // button to follow or unfollow if not self
           <button className="">{followButtonText}</button>
         )}
@@ -67,7 +62,7 @@ const UserInfo = () => {
           <TableCaption>Info of current profile</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[120px]">info</TableHead>
+              <TableHead className="w-[120px]">key</TableHead>
               <TableHead className="text-right">value</TableHead>
             </TableRow>
           </TableHeader>
@@ -102,6 +97,13 @@ const UserInfo = () => {
             </TableRow>
           </TableBody>
         </Table>
+
+        <div className="">
+          {/* button to update info if self */}
+          <button onClick={() => setIsUpdating((state) => !state)} className="">
+            update info
+          </button>
+        </div>
       </div>
     </div>
   );

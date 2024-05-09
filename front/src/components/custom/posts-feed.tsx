@@ -63,7 +63,7 @@ const PostsFeed = ({
 }) => {
   const { isError } = usePostsFetcher();
 
-  const postsFeed = usePostsFeedStore((state) => state.postsFeed);
+  const { postsFeed, setPostsFeed } = usePostsFeedStore();
 
   return (
     <div className={"" + " " + className}>
@@ -72,7 +72,12 @@ const PostsFeed = ({
       <LoadingWrapper isLoading={!postsFeed} isError={isError}>
         <ul className="">
           {postsFeed?.map((post: PostType, index: number) => (
-            <Post key={index} post={post} />
+            <Post
+              key={index}
+              post={post}
+              allPostsState={postsFeed}
+              setAllPostsState={setPostsFeed}
+            />
           ))}
         </ul>
       </LoadingWrapper>

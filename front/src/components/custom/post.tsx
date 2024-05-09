@@ -4,7 +4,6 @@ import axios from "axios";
 import { ApiOrigin } from "@/shared/constants";
 import { PostType } from "@/shared/types";
 import { useAuthStore } from "@/main";
-import { usePostsFeedStore } from "./posts-feed";
 
 // NOTE: consider using index file to fast import everything in /custom dir
 import MyAvatar from "@/components/custom/my-avatar";
@@ -12,12 +11,26 @@ import Comment from "@/components/custom/comment";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 import CommentAddForm from "@/components/custom/comment-add-form";
 
-const Post = ({ post }: { post: PostType }) => {
+type PostPropsType = {
+  post: PostType;
+  allPostsState: PostType[];
+  setAllPostsState: (newAllPostsState: PostType[]) => void;
+};
+
+const Post = ({
+  post,
+
+  // to keep track and update all posts state when a post is fetched full
+  allPostsState,
+  setAllPostsState,
+}: PostPropsType) => {
   // global states
   const authData = useAuthStore((state) => state.authData);
 
-  const setPostsFeed = usePostsFeedStore((state) => state.setPostsFeed);
-  const postsFeed = usePostsFeedStore((state) => state.postsFeed) as PostType[];
+  // BUG: when try to re-use this component in /profile/posts and not /feed
+  // const setPostsFeed = usePostsFeedStore((state) => state.setPostsFeed);
+  // NOTE: have to call separate because of the `as PostType[]`
+  // const postsFeed = usePostsFeedStore((state) => state.postsFeed) as PostType[];
 
   // destruct variables
   const { creator, likes, commentsLength } = post;
@@ -64,10 +77,10 @@ const Post = ({ post }: { post: PostType }) => {
 
         const responsePost = res.data;
         const newPost = Object.assign({}, post, responsePost); // merge
-        const newPostsFeed = postsFeed.map((p) =>
+        const newPostsFeed = allPostsState.map((p) =>
           p.id === post.id ? newPost : p,
         );
-        setPostsFeed(newPostsFeed);
+        setAllPostsState(newPostsFeed);
 
         // since the response post contain everything
         setIsFetchedFull(true);
@@ -103,10 +116,10 @@ const Post = ({ post }: { post: PostType }) => {
 
       const responsePost = res.data;
       const newPost = Object.assign({}, post, responsePost); // merge
-      const newPostsFeed = postsFeed.map((p) =>
+      const newPostsFeed = allPostsState.map((p) =>
         p.id === post.id ? newPost : p,
       );
-      setPostsFeed(newPostsFeed);
+      setAllPostsState(newPostsFeed);
 
       setIsFetchedFull(true);
 
