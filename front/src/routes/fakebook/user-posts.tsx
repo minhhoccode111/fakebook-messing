@@ -57,8 +57,13 @@ const UserPosts = () => {
 
   return (
     <div className="">
-      {/* TODO: check and add create new post form */}
-      {isSelf && <PostAddForm></PostAddForm>}
+      {/* pass down to update after a new post return */}
+      {isSelf && (
+        <PostAddForm
+          userPosts={userPosts}
+          setUserPosts={setUserPosts}
+        ></PostAddForm>
+      )}
 
       <ul className="">
         {userPosts.length === 0 && <li className="">No posts yet</li>}
