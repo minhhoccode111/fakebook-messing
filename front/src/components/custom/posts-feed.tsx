@@ -3,7 +3,7 @@ import axios from "axios";
 import { create } from "zustand";
 
 import { ApiOrigin } from "@/shared/constants";
-import { PostType } from "@/shared/types";
+import { PostType, User } from "@/shared/types";
 import { useAuthStore } from "@/main";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
@@ -65,20 +65,27 @@ const PostsFeed = ({
 
   const { postsFeed, setPostsFeed } = usePostsFeedStore();
 
+  const self = useAuthStore((state) => state.authData.self) as User;
+
   return (
     <div className={"" + " " + className}>
       {children}
 
       <LoadingWrapper isLoading={!postsFeed} isError={isError}>
         <ul className="">
-          {postsFeed?.map((post: PostType, index: number) => (
-            <Post
-              key={index}
-              post={post}
-              allPostsState={postsFeed}
-              setAllPostsState={setPostsFeed}
-            />
-          ))}
+          {postsFeed?.map((post: PostType, index: number) => {
+            const isSelf = post.creator.id === self.id;
+
+            return (
+              <Post
+                key={index}
+                post={post}
+                isSelf={isSelf}
+                allPostsState={postsFeed}
+                setAllPostsState={setPostsFeed}
+              />
+            );
+          })}
         </ul>
       </LoadingWrapper>
     </div>

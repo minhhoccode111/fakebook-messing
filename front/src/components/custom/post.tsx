@@ -13,12 +13,17 @@ import CommentAddForm from "@/components/custom/comment-add-form";
 
 type PostPropsType = {
   post: PostType;
+
+  isSelf: boolean;
+
   allPostsState: PostType[];
   setAllPostsState: (newAllPostsState: PostType[]) => void;
 };
 
 const Post = ({
   post,
+
+  isSelf,
 
   // to keep track and update all posts state when a post is fetched full
   allPostsState,
@@ -133,6 +138,30 @@ const Post = ({
     }
   };
 
+  const handleDeletePost = async () => {
+    try {
+      setIsLoading(true);
+
+      await axios({
+        method: "delete",
+        url: ApiOrigin + `/users/${creator.id}/posts/${post.id}`,
+        headers: {
+          Authorization: `Bearer ${authData.token}`,
+        },
+      });
+
+      // console.log(res.data);
+
+      setAllPostsState(allPostsState.filter((p) => p.id !== post.id));
+    } catch (err) {
+      console.log(err);
+
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // console.log(post);
 
   return (
@@ -148,7 +177,7 @@ const Post = ({
       </div>
 
       <div className="">
-        <p className="">{content}</p>
+        <p className="break-all">{content}</p>
         <button
           onClick={() => {
             setIsShowLess((state) => !state);
@@ -165,15 +194,12 @@ const Post = ({
       </div>
 
       <div className="flex gap-2 items-center justify-evenly font-bold">
-        <p className="flex items-center justify-between gap-2">
-          <LoadingWrapper isLoading={isLoading} isError={isError}>
-            {/* click button to like post */}
-            <button onClick={handleLikePost} className="text-2xl">
-              ^
-            </button>
-          </LoadingWrapper>
-          <span className="">{likes}</span>
-        </p>
+        <LoadingWrapper isLoading={isLoading} isError={isError}>
+          {/* click button to like post */}
+          <button onClick={handleLikePost} className="text-2xl">
+            ^ {likes}
+          </button>
+        </LoadingWrapper>
 
         <LoadingWrapper isLoading={isLoading} isError={isError}>
           {/* click button to expand everything and fetch full post */}
@@ -187,6 +213,15 @@ const Post = ({
             {commentsLength} comments
           </button>
         </LoadingWrapper>
+
+        {isSelf && (
+          <LoadingWrapper isLoading={isLoading} isError={isError}>
+            {/* click button to like post */}
+            <button onClick={handleDeletePost} className="text-2xl">
+              delete
+            </button>
+          </LoadingWrapper>
+        )}
       </div>
 
       <ul className="">

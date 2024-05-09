@@ -46,7 +46,7 @@ const PostAddForm = ({ userPosts, setUserPosts }: PostAddFormPropsType) => {
 
       // console.log(res.data);
 
-      setUserPosts([{ ...res.data, comments: [] }, ...userPosts]);
+      setUserPosts([{ ...res.data, comments: [], likes: 0 }, ...userPosts]);
 
       // setIsSuccess(true);
       reset();

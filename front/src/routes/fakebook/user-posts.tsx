@@ -72,9 +72,10 @@ const UserPosts = () => {
           // because we already knew that user if the posts' creator
           <Post
             key={index}
-            post={{ ...post, creator: paramUser }}
+            isSelf={isSelf}
             allPostsState={userPosts}
             setAllPostsState={setUserPosts}
+            post={{ ...post, creator: paramUser }}
           />
         ))}
       </ul>
