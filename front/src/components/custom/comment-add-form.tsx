@@ -4,7 +4,6 @@ import axios from "axios";
 import { ApiOrigin } from "@/shared/constants";
 import { useAuthStore } from "@/main";
 import LoadingWrapper from "./loading-wrapper";
-import { usePostsFeedStore } from "./posts-feed";
 
 type CommentAddDataType = {
   content: string;
@@ -18,6 +17,9 @@ type CommentAddFormPropsType = {
   setIsLoading: (newState: boolean) => void;
   isError: boolean;
   setIsError: (newState: boolean) => void;
+
+  allPostsState: PostType[];
+  setAllPostsState: (newAllPostsState: PostType[]) => void;
 };
 
 const CommentAddForm = ({
@@ -29,11 +31,11 @@ const CommentAddForm = ({
   setIsError,
   isLoading,
   setIsLoading,
+
+  allPostsState,
+  setAllPostsState,
 }: CommentAddFormPropsType) => {
   const authData = useAuthStore((state) => state.authData);
-
-  const postsFeed = usePostsFeedStore((state) => state.postsFeed) as PostType[];
-  const setPostsFeed = usePostsFeedStore((state) => state.setPostsFeed);
 
   const {
     reset,
@@ -61,10 +63,10 @@ const CommentAddForm = ({
 
       const responsePost = res.data;
       const newPost = Object.assign({}, post, responsePost); // merge
-      const newPostsFeed = postsFeed.map((p) =>
+      const newPostsFeed = allPostsState.map((p) =>
         p.id === post.id ? newPost : p,
       );
-      setPostsFeed(newPostsFeed);
+      setAllPostsState(newPostsFeed);
 
       reset();
     } catch (err) {

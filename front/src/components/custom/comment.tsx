@@ -20,6 +20,9 @@ type CommentPropsType = {
 
   setIsShowLess: (newState: boolean) => void;
   setIsFetchedFull: (newState: boolean) => void;
+
+  allPostsState: PostType[];
+  setAllPostsState: (newAllPostsState: PostType[]) => void;
 };
 
 const Comment = ({
@@ -33,13 +36,16 @@ const Comment = ({
   isLoading,
   setIsLoading,
 
+  // only fetch all once
   setIsFetchedFull,
+  // toggle expand of a post
   setIsShowLess,
+
+  // update all post state when new data is returned
+  allPostsState,
+  setAllPostsState,
 }: CommentPropsType) => {
   const { likes, creator, content } = comment;
-
-  const setPostsFeed = usePostsFeedStore((state) => state.setPostsFeed);
-  const postsFeed = usePostsFeedStore((state) => state.postsFeed) as PostType[];
 
   const authData = useAuthStore((state) => state.authData);
 
@@ -60,10 +66,10 @@ const Comment = ({
 
       const responsePost = res.data;
       const newPost = Object.assign({}, post, responsePost); // merge
-      const newPostsFeed = postsFeed.map((p) =>
+      const newPostsFeed = allPostsState.map((p) =>
         p.id === post.id ? newPost : p,
       );
-      setPostsFeed(newPostsFeed);
+      setAllPostsState(newPostsFeed);
 
       setIsShowLess(false);
 

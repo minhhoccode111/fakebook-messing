@@ -207,6 +207,9 @@ const Post = ({
             // because they can like the 2 preview comments when the post no expand yet
             setIsShowLess={setIsShowLess}
             setIsFetchedFull={setIsFetchedFull}
+            // to update all posts state after new data is returned
+            allPostsState={allPostsState}
+            setAllPostsState={setAllPostsState}
           />
         ))}
       </ul>
@@ -221,6 +224,8 @@ const Post = ({
           isError={isError}
           setIsLoading={setIsLoading}
           setIsError={setIsError}
+          allPostsState={allPostsState}
+          setAllPostsState={setAllPostsState}
         />
       )}
     </li>
