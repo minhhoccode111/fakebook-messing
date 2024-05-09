@@ -8,6 +8,7 @@ import { ApiOrigin } from "@/shared/constants";
 import { Connections } from "@/shared/types";
 
 import ConnectionsKind from "@/components/custom/connections-kind";
+import ConnectionSelf from "@/components/custom/connection-self";
 
 import { create } from "zustand";
 import MyAvatar from "@/components/custom/my-avatar";
@@ -95,18 +96,8 @@ const ConnectionsFeed = ({
       {children}
 
       <p className="">data connections ready</p>
-      <div className="">
-        <p className="font-bold">self</p>
-        <p className="">{self.fullname}</p>
-        <p className="">{self.status}</p>
 
-        <MyAvatar src={self.avatarLink!} fallback={self.fullname.charAt(0)!} />
-
-        <div className="flex gap-2 items-center justify-between">
-          {/* change route to /profile */}
-          <Link to={`/fakebook/profile/${self.id}`}>view profile</Link>
-        </div>
-      </div>
+      <ConnectionSelf self={self}></ConnectionSelf>
 
       <ConnectionsKind text="friends" connections={friends}></ConnectionsKind>
 

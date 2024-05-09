@@ -45,7 +45,7 @@ const useCheckParamUserid = () => {
     };
 
     tmp();
-  }, []);
+  }, [userid]);
 
   return { isError };
 };
