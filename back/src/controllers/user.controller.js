@@ -371,19 +371,14 @@ const getUserPosts = [
 const postUserPosts = [
   authorize.userid,
   valid.postCreate,
-  asyncHandler(async (req, _, next) => {
+  asyncHandler(async (req, res) => {
     const creator = req.user;
     const content = req.body.content;
 
-    await new Post({ content, creator }).save();
+    const post = await new Post({ content, creator }).save();
 
-    // instead of calling validUserParam for GET /users/:userid/posts
-    req.userParam = req.user;
-
-    next();
+    return res.json(post);
   }),
-  // no validation needed, just the handler implementation
-  getUserPosts[2],
 ];
 
 // DELETE /users/:userid/posts/:postid
@@ -391,15 +386,11 @@ const deleteUserPost = [
   authorize.userid,
   mongo.postid,
   param.postid,
-  asyncHandler(async (req, _, next) => {
+  asyncHandler(async (req, res) => {
     await Post.findByIdAndDelete(req.params.postid);
 
-    // instead of calling validUserParam for GET /users/:userid/posts
-    req.userParam = req.user;
-    next();
+    return res.sendStatus(200);
   }),
-  // no validation needed, just the handler implementation
-  getUserPosts[2],
 ];
 
 // GET /users/:userid/posts/:postid
