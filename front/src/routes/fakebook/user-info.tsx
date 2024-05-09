@@ -17,6 +17,7 @@ import { useState } from "react";
 
 import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
 import { useCurrentConnectionStore } from "@/components/custom/connection";
+import FollowButton from "@/components/custom/follow-button";
 
 const UserInfo = () => {
   // identify authorization of current profile
@@ -52,7 +53,12 @@ const UserInfo = () => {
       <div className="">
         {!isSelf && (
           // button to follow or unfollow if not self
-          <button className="">{followButtonText}</button>
+          // <button className="">{followButtonText}</button>
+          // TODO: fix not update follow button text after we follow the user
+          <FollowButton
+            followButtonText={followButtonText}
+            user={paramUser}
+          ></FollowButton>
         )}
       </div>
 
@@ -100,9 +106,14 @@ const UserInfo = () => {
 
         <div className="">
           {/* button to update info if self */}
-          <button onClick={() => setIsUpdating((state) => !state)} className="">
-            update info
-          </button>
+          {isSelf && (
+            <button
+              onClick={() => setIsUpdating((state) => !state)}
+              className=""
+            >
+              update info
+            </button>
+          )}
         </div>
       </div>
     </div>

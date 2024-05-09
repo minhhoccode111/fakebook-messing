@@ -1,13 +1,16 @@
-import { User, ConnectionsText } from "@/shared/types";
-import { Link } from "react-router-dom";
-import MyAvatar from "@/components/custom/my-avatar";
-import LoadingWrapper from "@/components/custom/loading-wrapper";
-import { useState } from "react";
-import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
-import { ApiOrigin } from "@/shared/constants";
-import { useAuthStore } from "@/main";
 import axios from "axios";
+import { useState } from "react";
 import { create } from "zustand";
+import { Link } from "react-router-dom";
+
+import { useAuthStore } from "@/main";
+import { ApiOrigin } from "@/shared/constants";
+import { User, ConnectionsText } from "@/shared/types";
+
+import MyAvatar from "@/components/custom/my-avatar";
+import FollowButton from "@/components/custom/follow-button";
+import LoadingWrapper from "@/components/custom/loading-wrapper";
+import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
 
 type ActionConnection = "follow" | "unfollow";
 
@@ -40,35 +43,6 @@ const Connection = ({ user, text, isAllowActions }: ConnectionPropsType) => {
 
   const { setSelfActionWithConnection } = useCurrentConnectionStore();
 
-  const token = useAuthStore((state) => state.authData.token);
-
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleFollowClick = async () => {
-    try {
-      setIsLoading(true);
-
-      const res = await axios({
-        url: ApiOrigin + `/users/${user.id}/follows`,
-        method: "post",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // console.log(res.data);
-
-      setConnectionsFeed(res.data);
-    } catch (err) {
-      console.log(err);
-
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const followButtonText =
     text === "friends" || text === "followings" ? "unfollow" : "follow";
 
@@ -93,11 +67,7 @@ const Connection = ({ user, text, isAllowActions }: ConnectionPropsType) => {
         </Link>
 
         {isAllowActions && (
-          <LoadingWrapper isLoading={isLoading} isError={isError}>
-            <button type="button" onClick={handleFollowClick}>
-              {followButtonText}
-            </button>
-          </LoadingWrapper>
+          <FollowButton followButtonText={followButtonText} user={user} />
         )}
       </div>
     </li>
