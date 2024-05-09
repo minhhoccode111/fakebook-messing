@@ -27,7 +27,13 @@ export const useCurrentConnectionStore = create<
     set(() => ({ selfActionWithConnection: newAction })),
 }));
 
-const Connection = ({ user, text }: { user: User; text: ConnectionsText }) => {
+type ConnectionPropsType = {
+  user: User;
+  text: ConnectionsText;
+  isAllowActions: boolean;
+};
+
+const Connection = ({ user, text, isAllowActions }: ConnectionPropsType) => {
   const setConnectionsFeed = useConnectionsFeedStore(
     (state) => state.setConnectionsFeed,
   );
@@ -86,11 +92,13 @@ const Connection = ({ user, text }: { user: User; text: ConnectionsText }) => {
           view profile
         </Link>
 
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
-          <button type="button" onClick={handleFollowClick}>
-            {followButtonText}
-          </button>
-        </LoadingWrapper>
+        {isAllowActions && (
+          <LoadingWrapper isLoading={isLoading} isError={isError}>
+            <button type="button" onClick={handleFollowClick}>
+              {followButtonText}
+            </button>
+          </LoadingWrapper>
+        )}
       </div>
     </li>
   );

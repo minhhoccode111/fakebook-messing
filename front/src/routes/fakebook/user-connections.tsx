@@ -1,25 +1,32 @@
-import { useParams } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 
-import { useParamUserStore } from "@/routes/fakebook/user-layout";
 import { useAuthStore } from "@/main";
 
-import { Connections, User } from "@/shared/types";
+import { Connections } from "@/shared/types";
 import { useEffect, useState } from "react";
 
 import { ApiOrigin } from "@/shared/constants";
 import axios from "axios";
 import ConnectionSelf from "@/components/custom/connection-self";
 import ConnectionsKind from "@/components/custom/connections-kind";
+import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
 
 const useUserConnectionsFetcher = () => {
   const { userid } = useParams();
 
-  const token = useAuthStore((state) => state.authData.token);
+  const authData = useAuthStore((state) => state.authData);
+  const selfid = authData.self?.id;
+
+  const isSelf = userid === selfid;
 
   const [isError, setIsError] = useState(false);
   const [userConnections, setUserConnections] = useState<
     undefined | Connections
   >();
+
+  const connectionsFeed = useConnectionsFeedStore(
+    (state) => state.connectionsFeed,
+  );
 
   useEffect(() => {
     const tmp = async () => {
@@ -28,7 +35,7 @@ const useUserConnectionsFetcher = () => {
           url: ApiOrigin + `/users/${userid}/connections`,
           method: "get",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authData.token}`,
           },
         });
 
@@ -40,19 +47,22 @@ const useUserConnectionsFetcher = () => {
       }
     };
 
-    tmp();
-  }, [token]);
+    // only fetch if not self profile
+    if (!isSelf) tmp();
+    // else use the one we fetched in /feed
+    else setUserConnections(connectionsFeed);
+  }, [authData.token, connectionsFeed]);
 
-  return { isError, userConnections };
+  return { isError, userConnections, connectionsFeed, isSelf };
 };
 
 const UserConnections = () => {
-  // identify authorization of current profile
-  const { self } = useAuthStore((state) => state.authData);
-  const paramUser = useParamUserStore((state) => state.paramUser) as User;
-  const isSelf = paramUser?.id === self?.id;
+  const { isError, userConnections, connectionsFeed, isSelf } =
+    useUserConnectionsFetcher();
 
-  const { isError, userConnections } = useUserConnectionsFetcher();
+  // WARN: if user go straight to this route without preparing connectionsFeed
+  // in /feed route, then navigate them to the route
+  if (isSelf && !connectionsFeed) return <Navigate to={"/fakebook/feed"} />;
 
   if (isError) return <div className="">error</div>;
   if (!userConnections) return <div className="">loading</div>;
@@ -65,19 +75,29 @@ const UserConnections = () => {
 
       <ConnectionSelf self={userConnections.self}></ConnectionSelf>
 
-      <ConnectionsKind text="friends" connections={friends}></ConnectionsKind>
+      <ConnectionsKind
+        isAllowActions={isSelf}
+        text="friends"
+        connections={friends}
+      ></ConnectionsKind>
 
       <ConnectionsKind
+        isAllowActions={isSelf}
         text="followings"
         connections={followings}
       ></ConnectionsKind>
 
       <ConnectionsKind
+        isAllowActions={isSelf}
         text="followers"
         connections={followers}
       ></ConnectionsKind>
 
-      <ConnectionsKind text="mayknows" connections={mayknows}></ConnectionsKind>
+      <ConnectionsKind
+        isAllowActions={isSelf}
+        text="mayknows"
+        connections={mayknows}
+      ></ConnectionsKind>
     </div>
   );
 };

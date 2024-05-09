@@ -4,9 +4,14 @@ import { create } from "zustand";
 
 import { ApiOrigin } from "@/shared/constants";
 import MyNavLink from "@/components/custom/my-nav-link";
-import { ActionParamUserStore, StateParamUserStore } from "@/shared/types";
+import {
+  ActionParamUserStore,
+  StateParamUserStore,
+  User,
+} from "@/shared/types";
 import { useAuthStore } from "@/main";
 import { useEffect, useState } from "react";
+import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 export const useParamUserStore = create<
   StateParamUserStore & ActionParamUserStore
@@ -18,7 +23,11 @@ export const useParamUserStore = create<
 const useCheckParamUserid = () => {
   const { userid } = useParams();
 
-  const token = useAuthStore((state) => state.authData.token);
+  const authData = useAuthStore((state) => state.authData);
+  const selfid = authData.self?.id;
+
+  const isSelf = userid === selfid;
+
   const setParamUser = useParamUserStore((state) => state.setParamUser);
 
   const [isError, setIsError] = useState(false);
@@ -30,7 +39,7 @@ const useCheckParamUserid = () => {
           url: ApiOrigin + `/users/${userid}`,
           method: "get",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authData.token}`,
           },
         });
 
@@ -44,7 +53,9 @@ const useCheckParamUserid = () => {
       }
     };
 
-    tmp();
+    // only fetch is current userid param is not self
+    if (!isSelf) tmp();
+    else setParamUser(authData.self as User);
   }, [userid]);
 
   return { isError };
@@ -71,8 +82,10 @@ const UserLayout = () => {
         <MyNavLink to={"connections"}>connections</MyNavLink>
       </nav>
 
-      {/* only pass user data down to outlet if existed */}
-      {paramUser && <Outlet></Outlet>}
+      {/* only pass user data down to outlet when paramUser is checked and ready */}
+      <LoadingWrapper isLoading={!paramUser} isError={isError}>
+        <Outlet></Outlet>
+      </LoadingWrapper>
     </div>
   );
 };

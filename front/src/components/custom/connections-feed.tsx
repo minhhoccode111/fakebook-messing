@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "@/main";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 import { ApiOrigin } from "@/shared/constants";
 
@@ -11,7 +10,6 @@ import ConnectionsKind from "@/components/custom/connections-kind";
 import ConnectionSelf from "@/components/custom/connection-self";
 
 import { create } from "zustand";
-import MyAvatar from "@/components/custom/my-avatar";
 
 type StateConnectionsFeedStore = {
   connectionsFeed: undefined | Connections;
@@ -99,19 +97,29 @@ const ConnectionsFeed = ({
 
       <ConnectionSelf self={self}></ConnectionSelf>
 
-      <ConnectionsKind text="friends" connections={friends}></ConnectionsKind>
+      <ConnectionsKind
+        isAllowActions={true}
+        text="friends"
+        connections={friends}
+      ></ConnectionsKind>
 
       <ConnectionsKind
+        isAllowActions={true}
         text="followings"
         connections={followings}
       ></ConnectionsKind>
 
       <ConnectionsKind
+        isAllowActions={true}
         text="followers"
         connections={followers}
       ></ConnectionsKind>
 
-      <ConnectionsKind text="mayknows" connections={mayknows}></ConnectionsKind>
+      <ConnectionsKind
+        isAllowActions={true}
+        text="mayknows"
+        connections={mayknows}
+      ></ConnectionsKind>
     </div>
   );
 };

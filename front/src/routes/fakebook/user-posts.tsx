@@ -14,7 +14,10 @@ import Post from "@/components/custom/post";
 const useUserPostsFetcher = () => {
   const { userid } = useParams();
 
-  const token = useAuthStore((state) => state.authData.token);
+  const authData = useAuthStore((state) => state.authData);
+  const selfid = authData.self?.id;
+
+  const isSelf = userid === selfid;
 
   const [isError, setIsError] = useState(false);
   const [userPosts, setUserPosts] = useState<undefined | PostType[]>();
@@ -26,7 +29,7 @@ const useUserPostsFetcher = () => {
           url: ApiOrigin + `/users/${userid}/posts`,
           method: "get",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authData.token}`,
           },
         });
 
@@ -39,18 +42,15 @@ const useUserPostsFetcher = () => {
     };
 
     tmp();
-  }, [token]);
+  }, [authData.token]);
 
-  return { isError, userPosts, setUserPosts };
+  return { isSelf, isError, userPosts, setUserPosts };
 };
 
 const UserPosts = () => {
-  // identify authorization of current profile
-  const { self } = useAuthStore((state) => state.authData);
   const paramUser = useParamUserStore((state) => state.paramUser) as User;
-  const isSelf = paramUser?.id === self?.id;
 
-  const { isError, userPosts, setUserPosts } = useUserPostsFetcher();
+  const { isSelf, isError, userPosts, setUserPosts } = useUserPostsFetcher();
 
   if (isError) return <div className="">error</div>;
   if (!userPosts) return <div className="">loading</div>;
@@ -61,6 +61,7 @@ const UserPosts = () => {
       {isSelf && <PostAddForm></PostAddForm>}
 
       <ul className="">
+        {userPosts.length === 0 && <li className="">No posts yet</li>}
         {userPosts.map((post, index: number) => (
           // get all posts of a user is not populated the creator field
           // because we already knew that user if the posts' creator
