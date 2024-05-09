@@ -17,6 +17,7 @@ import { useParamUserStore } from "@/routes/fakebook/user-layout";
 import MyAvatar from "@/components/custom/my-avatar";
 import FollowButton from "@/components/custom/follow-button";
 import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
+import { Navigate } from "react-router-dom";
 
 const UserInfo = () => {
   // identify authorization of current profile
@@ -31,6 +32,10 @@ const UserInfo = () => {
 
   // show or hide update info section
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // if user navigate straight to this route without prepare
+  // connectionsFeed data in /feed, navigate them back
+  if (!isSelf && !connectionsFeed) return <Navigate to={"/fakebook/feed"} />;
 
   let connectionType;
 
@@ -67,7 +72,7 @@ const UserInfo = () => {
       </div>
 
       {/* TODO: add form to update*/}
-      <div className="">
+      <form className="">
         <Table>
           <TableCaption>Info of current profile</TableCaption>
           <TableHeader>
@@ -115,7 +120,7 @@ const UserInfo = () => {
           </TableBody>
         </Table>
 
-        <div className="">
+        <div className="flex gap-2 items-center justify-between">
           {/* button to update info if self */}
           {isSelf && (
             <button
@@ -125,8 +130,14 @@ const UserInfo = () => {
               {isUpdating ? "cancel" : "update"}
             </button>
           )}
+
+          {isUpdating && (
+            <button type="submit" className="">
+              confirm
+            </button>
+          )}
         </div>
-      </div>
+      </form>
     </div>
   );
 };
