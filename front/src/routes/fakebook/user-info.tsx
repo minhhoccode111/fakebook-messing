@@ -43,7 +43,7 @@ const UserInfo = () => {
   const paramUser = useParamUserStore((state) => state.paramUser) as User;
   const isSelf = paramUser.id === self.id;
 
-  console.log(paramUser);
+  // console.log(paramUser);
 
   const {
     control,

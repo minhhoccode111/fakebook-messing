@@ -117,16 +117,17 @@ const getFeed = asyncHandler(async (req, res) => {
     .exec();
 
   // extract all users that are being followed
-  const usersAreBeingFollowed = selfIsFollower.map((ref) =>
-    ref.following.toJSON(),
-  );
+  const usersToGetPosts = selfIsFollower.map((ref) => ref.following.toJSON());
+
+  // also get all posts of self
+  usersToGetPosts.push(req.user);
 
   const posts = [];
 
   // loop through all users
-  for (let i = 0, len = usersAreBeingFollowed.length; i < len; i++) {
+  for (let i = 0, len = usersToGetPosts.length; i < len; i++) {
     // current user is creator
-    const creator = usersAreBeingFollowed[i];
+    const creator = usersToGetPosts[i];
 
     // find all post of current user
     const userPosts = await Post.find({ creator }, "-creator -__v").exec();
