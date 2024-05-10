@@ -6,10 +6,13 @@ import { PostType } from "@/shared/types";
 import useAuthStore from "@/stores/auth";
 
 // NOTE: consider using index file to fast import everything in /custom dir
-import MyAvatar from "@/components/custom/my-avatar";
 import Comment from "@/components/custom/comment";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 import CommentAddForm from "@/components/custom/comment-add-form";
+import Connection from "@/components/custom/connection";
+
+import DangerHtml from "@/components/custom/danger-html";
+import { Button } from "@/components/ui/button";
 
 type PostPropsType = {
   post: PostType;
@@ -159,19 +162,11 @@ const Post = ({
   // console.log(post);
 
   return (
-    // TODO: add markdown parser
     <li className="">
-      <div className="">
-        <p className="">{creator.fullname}</p>
-
-        <MyAvatar
-          src={creator.avatarLink}
-          fallback={creator.fullname.charAt(0)}
-        />
-      </div>
+      <Connection isAllowActions={false} user={creator}></Connection>
 
       <div className="">
-        <p className="break-all">{content}</p>
+        <DangerHtml content={content}></DangerHtml>
         <button
           onClick={() => {
             setIsShowLess((state) => !state);
@@ -180,7 +175,7 @@ const Post = ({
           className=""
         >
           {isShowLess ? (
-            <span className="">more</span>
+            <span className="">show more</span>
           ) : (
             <span className="">show less</span>
           )}
@@ -190,30 +185,41 @@ const Post = ({
       <div className="flex gap-2 items-center justify-evenly font-bold">
         <LoadingWrapper isLoading={isLoading} isError={isError}>
           {/* click button to like post */}
-          <button onClick={handleLikePost} className="text-2xl">
-            ^ {likes}
-          </button>
+          <Button
+            onClick={handleLikePost}
+            className=""
+            variant={"outline"}
+            size={"sm"}
+          >
+            {likes} likes
+          </Button>
         </LoadingWrapper>
 
         <LoadingWrapper isLoading={isLoading} isError={isError}>
           {/* click button to expand everything and fetch full post */}
-          <button
+          <Button
             onClick={() => {
               setWillFetchFull(true);
               setIsShowLess((state) => !state);
             }}
             className=""
+            variant={"outline"}
+            size={"sm"}
           >
             {commentsLength} comments
-          </button>
+          </Button>
         </LoadingWrapper>
 
         {isSelf && (
           <LoadingWrapper isLoading={isLoading} isError={isError}>
-            {/* click button to like post */}
-            <button onClick={handleDeletePost} className="text-2xl">
-              delete
-            </button>
+            <Button
+              onClick={handleDeletePost}
+              className="text-2xl"
+              variant={"destructive"}
+              size={"sm"}
+            >
+              Delete
+            </Button>
           </LoadingWrapper>
         )}
       </div>

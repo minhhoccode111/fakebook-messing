@@ -5,7 +5,6 @@ import { ApiOrigin } from "@/shared/constants";
 import { Connections } from "@/shared/types";
 
 import ConnectionsKind from "@/components/custom/connections-kind";
-import ConnectionSelf from "@/components/custom/connection-self";
 import Connection from "@/components/custom/connection";
 
 import useConnectionsFeedStore from "@/stores/connections-feed";

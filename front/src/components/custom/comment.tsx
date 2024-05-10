@@ -3,8 +3,11 @@ import useAuthStore from "@/stores/auth";
 import { ApiOrigin } from "@/shared/constants";
 import { CommentType, PostType } from "@/shared/types";
 
-import MyAvatar from "@/components/custom/my-avatar";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
+
+import DangerHtml from "@/components/custom/danger-html";
+import Connection from "@/components/custom/connection";
+import { Button } from "@/components/ui/button";
 
 type CommentPropsType = {
   comment: CommentType;
@@ -85,32 +88,25 @@ const Comment = ({
   };
 
   return (
-    // TODO: add markdown parser
-    <li>
-      <div className="">
-        <p className="">{creator.fullname}</p>
-
-        <MyAvatar
-          src={creator.avatarLink}
-          fallback={creator.fullname.charAt(0)}
-        />
-      </div>
+    <li className="">
+      <Connection isAllowActions={false} user={creator} />
 
       <div className="">
-        <p className="">{content}</p>
+        <DangerHtml content={content}></DangerHtml>
       </div>
 
-      <div className="">
-        <p className="font-bold flex items-center">
-          <LoadingWrapper isLoading={isLoading} isError={isError}>
-            <button onClick={handleLikeComment} className="text-xl">
-              ^
-            </button>
-          </LoadingWrapper>
-
-          <span className="">{likes}</span>
-        </p>
-      </div>
+      <p className="font-bold flex items-center">
+        <LoadingWrapper isLoading={isLoading} isError={isError}>
+          <Button
+            onClick={handleLikeComment}
+            className=""
+            variant={"outline"}
+            size={"sm"}
+          >
+            {likes} likes
+          </Button>
+        </LoadingWrapper>
+      </p>
     </li>
   );
 };

@@ -3,7 +3,7 @@ import PostsFeed from "@/components/custom/posts-feed";
 
 const FakebookFeed = () => {
   return (
-    <div className="flex-1 flex gap-2 max-w-screen-lg mx-auto w-full">
+    <div className="flex-1 flex gap-4 max-w-screen-lg mx-auto w-full">
       <PostsFeed className="flex-1">
         <h2 className="">Feed</h2>
       </PostsFeed>

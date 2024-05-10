@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 
 import { ApiOrigin } from "@/shared/constants";
 import axios from "axios";
-import ConnectionSelf from "@/components/custom/connection-self";
 import ConnectionsKind from "@/components/custom/connections-kind";
 import useConnectionsFeedStore from "@/stores/connections-feed";
+import Connection from "@/components/custom/connection";
 
 const useUserConnectionsFetcher = () => {
   const { userid } = useParams();
@@ -73,7 +73,10 @@ const UserConnections = () => {
     <div className="">
       <h2 className="">All connections of {userConnections.self.fullname}</h2>
 
-      <ConnectionSelf self={userConnections.self}></ConnectionSelf>
+      <Connection
+        isAllowActions={false}
+        user={userConnections.self}
+      ></Connection>
 
       <ConnectionsKind
         isAllowActions={isSelf}

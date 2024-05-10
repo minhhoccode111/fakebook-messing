@@ -63,6 +63,7 @@ export const markdownParser = (str: string) => {
     },
 
     //Image
+    // e.g: ![something](https://google.com/image.png "cap here")
     {
       reg: /!\[([^\]]+)\]\(([^)]+)\s"([^")]+)"\)/g,
       string: '<img class="block w-full" src="$2" alt="$1" title="$3" />',

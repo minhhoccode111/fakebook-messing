@@ -5,18 +5,12 @@ type LoadingWrapper = {
 };
 
 const LoadingWrapper = ({ children, isLoading, isError }: LoadingWrapper) => {
-  return (
-    <>
-      {isError ? (
-        "error"
-      ) : isLoading ? (
-        "loading"
-      ) : (
-        <>{children}</>
-        // BUG: i used {children} instead of <>{children}</>
-        // and break every thing how dumb is that
-      )}
-    </>
+  return isError ? (
+    <span className="">error</span>
+  ) : isLoading ? (
+    <span className="">loading</span>
+  ) : (
+    <>{children}</>
   );
 };
 
