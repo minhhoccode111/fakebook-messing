@@ -50,10 +50,10 @@ const signup = [
       `Password must contain at least: 1 uppercase, 1 lowercase, 1 number, 1 special character.`,
     )
     .escape(),
-  body("confirm-password", `Confirm password does not match.`).custom(
+  body("confirmPassword", `Confirm password does not match.`).custom(
     (value, { req }) => {
       if (req.body.password === value) return true;
-      else throw new Error(`password and confirm-password does not match`);
+      else throw new Error(`password and confirmPassword does not match`);
     },
   ),
 

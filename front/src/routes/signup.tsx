@@ -1,37 +1,47 @@
-import { Form, Navigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
+import { z } from "zod";
 
 import { ApiOrigin } from "@/shared/constants";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
-// This type will be called with `useForm` and `handleSubmit`
-type SignupDataType = {
-  fullname: string;
-  username: string;
-  password: string;
-  "confirm-password": string;
-};
+import { SignupFormDataSchema } from "@/shared/forms";
+
+("use client");
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 const Signup = () => {
-  const {
-    watch,
-    reset,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupDataType>();
-
-  const password = watch("password");
+  const form = useForm<z.infer<typeof SignupFormDataSchema>>({
+    resolver: zodResolver(SignupFormDataSchema),
+    defaultValues: {
+      fullname: "",
+      username: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [isConflict, setIsConflict] = useState<boolean>(false);
 
-  const handleSignup = async (data: SignupDataType) => {
+  const handleSignup = async (data: z.infer<typeof SignupFormDataSchema>) => {
     try {
       setIsLoading(true);
 
@@ -49,7 +59,7 @@ const Signup = () => {
 
       setIsSuccess(true);
 
-      reset();
+      form.reset();
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -72,114 +82,99 @@ const Signup = () => {
   if (isSuccess) return <Navigate to={"/login"} />;
 
   return (
-    <Form onSubmit={handleSubmit(handleSignup)} className="">
-      <h2 className="">Please sign up</h2>
-      <label className="">
-        <p className="">Fullname: </p>
-        <input
-          {...register("fullname", {
-            required: "Fullname is required.",
-            minLength: {
-              value: 1,
-              message: "Fullname must be at least 1 character.",
-            },
-            maxLength: {
-              value: 50,
-              message: "Fullname must be at max 50 characters.",
-            },
-            validate: (value) =>
-              value.trim().length > 0 ||
-              `Fullname must be at least 1 character.`,
-          })}
-          aria-invalid={errors.fullname ? "true" : "false"}
-          className="invalid:border-red-500"
-        />
-        {errors.fullname && <p className="">{errors.fullname.message}</p>}
-      </label>
+    <div className="container">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSignup)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="fullname"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fullname</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="Xeza" {...field} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <label className="">
-        <p className="">Username: </p>
-        <input
-          type="email"
-          {...register("username", {
-            required: `Username is required.`,
-            minLength: {
-              value: 8,
-              message: "Username must be at least 8 characters.",
-            },
-            pattern: {
-              value: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/g,
-              message: `Username must be a valid email.`,
-            },
-          })}
-          aria-invalid={errors.username ? "true" : "false"}
-          className="invalid:border-red-500"
-        />
-        {errors.username && <p className="">{errors.username.message}</p>}
-      </label>
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input type="email" placeholder="asd@gmail.com" {...field} />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <label className="">
-        <p className="">Password: </p>
-        <input
-          type="password"
-          {...register("password", {
-            required: `Password is required.`,
-            minLength: {
-              value: 8,
-              message: `Password must be at least 8 characters.`,
-            },
-            maxLength: {
-              value: 32,
-              message: `Password must be at max 32 characters.`,
-            },
-            pattern:
-              // strong password pattern
-              {
-                value:
-                  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,32}$/,
-                message:
-                  "Password must contain at least 1 uppercase, 1 lowercase, 1 number, 1 special character.",
-              },
-          })}
-          aria-invalid={errors.password ? "true" : "false"}
-          className="invalid:border-red-500"
-        />
-        {errors.password && <p className="">{errors.password.message}</p>}
-      </label>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Super secret password..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <label className="">
-        <p className="">Confirm password: </p>
-        <input
-          type="password"
-          {...register("confirm-password", {
-            required: `Confirm password is required.`,
-            validate: (value) =>
-              value === password || `Confirm password does not match.`,
-          })}
-          aria-invalid={errors["confirm-password"] ? "true" : "false"}
-          className="invalid:border-red-500"
-        />
-        {errors["confirm-password"] && (
-          <p className="">{errors["confirm-password"].message}</p>
-        )}
-      </label>
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Confirm super secret password..."
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      {isConflict && <p className="">That username is already existed.</p>}
+          {isConflict && (
+            <p className="text-danger">That username is already existed.</p>
+          )}
 
-      <div className="">
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
-          <button onClick={() => reset()} type="button" className="">
-            clear
-          </button>
-        </LoadingWrapper>
+          <div className="flex gap-2 items-center justify-between">
+            <Button
+              variant={"destructive"}
+              type="button"
+              onClick={() => form.reset()}
+            >
+              Clear
+            </Button>
 
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
-          <button type="submit" className="">
-            signup
-          </button>
-        </LoadingWrapper>
-      </div>
-    </Form>
+            <LoadingWrapper isLoading={isLoading} isError={isError}>
+              <Button variant={"default"} type="submit">
+                Submit
+              </Button>
+            </LoadingWrapper>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 
