@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { ApiOrigin } from "@/shared/constants";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 import { PostType } from "@/shared/types";
 
 type PostAddDataType = {

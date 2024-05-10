@@ -41,10 +41,3 @@ export type Connections = {
   followings: User[];
   mayknows: User[];
 };
-
-export type StateParamUserStore = {
-  paramUser: undefined | User;
-};
-export type ActionParamUserStore = {
-  setParamUser: (newUser: User) => void;
-};

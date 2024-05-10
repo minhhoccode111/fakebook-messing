@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 import { useEffect, useState } from "react";
 
 import { ApiOrigin } from "@/shared/constants";
@@ -8,23 +8,7 @@ import { Connections } from "@/shared/types";
 
 import ConnectionsKind from "@/components/custom/connections-kind";
 import ConnectionSelf from "@/components/custom/connection-self";
-
-import { create } from "zustand";
-
-type StateConnectionsFeedStore = {
-  connectionsFeed: undefined | Connections;
-};
-type ActionConnectionsFeedStore = {
-  setConnectionsFeed: (newConnections: Connections) => void;
-};
-
-export const useConnectionsFeedStore = create<
-  StateConnectionsFeedStore & ActionConnectionsFeedStore
->((set) => ({
-  connectionsFeed: undefined,
-  setConnectionsFeed: (newConnections) =>
-    set(() => ({ connectionsFeed: newConnections })),
-}));
+import useConnectionsFeedStore from "@/stores/connections-feed";
 
 const useConnectionsFetch = () => {
   const token = useAuthStore((state) => state.authData.token);

@@ -1,8 +1,7 @@
 import axios from "axios";
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 import { ApiOrigin } from "@/shared/constants";
 import { CommentType, PostType } from "@/shared/types";
-import { usePostsFeedStore } from "@/components/custom/posts-feed";
 
 import MyAvatar from "@/components/custom/my-avatar";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
@@ -41,7 +40,9 @@ const Comment = ({
   // toggle expand of a post
   setIsShowLess,
 
-  // update all post state when new data is returned
+  // update all post state when new data is returned based on the state pass
+  // down by parent component for reusability
+  // between postsFeed global store at /feed and postsUser at /profile/users
   allPostsState,
   setAllPostsState,
 }: CommentPropsType) => {

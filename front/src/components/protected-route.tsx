@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { Navigate } from "react-router-dom";
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const authData = useAuthStore((state) => state.authData);

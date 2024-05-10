@@ -11,13 +11,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 import { Connections, ConnectionsText, User } from "@/shared/types";
-import { useParamUserStore } from "@/routes/fakebook/user-layout";
+import useParamUserStore from "@/stores/param-user";
 
 import MyAvatar from "@/components/custom/my-avatar";
 import FollowButton from "@/components/custom/follow-button";
-import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
+import useConnectionsFeedStore from "@/stores/connections-feed";
 import { Navigate } from "react-router-dom";
 import { ApiOrigin } from "@/shared/constants";
 import axios from "axios";

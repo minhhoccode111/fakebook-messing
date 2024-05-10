@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { PostType } from "@/shared/types";
 import axios from "axios";
 import { ApiOrigin } from "@/shared/constants";
-import { useAuthStore } from "@/main";
-import LoadingWrapper from "./loading-wrapper";
+import useAuthStore from "@/stores/auth";
+import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 type CommentAddDataType = {
   content: string;

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 
-import { useParamUserStore } from "@/routes/fakebook/user-layout";
-import { useAuthStore } from "@/main";
+import useParamUserStore from "@/stores/param-user";
+import useAuthStore from "@/stores/auth";
 
 import { PostType, User } from "@/shared/types";
 import { useEffect, useState } from "react";

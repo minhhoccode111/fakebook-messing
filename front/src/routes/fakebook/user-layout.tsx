@@ -1,24 +1,14 @@
 import { Outlet, Navigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { create } from "zustand";
 
 import { ApiOrigin } from "@/shared/constants";
 import MyNavLink from "@/components/custom/my-nav-link";
-import {
-  ActionParamUserStore,
-  StateParamUserStore,
-  User,
-} from "@/shared/types";
-import { useAuthStore } from "@/main";
+import { User } from "@/shared/types";
+import useAuthStore from "@/stores/auth";
+import useParamUserStore from "@/stores/param-user";
 import { useEffect, useState } from "react";
-import LoadingWrapper from "@/components/custom/loading-wrapper";
 
-export const useParamUserStore = create<
-  StateParamUserStore & ActionParamUserStore
->((set) => ({
-  paramUser: undefined,
-  setParamUser: (newUser) => set(() => ({ paramUser: newUser })),
-}));
+import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 const useCheckParamUserid = () => {
   const { userid } = useParams();

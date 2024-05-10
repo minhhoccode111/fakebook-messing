@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 
 const LayoutMessing = () => {
   const authData = useAuthStore((state) => state.authData);

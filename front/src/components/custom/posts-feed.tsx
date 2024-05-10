@@ -1,27 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { create } from "zustand";
 
 import { ApiOrigin } from "@/shared/constants";
 import { PostType, User } from "@/shared/types";
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 import Post from "@/components/custom/post";
 
-type StatePostsFeedStore = {
-  postsFeed: undefined | PostType[];
-};
-type ActionPostsFeedStore = {
-  setPostsFeed: (newPosts: PostType[]) => void;
-};
-
-export const usePostsFeedStore = create<
-  StatePostsFeedStore & ActionPostsFeedStore
->((set) => ({
-  postsFeed: undefined,
-  setPostsFeed: (newPosts) => set(() => ({ postsFeed: newPosts })),
-}));
+import usePostsFeedStore from "@/stores/posts-feed";
 
 const usePostsFetcher = () => {
   const token = useAuthStore((state) => state.authData.token);

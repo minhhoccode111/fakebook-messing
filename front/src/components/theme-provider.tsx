@@ -1,5 +1,5 @@
 import { Fragment, useEffect } from "react";
-import { useThemeStore } from "@/main";
+import { useThemeStore } from "@/stores/theme";
 
 // component to change root classes each time theme in store changes
 export default function ThemeProvider({

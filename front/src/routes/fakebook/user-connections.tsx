@@ -1,6 +1,6 @@
 import { useParams, Navigate } from "react-router-dom";
 
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 
 import { Connections } from "@/shared/types";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import { ApiOrigin } from "@/shared/constants";
 import axios from "axios";
 import ConnectionSelf from "@/components/custom/connection-self";
 import ConnectionsKind from "@/components/custom/connections-kind";
-import { useConnectionsFeedStore } from "@/components/custom/connections-feed";
+import useConnectionsFeedStore from "@/stores/connections-feed";
 
 const useUserConnectionsFetcher = () => {
   const { userid } = useParams();

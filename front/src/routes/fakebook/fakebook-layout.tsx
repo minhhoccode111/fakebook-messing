@@ -1,5 +1,5 @@
 import { Outlet, redirect } from "react-router-dom";
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 
 import MyNavLink from "@/components/custom/my-nav-link";
 

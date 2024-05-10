@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { ApiOrigin } from "@/shared/constants";
 import { PostType } from "@/shared/types";
-import { useAuthStore } from "@/main";
+import useAuthStore from "@/stores/auth";
 
 // NOTE: consider using index file to fast import everything in /custom dir
 import MyAvatar from "@/components/custom/my-avatar";
@@ -13,9 +13,7 @@ import CommentAddForm from "@/components/custom/comment-add-form";
 
 type PostPropsType = {
   post: PostType;
-
   isSelf: boolean;
-
   allPostsState: PostType[];
   setAllPostsState: (newAllPostsState: PostType[]) => void;
 };
@@ -23,6 +21,7 @@ type PostPropsType = {
 const Post = ({
   post,
 
+  // to show delete button
   isSelf,
 
   // to keep track and update all posts state when a post is fetched full
@@ -31,11 +30,6 @@ const Post = ({
 }: PostPropsType) => {
   // global states
   const authData = useAuthStore((state) => state.authData);
-
-  // BUG: when try to re-use this component in /profile/posts and not /feed
-  // const setPostsFeed = usePostsFeedStore((state) => state.setPostsFeed);
-  // NOTE: have to call separate because of the `as PostType[]`
-  // const postsFeed = usePostsFeedStore((state) => state.postsFeed) as PostType[];
 
   // destruct variables
   const { creator, likes, commentsLength } = post;
