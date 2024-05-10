@@ -1,13 +1,8 @@
 import { Outlet } from "react-router-dom";
-import useAuthStore from "@/stores/auth";
 
 const LayoutMessing = () => {
-  const authData = useAuthStore((state) => state.authData);
-
   return (
     <section>
-      <h2 className="">Is logged in: {authData.isLogin ? "yes" : "no"}</h2>
-      <h2 className="">User fullname: {authData.self?.fullname}</h2>
       <Outlet></Outlet>
     </section>
   );

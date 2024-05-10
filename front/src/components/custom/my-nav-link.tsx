@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 
+import { Button } from "@/components/ui/button";
+
 const MyNavLink = ({
   to,
   children,
@@ -8,14 +10,16 @@ const MyNavLink = ({
   children: React.ReactNode;
 }) => {
   return (
-    <NavLink
-      className={({ isActive, isPending }) =>
-        isPending ? "" : isActive ? "text-red-500" : ""
-      }
-      to={to}
-    >
-      {children}
-    </NavLink>
+    <Button variant={"ghost"} size={"sm"} className="capitalize">
+      <NavLink
+        className={({ isActive, isPending }) =>
+          isPending ? "" : isActive ? "underline underline-offset-2" : ""
+        }
+        to={to}
+      >
+        {children}
+      </NavLink>
+    </Button>
   );
 };
 

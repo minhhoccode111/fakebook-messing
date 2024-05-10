@@ -1,21 +1,11 @@
-import { Link, useLocation, useRouteError } from "react-router-dom";
+import { Link, useRouteError } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
-  // location.pathname - the path of the current URL
-  const { pathname } = useLocation();
-
-  //
-  const error = useRouteError();
+  const error = useRouteError() as Error;
 
   return (
     <section>
-      <div>
-        <p className="">Route not found: {pathname}</p>
-        <Button>
-          <Link to={"/"}>Home</Link>
-        </Button>
-      </div>
       <div className="grid place-content-center h-screen bg-white px-4">
         <div className="text-center">
           <h1 className="text-9xl font-black text-gray-200">404</h1>
@@ -24,17 +14,17 @@ export default function NotFound() {
             Uh-oh!
           </p>
 
-          <p className="mt-4 text-gray-500">We cannot find that page.</p>
           <p className="">
-            <i className="">{error.statusText || error.message}</i>
+            <i className="">{error.message}</i>
           </p>
 
-          <Link
-            to={"/"}
-            className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring"
-          >
-            Go Back Home
-          </Link>
+          <p className="">
+            <i className="">An error occurs</i>
+          </p>
+
+          <Button type="button" variant={"destructive"}>
+            <Link to={"/"}>Go Back Home</Link>
+          </Button>
         </div>
       </div>
     </section>
