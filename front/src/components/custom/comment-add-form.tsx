@@ -1,13 +1,27 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { PostType } from "@/shared/types";
 import axios from "axios";
-import { ApiOrigin } from "@/shared/constants";
+import { z } from "zod";
+
 import useAuthStore from "@/stores/auth";
+import { PostType } from "@/shared/types";
+import { ApiOrigin } from "@/shared/constants";
+import { ContentFormData } from "@/shared/forms";
+
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
-type CommentAddDataType = {
-  content: string;
-};
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 type CommentAddFormPropsType = {
   creatorid: string;
@@ -37,14 +51,14 @@ const CommentAddForm = ({
 }: CommentAddFormPropsType) => {
   const authData = useAuthStore((state) => state.authData);
 
-  const {
-    reset,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CommentAddDataType>();
+  const form = useForm<z.infer<typeof ContentFormData>>({
+    resolver: zodResolver(ContentFormData),
+    defaultValues: {
+      content: "",
+    },
+  });
 
-  const handleAddComment = async (data: CommentAddDataType) => {
+  const handleAddComment = async (data: z.infer<typeof ContentFormData>) => {
     const url = ApiOrigin + `/users/${creatorid}/posts/${post.id}/comments`;
 
     try {
@@ -68,7 +82,7 @@ const CommentAddForm = ({
       );
       setAllPostsState(newPostsFeed);
 
-      reset();
+      form.reset();
     } catch (err) {
       setIsError(true);
     } finally {
@@ -77,33 +91,47 @@ const CommentAddForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(handleAddComment)} className="">
-      <label className="">
-        <p className="">Comment: </p>
-        <textarea
-          {...register("content", {
-            required: `Comment cannot be empty`,
-          })}
-          aria-invalid={errors.content ? "true" : "false"}
-          className="invalid:border-red-500"
-        ></textarea>
-        {errors.content && <p className="">{errors.content.message}</p>}
-      </label>
+    <div className="">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleAddComment)}
+          className="space-y-8"
+        >
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel></FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Create a new comment..."
+                    {...field}
+                  ></Textarea>
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex gap-2 items-center justify-between">
+            <Button
+              variant={"destructive"}
+              type="button"
+              onClick={() => form.reset()}
+            >
+              Clear
+            </Button>
 
-      <div className="">
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
-          <button onClick={() => reset()} type="button" className="">
-            clear
-          </button>
-        </LoadingWrapper>
-
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
-          <button type="submit" className="">
-            send
-          </button>
-        </LoadingWrapper>
-      </div>
-    </form>
+            <LoadingWrapper isLoading={isLoading} isError={isError}>
+              <Button variant={"default"} type="submit">
+                Create
+              </Button>
+            </LoadingWrapper>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 

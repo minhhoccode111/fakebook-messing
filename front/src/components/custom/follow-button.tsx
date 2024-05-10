@@ -7,6 +7,7 @@ import { ApiOrigin } from "@/shared/constants";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 import useConnectionsFeedStore from "@/stores/connections-feed";
+import { Button } from "@/components/ui/button";
 
 type FollowButtonPropsType = {
   user: User;
@@ -46,11 +47,18 @@ const FollowButton = ({ user, followButtonText }: FollowButtonPropsType) => {
     }
   };
 
+  const variant = followButtonText === "follow" ? "default" : "destructive";
+
   return (
     <LoadingWrapper isLoading={isLoading} isError={isError}>
-      <button type="button" onClick={handleFollowClick}>
+      <Button
+        size={"sm"}
+        variant={variant}
+        type="button"
+        onClick={handleFollowClick}
+      >
         {followButtonText}
-      </button>
+      </Button>
     </LoadingWrapper>
   );
 };

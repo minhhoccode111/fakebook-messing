@@ -3,13 +3,13 @@ import PostsFeed from "@/components/custom/posts-feed";
 
 const FakebookFeed = () => {
   return (
-    <div className="flex-1 flex gap-2">
+    <div className="flex-1 flex gap-2 max-w-screen-lg mx-auto w-full">
       <PostsFeed className="flex-1">
-        <h2 className="">All posts in feed</h2>
+        <h2 className="">Feed</h2>
       </PostsFeed>
 
-      <ConnectionsFeed className="">
-        <h2 className="">All connections in feed</h2>
+      <ConnectionsFeed className="w-1/3 overflow-auto">
+        <h2 className="">Connections</h2>
       </ConnectionsFeed>
     </div>
   );

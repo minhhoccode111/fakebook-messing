@@ -1,15 +1,28 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useState } from "react";
+import axios from "axios";
+import { z } from "zod";
 
-import { ApiOrigin } from "@/shared/constants";
-import LoadingWrapper from "@/components/custom/loading-wrapper";
 import useAuthStore from "@/stores/auth";
 import { PostType } from "@/shared/types";
+import { ApiOrigin } from "@/shared/constants";
+import { ContentFormData } from "@/shared/forms";
 
-type PostAddDataType = {
-  content: string;
-};
+import LoadingWrapper from "@/components/custom/loading-wrapper";
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 type PostAddFormPropsType = {
   userPosts: PostType[];
@@ -17,19 +30,19 @@ type PostAddFormPropsType = {
 };
 
 const PostAddForm = ({ userPosts, setUserPosts }: PostAddFormPropsType) => {
-  const {
-    reset,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<PostAddDataType>();
+  const form = useForm<z.infer<typeof ContentFormData>>({
+    resolver: zodResolver(ContentFormData),
+    defaultValues: {
+      content: "",
+    },
+  });
 
   const authData = useAuthStore((state) => state.authData);
 
-  const [isError, setIsError] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleAddPost = async (data: PostAddDataType) => {
+  const handleAddPost = async (data: z.infer<typeof ContentFormData>) => {
     try {
       setIsLoading(true);
 
@@ -49,7 +62,7 @@ const PostAddForm = ({ userPosts, setUserPosts }: PostAddFormPropsType) => {
       setUserPosts([{ ...res.data, comments: [], likes: 0 }, ...userPosts]);
 
       // setIsSuccess(true);
-      reset();
+      form.reset();
     } catch (err: any) {
       console.log(err);
 
@@ -60,46 +73,44 @@ const PostAddForm = ({ userPosts, setUserPosts }: PostAddFormPropsType) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(handleAddPost)} className="">
-      <label className="">
-        <p className="">New post: </p>
+    <div className="container">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleAddPost)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>What's on your mind?</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Create a new post..."
+                    {...field}
+                  ></Textarea>
+                </FormControl>
+                <FormDescription></FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex gap-2 items-center justify-between">
+            <Button
+              variant={"destructive"}
+              type="button"
+              onClick={() => form.reset()}
+            >
+              Clear
+            </Button>
 
-        <textarea
-          placeholder="What's on your mind?"
-          {...register("content", {
-            required: "Content is required.",
-            minLength: {
-              value: 1,
-              message: "Content must be at least 1 character.",
-            },
-            maxLength: {
-              value: 10000,
-              message: "Content must be at max 10000 characters.",
-            },
-            validate: (value) =>
-              value.trim().length > 0 ||
-              `Content must be at least 1 character.`,
-          })}
-          aria-invalid={errors.content ? "true" : "false"}
-          className="invalid:border-red-500"
-        ></textarea>
-        {errors.content && <p className="">{errors.content.message}</p>}
-      </label>
-
-      <div className="">
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
-          <button onClick={() => reset()} type="button" className="">
-            clear
-          </button>
-        </LoadingWrapper>
-
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
-          <button type="submit" className="">
-            send
-          </button>
-        </LoadingWrapper>
-      </div>
-    </form>
+            <LoadingWrapper isLoading={isLoading} isError={isError}>
+              <Button variant={"default"} type="submit">
+                Create
+              </Button>
+            </LoadingWrapper>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 

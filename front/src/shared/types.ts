@@ -1,6 +1,8 @@
+export type UserStatus = "online" | "offline" | "busy" | "afk";
+
 export type User = {
   fullname: string;
-  status: string;
+  status: UserStatus;
   bio: string;
   avatarLink: string;
   id: string;

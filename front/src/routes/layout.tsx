@@ -9,7 +9,7 @@ const Layout = () => {
     <ThemeProvider>
       <div
         id="wrapper"
-        className="flex flex-1 flex-col gap-2 p-4 bg-white dark:bg-gray-800"
+        className="flex flex-1 flex-col gap-2 p-4 bg-gray-400 dark:bg-gray-800"
       >
         <Header />
 

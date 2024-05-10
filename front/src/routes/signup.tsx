@@ -11,7 +11,6 @@ import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 import { SignupFormDataSchema } from "@/shared/forms";
 
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -21,6 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const Signup = () => {
@@ -63,19 +63,12 @@ const Signup = () => {
     } catch (err: any) {
       console.log(err.response);
 
-      // TODO: try to add err types AxiosError
       if (err.response.status === 409) setIsConflict(true);
       else if (err.response.status !== 400) setIsError(true);
     } finally {
       setIsLoading(false);
     }
   };
-
-  // console.log(`isLoading: `, isLoading);
-  // console.log(`isError: `, isError);
-  // console.log(`isSuccess: `, isSuccess);
-  // console.log(`isConflict: `, isConflict);
-  // console.log(errors);
 
   if (isSuccess) return <Navigate to={"/login"} />;
 

@@ -14,7 +14,6 @@ const ConnectionsKind = ({
 }: ConnectionsKindPropsType) => {
   return (
     <div className="">
-      <p className="font-bold">{text}</p>
       <ul className="">
         {connections.map((user, index) => (
           <Connection

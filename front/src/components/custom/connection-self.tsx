@@ -2,19 +2,34 @@ import MyAvatar from "@/components/custom/my-avatar";
 import { User } from "@/shared/types";
 import { Link } from "react-router-dom";
 
-const ConnectionSelf = ({ self }: { self: User }) => {
+const ConnectionSelf = ({ user }: { user: User }) => {
+  let bg;
+  switch (user.status) {
+    case "online":
+      bg = "bg-online";
+      break;
+    case "offline":
+      bg = "bg-offline";
+      break;
+    case "busy":
+      bg = "bg-busy";
+      break;
+    case "afk":
+      bg = "bg-afk";
+      break;
+  }
+
   return (
-    <div className="">
-      <p className="font-bold">self</p>
-      <p className="">{self.fullname}</p>
-      <p className="">{self.status}</p>
+    <div className="flex gap-2 items-center justify-between my-2">
+      <MyAvatar src={user.avatarLink} fallback={user.fullname.charAt(0)} />
 
-      <MyAvatar src={self.avatarLink!} fallback={self.fullname.charAt(0)!} />
-
-      <div className="flex gap-2 items-center justify-between">
-        {/* change route to /profile */}
-        <Link to={`/fakebook/profile/${self.id}`}>view profile</Link>
+      <div className="">
+        <div className={"w-2 h-2 rounded-full" + " " + bg}></div>
       </div>
+
+      <Link className="flex-1" to={`/fakebook/profile/${user.id}`}>
+        {user.fullname}
+      </Link>
     </div>
   );
 };
