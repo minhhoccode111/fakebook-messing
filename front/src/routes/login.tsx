@@ -1,4 +1,19 @@
-import { Navigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+import { Navigate, redirect } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
@@ -7,15 +22,12 @@ import useAuthStore from "@/stores/auth";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
-type LoginDataType = {
-  username: string;
-  password: string;
-};
+import { SignupFormDataSchema } from "@/shared/forms";
 
 import { ApiOrigin } from "@/shared/constants";
 
 const Login = () => {
-  const { register, handleSubmit, reset } = useForm<LoginDataType>();
+  const form = useForm<z.infer<typeof SignupFormDataSchema>>();
 
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,7 +37,7 @@ const Login = () => {
 
   const handleLogin =
     (type = "normal") =>
-    async (data: LoginDataType) => {
+    async (data: z.infer<typeof SignupFormDataSchema>) => {
       let username;
       let password;
 
@@ -63,6 +75,7 @@ const Login = () => {
         setAuthData(res.data);
 
         setIsSuccess(true);
+        redirect("/fakebook");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         console.log(err);
@@ -74,55 +87,11 @@ const Login = () => {
         setIsLoading(false);
 
         // reset form inputs to prevent spam
-        reset();
+        form.reset();
       }
     };
 
-  // console.log(`isLoading: `, isLoading);
-  // console.log(`isError: `, isError);
-  // console.log(`isSuccess: `, isSuccess);
-
-  if (isSuccess) return <Navigate to={"/fakebook"} />;
-
-  return (
-    <>
-      <form onSubmit={handleSubmit(handleLogin("normal"))} className="">
-        <h2 className="">Please log in</h2>
-        <label className="">
-          <p className="">Username: </p>
-          <input {...register("username")} className="" />
-        </label>
-
-        <label className="">
-          <p className="">Password: </p>
-          <input type="password" {...register("password")} className="" />
-        </label>
-
-        <div className="">
-          <LoadingWrapper isLoading={isLoading} isError={isError}>
-            <button onClick={() => reset()} type="button" className="">
-              clearn
-            </button>
-          </LoadingWrapper>
-
-          <LoadingWrapper isLoading={isLoading} isError={isError}>
-            <button type="submit" className="">
-              login
-            </button>
-          </LoadingWrapper>
-        </div>
-      </form>
-      <form onSubmit={handleSubmit(handleLogin("random"))} className="">
-        <div className="">
-          <LoadingWrapper isLoading={isLoading} isError={isError}>
-            <button type="submit" className="">
-              random
-            </button>
-          </LoadingWrapper>
-        </div>
-      </form>
-    </>
-  );
+  return <></>;
 };
 
 export default Login;
