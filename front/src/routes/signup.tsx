@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import axios from "axios";
@@ -10,8 +10,6 @@ import { ApiOrigin } from "@/shared/constants";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
 import { SignupFormDataSchema } from "@/shared/forms";
-
-("use client");
 
 import { Button } from "@/components/ui/button";
 import {
@@ -158,19 +156,25 @@ const Signup = () => {
           )}
 
           <div className="flex gap-2 items-center justify-between">
-            <Button
-              variant={"destructive"}
-              type="button"
-              onClick={() => form.reset()}
-            >
-              Clear
+            <Button variant={"default"} type="button">
+              <Link to={"/login"}>Login</Link>
             </Button>
 
-            <LoadingWrapper isLoading={isLoading} isError={isError}>
-              <Button variant={"default"} type="submit">
-                Submit
+            <div className="flex gap-2 items-center justify-between">
+              <Button
+                variant={"destructive"}
+                type="button"
+                onClick={() => form.reset()}
+              >
+                Clear
               </Button>
-            </LoadingWrapper>
+
+              <LoadingWrapper isLoading={isLoading} isError={isError}>
+                <Button variant={"default"} type="submit">
+                  Create
+                </Button>
+              </LoadingWrapper>
+            </div>
           </div>
         </form>
       </Form>
