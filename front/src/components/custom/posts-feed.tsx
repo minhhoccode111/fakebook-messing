@@ -58,24 +58,26 @@ const PostsFeed = ({
     <div className={"" + " " + className}>
       <h2 className="text-xl font-bold my-8">News Feed</h2>
 
-      <LoadingWrapper isLoading={!postsFeed} isError={isError}>
-        <ul className="">
-          {postsFeed?.map((post: PostType, index: number) => {
-            const isSelf = post.creator.id === self.id;
+      <div className="grid place-items-center">
+        <LoadingWrapper isLoading={!postsFeed} isError={isError}>
+          <ul className="">
+            {postsFeed?.map((post: PostType, index: number) => {
+              const isSelf = post.creator.id === self.id;
 
-            return (
-              <Post
-                className={""}
-                key={index}
-                post={post}
-                isSelf={isSelf}
-                allPostsState={postsFeed}
-                setAllPostsState={setPostsFeed}
-              />
-            );
-          })}
-        </ul>
-      </LoadingWrapper>
+              return (
+                <Post
+                  className={""}
+                  key={index}
+                  post={post}
+                  isSelf={isSelf}
+                  allPostsState={postsFeed}
+                  setAllPostsState={setPostsFeed}
+                />
+              );
+            })}
+          </ul>
+        </LoadingWrapper>
+      </div>
     </div>
   );
 };
