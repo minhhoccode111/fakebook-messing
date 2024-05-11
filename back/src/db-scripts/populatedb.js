@@ -1,3 +1,5 @@
+const querystring = require("node:querystring");
+
 // environment variables
 const EnvVar = require("./../constants/envvar");
 
@@ -133,7 +135,8 @@ async function createUsers(number, username = "asd") {
           "busy",
           "afk",
         ]),
-        avatarLink: faker.image.avatar(),
+        // TODO: fix this using escape-html npm package
+        avatarLink: querystring.escape(faker.image.avatar()),
         createdAt: faker.date.recent(),
         updatedAt: faker.date.recent(),
       };

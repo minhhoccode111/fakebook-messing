@@ -252,9 +252,8 @@ const Post = ({
 
         <ul className="">
           {comments.map((comment, index: number) => (
-            <>
+            <li key={index} className="">
               <Comment
-                key={index}
                 // comment to display itself
                 comment={comment}
                 // to like the right comment of a post of a usesr
@@ -275,7 +274,7 @@ const Post = ({
               />
 
               {index !== comments.length - 1 && <Separator className="my-4" />}
-            </>
+            </li>
           ))}
         </ul>
 

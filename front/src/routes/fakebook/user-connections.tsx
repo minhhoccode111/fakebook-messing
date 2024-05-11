@@ -17,6 +17,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  AiOutlineExclamationCircle,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
 
 const useUserConnectionsFetcher = () => {
   const { userid } = useParams();
@@ -71,15 +75,32 @@ const UserConnections = () => {
   // in /feed route, then navigate them to the route
   if (isSelf && !connectionsFeed) return <Navigate to={"/fakebook/feed"} />;
 
-  if (isError) return <div className="">error</div>;
-  if (!userConnections) return <div className="">loading</div>;
+  if (isError)
+    return (
+      <div className="h-full grid place-items-center">
+        <span className="text-red-500 animate-ping transition-all">
+          <AiOutlineExclamationCircle />
+        </span>
+      </div>
+    );
+
+  if (!userConnections)
+    return (
+      <div className="h-full grid place-items-center">
+        <span className="text-black animate-spin transition-all">
+          <AiOutlineLoading3Quarters />
+        </span>
+      </div>
+    );
 
   const { friends, followers, followings, mayknows } = userConnections;
 
   return (
-    <div className="max-w-[50ch] mx-auto">
+    <div className="max-w-[70ch] mx-auto">
       <h2 className="text-xl font-bold my-8">
-        Connections of {userConnections.self.fullname}
+        {isSelf
+          ? "Your connections"
+          : `${userConnections.self.fullname}'s connections`}
       </h2>
 
       <Connection
@@ -90,11 +111,11 @@ const UserConnections = () => {
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <h3>{friends.length} Friends</h3>
+            <h3>{friends?.length} Friends</h3>
           </AccordionTrigger>
           <AccordionContent>
             <ConnectionsKind
-              isAllowActions={true}
+              isAllowActions={isSelf}
               text="friends"
               connections={friends}
             ></ConnectionsKind>
@@ -103,11 +124,11 @@ const UserConnections = () => {
 
         <AccordionItem value="item-2">
           <AccordionTrigger>
-            <h3>{followings.length} Followings</h3>
+            <h3>{followings?.length} Followings</h3>
           </AccordionTrigger>
           <AccordionContent>
             <ConnectionsKind
-              isAllowActions={true}
+              isAllowActions={isSelf}
               text="followings"
               connections={followings}
             ></ConnectionsKind>
@@ -116,11 +137,11 @@ const UserConnections = () => {
 
         <AccordionItem value="item-3">
           <AccordionTrigger>
-            <h3>{followers.length} Followers</h3>
+            <h3>{followers?.length} Followers</h3>
           </AccordionTrigger>
           <AccordionContent>
             <ConnectionsKind
-              isAllowActions={true}
+              isAllowActions={isSelf}
               text="followers"
               connections={followers}
             ></ConnectionsKind>
@@ -129,11 +150,11 @@ const UserConnections = () => {
 
         <AccordionItem value="item-4">
           <AccordionTrigger>
-            <h3>{mayknows.length} Mayknows</h3>
+            <h3>{mayknows?.length} Mayknows</h3>
           </AccordionTrigger>
           <AccordionContent>
             <ConnectionsKind
-              isAllowActions={true}
+              isAllowActions={isSelf}
               text="mayknows"
               connections={mayknows}
             ></ConnectionsKind>

@@ -19,13 +19,9 @@ export const theme = {
     colors: {
       "semi-transparent": "#ffffffef",
       link: "#0ea5e9",
-      offline: "gray",
       danger: "#ef4444",
-      busy: "#ef4444",
       warn: "#eab308",
-      afk: "#eab308",
       success: "#22c55e",
-      online: "#22c55e",
     },
     keyframes: {
       "accordion-down": {

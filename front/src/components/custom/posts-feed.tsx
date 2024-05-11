@@ -41,13 +41,7 @@ const usePostsFetcher = () => {
   return { isError };
 };
 
-const PostsFeed = ({
-  className,
-  children,
-}: {
-  className: string;
-  children?: React.ReactNode;
-}) => {
+const PostsFeed = ({ className }: { className: string }) => {
   const { isError } = usePostsFetcher();
 
   const { postsFeed, setPostsFeed } = usePostsFeedStore();
@@ -66,9 +60,9 @@ const PostsFeed = ({
 
               return (
                 <Post
-                  className={""}
                   key={index}
                   post={post}
+                  className={""}
                   isSelf={isSelf}
                   allPostsState={postsFeed}
                   setAllPostsState={setPostsFeed}

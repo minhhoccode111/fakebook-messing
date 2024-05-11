@@ -6,6 +6,15 @@ import axios from "axios";
 import { z } from "zod";
 
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Form,
   FormControl,
   FormDescription,
@@ -23,9 +32,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import useConnectionsFeedStore from "@/stores/connections-feed";
 import useParamUserStore from "@/stores/param-user";
@@ -35,6 +41,11 @@ import { Connections, ConnectionsText, User } from "@/shared/types";
 import { UserInfoFormData } from "@/shared/forms";
 import { ApiOrigin } from "@/shared/constants";
 import { domParser } from "@/shared/methods";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 import FollowButton from "@/components/custom/follow-button";
@@ -67,7 +78,7 @@ const UserInfo = () => {
       bio: paramUser.bio,
       status: paramUser.status,
       dateOfBirth: paramUser.dateOfBirthIso,
-      avatarLink: paramUser.avatarLink,
+      avatarLink: domParser(paramUser.avatarLink),
     },
   });
 
@@ -292,31 +303,98 @@ const UserInfo = () => {
                 )}
               />
 
-              {/* TODO: work on this */}
+              <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bio</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Never gonna give you up..."
+                        {...field}
+                      ></Textarea>
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="flex gap-2 items-center justify-between">
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select a status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Status</SelectLabel>
+                            <SelectItem value="online">Online</SelectItem>
+                            <SelectItem value="offline">Offline</SelectItem>
+                            <SelectItem value="busy">Busy</SelectItem>
+                            <SelectItem value="afk">AFK</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription></FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="dateOfBirth"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of birth</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Never gonna give you up..."
+                          {...field}
+                        ></Textarea>
+                      </FormControl>
+                      <FormDescription></FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex gap-2 items-center justify-between">
+                <Button
+                  onClick={() => setIsUpdating(false)}
+                  className=""
+                  type="button"
+                  variant={"destructive"}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  type="submit"
+                  className=""
+                  disabled={isLoading || isError}
+                  variant={"default"}
+                >
+                  <LoadingWrapper isLoading={isLoading} isError={isError}>
+                    Confirm
+                  </LoadingWrapper>
+                </Button>
+              </div>
             </form>
           </Form>
-
-          <div className="flex gap-2 items-center justify-between">
-            <Button
-              onClick={() => setIsUpdating(false)}
-              className=""
-              type="button"
-              variant={"destructive"}
-            >
-              Cancel
-            </Button>
-
-            <Button
-              type="submit"
-              className=""
-              disabled={isLoading || isError}
-              variant={"default"}
-            >
-              <LoadingWrapper isLoading={isLoading} isError={isError}>
-                Confirm
-              </LoadingWrapper>
-            </Button>
-          </div>
         </>
       )}
     </div>

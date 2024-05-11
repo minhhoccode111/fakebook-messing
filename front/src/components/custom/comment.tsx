@@ -8,7 +8,6 @@ import LoadingWrapper from "@/components/custom/loading-wrapper";
 import DangerHtml from "@/components/custom/danger-html";
 import Connection from "@/components/custom/connection";
 
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
 type CommentPropsType = {
@@ -90,7 +89,7 @@ const Comment = ({
   };
 
   return (
-    <li className="">
+    <>
       <Connection isAllowActions={false} user={creator} />
 
       <div className="pl-12">
@@ -112,7 +111,7 @@ const Comment = ({
           </Button>
         </div>
       </div>
-    </li>
+    </>
   );
 };
 
