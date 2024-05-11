@@ -24,6 +24,7 @@
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "dotenv": "^16.4.1",
+    "escape-html": "^1.0.3",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "express-rate-limit": "^7.1.5",
