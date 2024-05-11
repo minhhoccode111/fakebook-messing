@@ -5,10 +5,13 @@ import { ApiOrigin } from "@/shared/constants";
 import { PostType, User } from "@/shared/types";
 import useAuthStore from "@/stores/auth";
 
-import LoadingWrapper from "@/components/custom/loading-wrapper";
 import Post from "@/components/custom/post";
 
 import usePostsFeedStore from "@/stores/posts-feed";
+import {
+  AiOutlineExclamationCircle,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
 
 const usePostsFetcher = () => {
   const token = useAuthStore((state) => state.authData.token);
@@ -48,29 +51,45 @@ const PostsFeed = ({ className }: { className: string }) => {
 
   const self = useAuthStore((state) => state.authData.self) as User;
 
+  if (isError)
+    return (
+      <div className="grid place-items-center">
+        <span className="text-red-500 animate-ping transition-all">
+          <AiOutlineExclamationCircle />
+        </span>
+      </div>
+    );
+
+  if (!postsFeed)
+    return (
+      <div className="grid place-items-center">
+        <span className="text-black animate-spin transition-all">
+          <AiOutlineLoading3Quarters />
+        </span>
+      </div>
+    );
+
   return (
     <div className={"" + " " + className}>
       <h2 className="text-xl font-bold my-8">News Feed</h2>
 
-      <div className="grid place-items-center">
-        <LoadingWrapper isLoading={!postsFeed} isError={isError}>
-          <ul className="">
-            {postsFeed?.map((post: PostType, index: number) => {
-              const isSelf = post.creator.id === self.id;
+      <div className="">
+        <ul className="">
+          {postsFeed?.map((post: PostType, index: number) => {
+            const isSelf = post.creator.id === self.id;
 
-              return (
-                <Post
-                  key={index}
-                  post={post}
-                  className={""}
-                  isSelf={isSelf}
-                  allPostsState={postsFeed}
-                  setAllPostsState={setPostsFeed}
-                />
-              );
-            })}
-          </ul>
-        </LoadingWrapper>
+            return (
+              <Post
+                key={index}
+                post={post}
+                className={""}
+                isSelf={isSelf}
+                allPostsState={postsFeed}
+                setAllPostsState={setPostsFeed}
+              />
+            );
+          })}
+        </ul>
       </div>
     </div>
   );

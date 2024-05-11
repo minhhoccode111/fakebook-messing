@@ -149,23 +149,32 @@ const Signup = () => {
           )}
 
           <div className="flex gap-2 items-center justify-between">
-            <Button variant={"default"} type="button">
-              <Link to={"/login"}>Login</Link>
-            </Button>
+            <Link to={"/login"}>
+              <Button
+                type="button"
+                className=""
+                variant={"default"}
+                size={"sm"}
+              >
+                Login
+              </Button>
+            </Link>
 
             <div className="flex gap-2 items-center justify-between">
               <Button
+                onClick={() => form.reset()}
                 variant={"destructive"}
                 type="button"
-                onClick={() => form.reset()}
+                size={"sm"}
               >
                 Clear
               </Button>
 
               <Button
+                disabled={isLoading || isError}
                 variant={"default"}
                 type="submit"
-                disabled={isLoading || isError}
+                size={"sm"}
               >
                 <LoadingWrapper isLoading={isLoading} isError={isError}>
                   Create

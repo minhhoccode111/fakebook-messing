@@ -24,9 +24,6 @@ const MyAvatar = ({ src, fallback, status }: MyAvatar) => {
       break;
   }
 
-  // TODO: fix this
-  console.log(domParser(src));
-
   return (
     <div className={"relative" + " "}>
       <Avatar className="">

@@ -153,25 +153,29 @@ const Login = () => {
           <div className="flex gap-2 items-center justify-between">
             <div className="">
               No account?{" "}
-              <Button variant={"default"}>
-                <Link to={"/signup"}>Signup</Link>
-              </Button>{" "}
+              <Link to={"/signup"}>
+                <Button variant={"default"} type="button" size={"sm"}>
+                  Signup
+                </Button>{" "}
+              </Link>
               now
             </div>
 
             <div className="flex gap-2 items-center justify-between">
               <Button
                 variant={"destructive"}
-                type="button"
                 onClick={() => form.reset()}
+                type="button"
+                size={"sm"}
               >
                 Clear
               </Button>
 
               <Button
+                disabled={isError || isLoading}
                 variant={"default"}
                 type="submit"
-                disabled={isError || isLoading}
+                size={"sm"}
               >
                 <LoadingWrapper isLoading={isLoading} isError={isError}>
                   Login
@@ -195,6 +199,7 @@ const Login = () => {
             variant={"default"}
             type="submit"
             disabled={isLoading || isError}
+            size={"sm"}
           >
             <LoadingWrapper isLoading={isLoading} isError={isError}>
               Random

@@ -1,9 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Navigate } from "react-router-dom";
+import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { format } from "date-fns";
 import { useState } from "react";
 import axios from "axios";
 import { z } from "zod";
+
+import { cn } from "@/lib/utils";
 
 import {
   Select,
@@ -32,6 +36,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar } from "@/components/ui/calendar";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+import LoadingWrapper from "@/components/custom/loading-wrapper";
+import FollowButton from "@/components/custom/follow-button";
 
 import useConnectionsFeedStore from "@/stores/connections-feed";
 import useParamUserStore from "@/stores/param-user";
@@ -41,14 +59,6 @@ import { Connections, ConnectionsText, User } from "@/shared/types";
 import { UserInfoFormData } from "@/shared/forms";
 import { ApiOrigin } from "@/shared/constants";
 import { domParser } from "@/shared/methods";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-import LoadingWrapper from "@/components/custom/loading-wrapper";
-import FollowButton from "@/components/custom/follow-button";
 
 type UserInfoFormData = {
   fullname: string;
@@ -77,7 +87,7 @@ const UserInfo = () => {
       fullname: paramUser.fullname,
       bio: paramUser.bio,
       status: paramUser.status,
-      dateOfBirth: paramUser.dateOfBirthIso,
+      dateOfBirth: new Date(paramUser.dateOfBirthIso),
       avatarLink: domParser(paramUser.avatarLink),
     },
   });
@@ -92,9 +102,9 @@ const UserInfo = () => {
   // connectionsFeed data in /feed, navigate them back
   if (!isSelf && !connectionsFeed) return <Navigate to={"/fakebook/feed"} />;
 
-  // console.log(self.fullname);
-
-  const handleUpdateUserInfo = async (data: UserInfoFormData) => {
+  const handleUpdateUserInfo = async (
+    data: z.infer<typeof UserInfoFormData>,
+  ) => {
     try {
       setIsLoading(true);
 
@@ -286,6 +296,46 @@ const UserInfo = () => {
 
               <FormField
                 control={form.control}
+                name="dateOfBirth"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col gap-1">
+                    <FormLabel>Date of birth</FormLabel>
+                    <FormControl className="">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-[280px] justify-start text-left font-normal",
+                              !field.value && "text-muted-foreground",
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="avatarLink"
                 render={({ field }) => (
                   <FormItem>
@@ -321,56 +371,36 @@ const UserInfo = () => {
                 )}
               />
 
-              <div className="flex gap-2 items-center justify-between">
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Status</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a status" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Status</SelectLabel>
-                            <SelectItem value="online">Online</SelectItem>
-                            <SelectItem value="offline">Offline</SelectItem>
-                            <SelectItem value="busy">Busy</SelectItem>
-                            <SelectItem value="afk">AFK</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <FormDescription></FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="dateOfBirth"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Date of birth</FormLabel>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
-                        <Textarea
-                          placeholder="Never gonna give you up..."
-                          {...field}
-                        ></Textarea>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select a status" />
+                        </SelectTrigger>
                       </FormControl>
-                      <FormDescription></FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Status</SelectLabel>
+                          <SelectItem value="online">Online</SelectItem>
+                          <SelectItem value="offline">Offline</SelectItem>
+                          <SelectItem value="busy">Busy</SelectItem>
+                          <SelectItem value="afk">AFK</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <div className="flex gap-2 items-center justify-between">
                 <Button

@@ -93,6 +93,8 @@ const UserConnections = () => {
       </div>
     );
 
+  console.log(`the userConnections belike: `, userConnections);
+
   const { friends, followers, followings, mayknows } = userConnections;
 
   return (

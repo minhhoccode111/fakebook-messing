@@ -72,8 +72,7 @@ export const markdownParser = (str: string) => {
     //links
     {
       reg: /\[([^\]]+)\]\(([^)]+)\)/g,
-      string:
-        '<a href="$2" class="text-link underline decoration-dotted hover:decoration-solid">$1</a>',
+      string: '<a href="$2" class="text-blue-500 hover:font-bold">$1</a>',
     },
   ];
 

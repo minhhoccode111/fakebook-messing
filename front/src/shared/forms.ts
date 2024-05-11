@@ -27,8 +27,7 @@ export const UserInfoFormData = z
       .url()
       .min(1, "Avatar Link must be at least 1 characters.")
       .max(10000, "Avatar Link must be at max 10000 characters."),
-    // dateOfBirth: z.date({ required_error: "Date of birth is required." }),
-    dateOfBirth: z.string({ required_error: "Date of birth is required." }),
+    dateOfBirth: z.date({ required_error: "Date of birth is required." }),
     status: z.string({ required_error: "Date of birth is required." }),
   })
   .refine((data) => data.fullname.trim().length > 0, {
