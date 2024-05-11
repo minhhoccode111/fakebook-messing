@@ -14,15 +14,36 @@ export const ContentFormData = z
 
 export const UserInfoFormData = z
   .object({
-    fullname: z.string().min(1).max(50),
-    bio: z.string().min(1).max(250),
-    avatarLink: z.string().url(),
-    dateOfBirth: z.date(),
-    status: z.string(),
+    fullname: z
+      .string({ required_error: "Fullname is required." })
+      .min(1, "Fullname is required.")
+      .max(50, "Fullname must be at max 50 characters long."),
+    bio: z
+      .string({ required_error: "Fullname is required." })
+      .min(1, "Bio must be at least 1 character.")
+      .max(250, "Bio must be at max 250 characters."),
+    avatarLink: z
+      .string({ required_error: "Avatar Link is required." })
+      .url()
+      .min(1, "Avatar Link must be at least 1 characters.")
+      .max(10000, "Avatar Link must be at max 10000 characters."),
+    // dateOfBirth: z.date({ required_error: "Date of birth is required." }),
+    dateOfBirth: z.string({ required_error: "Date of birth is required." }),
+    status: z.string({ required_error: "Date of birth is required." }),
   })
   .refine((data) => data.fullname.trim().length > 0, {
     message: "Fullname is required",
     path: ["fullname"],
+  })
+
+  .refine((data) => data.bio.trim().length > 0, {
+    message: "Bio is required",
+    path: ["bio"],
+  })
+
+  .refine((data) => data.avatarLink.trim().length > 0, {
+    message: "Avatar Link is required",
+    path: ["avatarLink"],
   });
 
 export const LoginFormData = z.object({

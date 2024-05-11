@@ -1,6 +1,19 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Navigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
+import { z } from "zod";
 
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Table,
   TableBody,
@@ -11,21 +24,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-import useAuthStore from "@/stores/auth";
-import { Connections, ConnectionsText, User } from "@/shared/types";
-import useParamUserStore from "@/stores/param-user";
-
-import FollowButton from "@/components/custom/follow-button";
-import useConnectionsFeedStore from "@/stores/connections-feed";
-import { Navigate } from "react-router-dom";
-import { ApiOrigin } from "@/shared/constants";
-import axios from "axios";
-import LoadingWrapper from "@/components/custom/loading-wrapper";
-import { domParser } from "@/shared/methods";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-type UpdateUserInfoDataType = {
+import useConnectionsFeedStore from "@/stores/connections-feed";
+import useParamUserStore from "@/stores/param-user";
+import useAuthStore from "@/stores/auth";
+
+import { Connections, ConnectionsText, User } from "@/shared/types";
+import { UserInfoFormData } from "@/shared/forms";
+import { ApiOrigin } from "@/shared/constants";
+import { domParser } from "@/shared/methods";
+
+import LoadingWrapper from "@/components/custom/loading-wrapper";
+import FollowButton from "@/components/custom/follow-button";
+
+type UserInfoFormData = {
   fullname: string;
   status: string;
   bio: string;
@@ -46,12 +60,16 @@ const UserInfo = () => {
 
   // console.log(paramUser);
 
-  const {
-    control,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<UpdateUserInfoDataType>();
+  const form = useForm<z.infer<typeof UserInfoFormData>>({
+    resolver: zodResolver(UserInfoFormData),
+    defaultValues: {
+      fullname: paramUser.fullname,
+      bio: paramUser.bio,
+      status: paramUser.status,
+      dateOfBirth: paramUser.dateOfBirthIso,
+      avatarLink: paramUser.avatarLink,
+    },
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -65,7 +83,7 @@ const UserInfo = () => {
 
   // console.log(self.fullname);
 
-  const handleUpdateUserInfo = async (data: UpdateUserInfoDataType) => {
+  const handleUpdateUserInfo = async (data: UserInfoFormData) => {
     try {
       setIsLoading(true);
 
@@ -144,7 +162,6 @@ const UserInfo = () => {
         </Avatar>
       </div>
 
-      {/* TODO: handle follow */}
       <div className="flex items-center justify-end">
         {!isSelf && (
           <FollowButton followButtonText={followButtonText} user={paramUser} />
@@ -235,113 +252,59 @@ const UserInfo = () => {
       )}
 
       {isUpdating && (
-        <form onSubmit={handleSubmit(handleUpdateUserInfo)} className="">
-          <label className="">
-            <p className="">Fullname: </p>
-            <input
-              defaultValue={self.fullname}
-              {...register("fullname", {
-                required: "Fullname is required.",
-                minLength: {
-                  value: 1,
-                  message: "Fullname must be at least 1 character.",
-                },
-                maxLength: {
-                  value: 50,
-                  message: "Fullname must be at max 50 characters.",
-                },
-                validate: (value) =>
-                  value.trim().length > 0 ||
-                  `Fullname must be at least 1 character.`,
-              })}
-              aria-invalid={errors.fullname ? "true" : "false"}
-              className="invalid:border-red-500"
-            />
-            {errors.fullname && <p className="">{errors.fullname.message}</p>}
-          </label>
+        <>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleUpdateUserInfo)}
+              className="space-y-8"
+            >
+              <FormField
+                control={form.control}
+                name="fullname"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Fullname</FormLabel>
+                    <FormControl>
+                      <Input type="text" placeholder="Xeza" {...field} />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <label className="">
-            <p className="">Avatar Link: </p>
-            <input
-              defaultValue={domParser(self.avatarLink)}
-              {...register("avatarLink", {
-                required: "Avatar Link is required.",
-                minLength: {
-                  value: 1,
-                  message: "Avatar Link must be at least 1 character.",
-                },
-                validate: (value) =>
-                  value.trim().length > 0 ||
-                  `Avatar Link must be at least 1 character.`,
-              })}
-              aria-invalid={errors.avatarLink ? "true" : "false"}
-              className="invalid:border-red-500"
-            />
-            {errors.avatarLink && (
-              <p className="">{errors.avatarLink.message}</p>
-            )}
-          </label>
+              <FormField
+                control={form.control}
+                name="avatarLink"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Avatar Link</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="https://google.com/beautiful.png"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription></FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <label className="">
-            <p className="">Bio: </p>
-            <textarea
-              defaultValue={self.bio}
-              {...register("bio", {
-                required: "Bio must be at least 1 character.",
-                minLength: {
-                  value: 1,
-                  message: "Bio must be at least 1 character.",
-                },
-                maxLength: {
-                  value: 250,
-                  message: "Bio must be at max 250 characters",
-                },
-                validate: (value) =>
-                  value.trim().length > 0 ||
-                  `Bio must be at least 1 character.`,
-              })}
-              aria-invalid={errors.bio ? "true" : "false"}
-              className="invalid:border-red-500"
-            ></textarea>
-            {errors.bio && <p className="">{errors.bio.message}</p>}
-          </label>
-
-          <label className="">
-            <p className="">Date of birth: </p>
-            <input
-              type="date"
-              defaultValue={self.dateOfBirthIso}
-              {...register("dateOfBirth")}
-            />
-          </label>
-
-          {/* Select combine with react hook form */}
-          <label className="">
-            <p className="">status: </p>
-            <Controller
-              name="status" // Name of the form field
-              control={control} // Instance of the form control
-              defaultValue={self.status} // Optional: Set a default value
-              rules={{ required: true }} // Optional: Add validation rules
-              render={({ field }) => (
-                <select {...field}>
-                  <option value="online">online</option>
-                  <option value="offline">offline</option>
-                  <option value="busy">busy</option>
-                  <option value="afk">afk</option>
-                </select>
-              )}
-            />
-          </label>
+              {/* TODO: work on this */}
+            </form>
+          </Form>
 
           <div className="flex gap-2 items-center justify-between">
-            <button
+            <Button
               onClick={() => setIsUpdating(false)}
               className=""
               type="button"
+              variant={"destructive"}
             >
               Cancel
-            </button>
+            </Button>
 
             <Button
               type="submit"
@@ -354,7 +317,7 @@ const UserInfo = () => {
               </LoadingWrapper>
             </Button>
           </div>
-        </form>
+        </>
       )}
     </div>
   );

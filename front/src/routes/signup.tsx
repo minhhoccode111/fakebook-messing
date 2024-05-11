@@ -73,7 +73,7 @@ const Signup = () => {
   if (isSuccess) return <Navigate to={"/login"} />;
 
   return (
-    <div className="container">
+    <div className="w-full max-w-screen-sm mx-auto">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSignup)} className="space-y-8">
           <FormField
