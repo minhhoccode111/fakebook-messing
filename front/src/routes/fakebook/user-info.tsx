@@ -10,12 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import useAuthStore from "@/stores/auth";
 import { Connections, ConnectionsText, User } from "@/shared/types";
 import useParamUserStore from "@/stores/param-user";
 
-import MyAvatar from "@/components/custom/my-avatar";
 import FollowButton from "@/components/custom/follow-button";
 import useConnectionsFeedStore from "@/stores/connections-feed";
 import { Navigate } from "react-router-dom";
@@ -115,21 +115,37 @@ const UserInfo = () => {
       ? "unfollow"
       : "follow";
 
+  let color;
+  switch (paramUser.status) {
+    case "online":
+      color = "text-green-700";
+      break;
+    case "offline":
+      color = "text-gray-700";
+      break;
+    case "busy":
+      color = "text-red-700";
+      break;
+    case "afk":
+      color = "text-yellow-700";
+      break;
+  }
+
   return (
-    <div className="max-w-[70ch]">
+    <div className="max-w-[70ch] mx-auto flex flex-col gap-4">
       <div className="grid place-items-center">
-        <MyAvatar
-          src={paramUser.avatarLink}
-          fallback={
-            isUpdating
+        <Avatar className="h-32 w-32">
+          <AvatarImage src={domParser(paramUser.avatarLink)} />
+          <AvatarFallback>
+            {isUpdating
               ? self.fullname.slice(0, 1)
-              : paramUser.fullname.slice(0, 1)
-          }
-        />
+              : paramUser.fullname.slice(0, 1)}
+          </AvatarFallback>
+        </Avatar>
       </div>
 
       {/* TODO: handle follow */}
-      <div className="">
+      <div className="flex items-center justify-end">
         {!isSelf && (
           <FollowButton followButtonText={followButtonText} user={paramUser} />
         )}
@@ -138,47 +154,63 @@ const UserInfo = () => {
       {!isUpdating && (
         <div className="">
           <Table>
-            <TableCaption>Info of current profile</TableCaption>
+            <TableCaption></TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[120px]">key</TableHead>
-                <TableHead className="text-right">value</TableHead>
+                <TableHead className="w-[140px]">Key</TableHead>
+                <TableHead className="text-right">Value</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               <TableRow>
-                <TableCell className="font-medium">fullname</TableCell>
+                <TableCell className="font-medium">
+                  <b>Fullname</b>
+                </TableCell>
                 <TableCell className="text-right">
                   {paramUser.fullname}
                 </TableCell>
               </TableRow>
 
               <TableRow>
-                <TableCell className="font-medium">status</TableCell>
-                <TableCell className="text-right">{paramUser.status}</TableCell>
+                <TableCell className="font-medium">
+                  <b>Status</b>
+                </TableCell>
+                <TableCell
+                  className={"text-right capitalize font-bold" + " " + color}
+                >
+                  {paramUser.status}
+                </TableCell>
               </TableRow>
 
               <TableRow>
-                <TableCell className="font-medium">bio</TableCell>
+                <TableCell className="font-medium">
+                  <b>Bio</b>
+                </TableCell>
                 <TableCell className="text-right">{paramUser.bio}</TableCell>
               </TableRow>
 
               <TableRow>
-                <TableCell className="font-medium">date of birth</TableCell>
+                <TableCell className="font-medium">
+                  <b>Date of birth</b>
+                </TableCell>
                 <TableCell className="text-right">
                   {paramUser.dateOfBirthFormatted.split(" - ")[0]}
                 </TableCell>
               </TableRow>
 
               <TableRow>
-                <TableCell className="font-medium">created at</TableCell>
+                <TableCell className="font-medium">
+                  <b>Created at</b>
+                </TableCell>
                 <TableCell className="text-right">
                   {paramUser.createdAtFormatted}
                 </TableCell>
               </TableRow>
 
               <TableRow>
-                <TableCell className="font-medium">updated at</TableCell>
+                <TableCell className="font-medium">
+                  <b>Updated at</b>
+                </TableCell>
                 <TableCell className="text-right">
                   {paramUser.updatedAtFormatted}
                 </TableCell>
@@ -189,14 +221,16 @@ const UserInfo = () => {
       )}
 
       {isSelf && !isUpdating && (
-        <div className="flex justify-end">
-          <button
+        <div className="flex items-center justify-end">
+          <Button
             onClick={() => setIsUpdating(true)}
             className=""
             type="button"
+            variant={"default"}
+            size={"default"}
           >
-            update
-          </button>
+            Update
+          </Button>
         </div>
       )}
 

@@ -22,6 +22,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "../ui/separator";
 
 type CommentAddFormPropsType = {
   creatorid: string;
@@ -114,7 +115,7 @@ const CommentAddForm = ({
               </FormItem>
             )}
           />
-          <div className="flex gap-2 items-center justify-between">
+          <div className="flex gap-2 items-center justify-end">
             <Button
               variant={"destructive"}
               type="button"
@@ -122,6 +123,10 @@ const CommentAddForm = ({
             >
               Clear
             </Button>
+
+            <div className="self-stretch">
+              <Separator className="" orientation="vertical"></Separator>
+            </div>
 
             <Button
               variant={"default"}

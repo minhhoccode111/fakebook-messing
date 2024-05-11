@@ -6,13 +6,16 @@ import { PostType } from "@/shared/types";
 import useAuthStore from "@/stores/auth";
 
 // NOTE: consider using index file to fast import everything in /custom dir
-import Comment from "@/components/custom/comment";
-import LoadingWrapper from "@/components/custom/loading-wrapper";
 import CommentAddForm from "@/components/custom/comment-add-form";
-import Connection from "@/components/custom/connection";
-
+import LoadingWrapper from "@/components/custom/loading-wrapper";
 import DangerHtml from "@/components/custom/danger-html";
+import Connection from "@/components/custom/connection";
+import Comment from "@/components/custom/comment";
+
+import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+
+import { MdOutlineExpandLess, MdOutlineExpandMore } from "react-icons/md";
 
 type PostPropsType = {
   post: PostType;
@@ -174,22 +177,24 @@ const Post = ({
       <div className="pl-12">
         <div className="flex flex-col gap-4 py-4">
           <DangerHtml content={content}></DangerHtml>
-          <button
+          <Button
             onClick={() => {
               setIsShowLess((state) => !state);
               setWillFetchFull(true);
             }}
-            className="self-end"
+            className="self-end font-bold text-xl"
+            variant={"default"}
+            size={"icon"}
           >
             {isShowLess ? (
-              <span className="">more...</span>
+              <MdOutlineExpandMore className="" />
             ) : (
-              <span className="">less</span>
+              <MdOutlineExpandLess className="" />
             )}
-          </button>
+          </Button>
         </div>
 
-        <div className="flex gap-2 items-center justify-evenly font-bold">
+        <div className="flex gap-2 items-center justify-end font-bold">
           <Button
             onClick={handleLikePost}
             className=""
@@ -202,6 +207,10 @@ const Post = ({
             </LoadingWrapper>
           </Button>
 
+          <div className="self-stretch">
+            <Separator className="" orientation="vertical"></Separator>
+          </div>
+
           <Button
             onClick={() => {
               setWillFetchFull(true);
@@ -213,53 +222,66 @@ const Post = ({
             size={"sm"}
           >
             <LoadingWrapper isLoading={isLoading} isError={isError}>
-              {commentsLength} comments
+              comments
             </LoadingWrapper>
           </Button>
 
           {isSelf && (
-            <Button
-              onClick={handleDeletePost}
-              className="text-2xl"
-              variant={"destructive"}
-              size={"sm"}
-            >
-              <LoadingWrapper isLoading={isLoading} isError={isError}>
-                Delete
-              </LoadingWrapper>
-            </Button>
+            <>
+              <div className="self-stretch">
+                <Separator className="" orientation="vertical"></Separator>
+              </div>
+
+              <Button
+                onClick={handleDeletePost}
+                className=""
+                variant={"destructive"}
+                size={"sm"}
+              >
+                <LoadingWrapper isLoading={isLoading} isError={isError}>
+                  Delete
+                </LoadingWrapper>
+              </Button>
+            </>
           )}
         </div>
 
-        <h3 className="font-bold text-lg mt-4">Comments</h3>
+        <h3 className="font-bold text-lg mt-4">{commentsLength} Comments</h3>
+
+        {!!comments.length && <Separator className="my-2" />}
+
         <ul className="">
           {comments.map((comment, index: number) => (
-            <Comment
-              key={index}
-              // comment to display itself
-              comment={comment}
-              // to like the right comment of a post of a usesr
-              creatorid={creator.id}
-              post={post}
-              // to display fetching state after user like a comment
-              isLoading={isLoading}
-              isError={isError}
-              setIsLoading={setIsLoading}
-              setIsError={setIsError}
-              // also expand and fetch full the post data after user like a comment
-              // because they can like the 2 preview comments when the post no expand yet
-              setIsShowLess={setIsShowLess}
-              setIsFetchedFull={setIsFetchedFull}
-              // to update all posts state after new data is returned
-              allPostsState={allPostsState}
-              setAllPostsState={setAllPostsState}
-            />
+            <>
+              <Comment
+                key={index}
+                // comment to display itself
+                comment={comment}
+                // to like the right comment of a post of a usesr
+                creatorid={creator.id}
+                post={post}
+                // to display fetching state after user like a comment
+                isLoading={isLoading}
+                isError={isError}
+                setIsLoading={setIsLoading}
+                setIsError={setIsError}
+                // also expand and fetch full the post data after user like a comment
+                // because they can like the 2 preview comments when the post no expand yet
+                setIsShowLess={setIsShowLess}
+                setIsFetchedFull={setIsFetchedFull}
+                // to update all posts state after new data is returned
+                allPostsState={allPostsState}
+                setAllPostsState={setAllPostsState}
+              />
+
+              {index !== comments.length - 1 && <Separator className="my-4" />}
+            </>
           ))}
         </ul>
 
         {!isShowLess && (
           <>
-            <hr className="my-4 bg-sky-50" />
+            <Separator className="my-4"></Separator>
             <CommentAddForm
               // send comment to the rigth post of a user
               creatorid={creator.id}
@@ -276,7 +298,7 @@ const Post = ({
         )}
       </div>
 
-      <hr className="bg-sky-50 my-8" />
+      <Separator className="my-8" />
     </li>
   );
 };

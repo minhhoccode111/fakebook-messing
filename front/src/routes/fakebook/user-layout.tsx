@@ -73,9 +73,16 @@ const UserLayout = () => {
       </nav>
 
       {/* only pass user data down to outlet when paramUser is checked and ready */}
-      <LoadingWrapper isLoading={!paramUser} isError={isError}>
+      {/* use different approach because we want to place it center of the screen */}
+      {isError || !paramUser ? (
+        <div className="h-full grid place-items-center">
+          <LoadingWrapper isLoading={!paramUser} isError={isError}>
+            <></>
+          </LoadingWrapper>
+        </div>
+      ) : (
         <Outlet></Outlet>
-      </LoadingWrapper>
+      )}
     </div>
   );
 };

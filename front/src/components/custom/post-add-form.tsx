@@ -21,8 +21,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 type PostAddFormPropsType = {
   userPosts: PostType[];
@@ -73,7 +74,7 @@ const PostAddForm = ({ userPosts, setUserPosts }: PostAddFormPropsType) => {
   };
 
   return (
-    <div className="container">
+    <div className="">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleAddPost)} className="space-y-8">
           <FormField
@@ -81,10 +82,12 @@ const PostAddForm = ({ userPosts, setUserPosts }: PostAddFormPropsType) => {
             name="content"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>What's on your mind?</FormLabel>
+                <FormLabel>
+                  <h3 className="font-bold text-xl">Create a new post</h3>
+                </FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Create a new post..."
+                    placeholder="What's in your mind?"
                     {...field}
                   ></Textarea>
                 </FormControl>
@@ -114,6 +117,8 @@ const PostAddForm = ({ userPosts, setUserPosts }: PostAddFormPropsType) => {
           </div>
         </form>
       </Form>
+
+      <Separator className="my-4" />
     </div>
   );
 };

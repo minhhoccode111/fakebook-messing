@@ -11,6 +11,13 @@ import ConnectionsKind from "@/components/custom/connections-kind";
 import useConnectionsFeedStore from "@/stores/connections-feed";
 import Connection from "@/components/custom/connection";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
 const useUserConnectionsFetcher = () => {
   const { userid } = useParams();
 
@@ -70,37 +77,69 @@ const UserConnections = () => {
   const { friends, followers, followings, mayknows } = userConnections;
 
   return (
-    <div className="">
-      <h2 className="">All connections of {userConnections.self.fullname}</h2>
+    <div className="max-w-[50ch] mx-auto">
+      <h2 className="text-xl font-bold my-8">
+        Connections of {userConnections.self.fullname}
+      </h2>
 
       <Connection
         isAllowActions={false}
         user={userConnections.self}
       ></Connection>
 
-      <ConnectionsKind
-        isAllowActions={isSelf}
-        text="friends"
-        connections={friends}
-      ></ConnectionsKind>
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger>
+            <h3>{friends.length} Friends</h3>
+          </AccordionTrigger>
+          <AccordionContent>
+            <ConnectionsKind
+              isAllowActions={true}
+              text="friends"
+              connections={friends}
+            ></ConnectionsKind>
+          </AccordionContent>
+        </AccordionItem>
 
-      <ConnectionsKind
-        isAllowActions={isSelf}
-        text="followings"
-        connections={followings}
-      ></ConnectionsKind>
+        <AccordionItem value="item-2">
+          <AccordionTrigger>
+            <h3>{followings.length} Followings</h3>
+          </AccordionTrigger>
+          <AccordionContent>
+            <ConnectionsKind
+              isAllowActions={true}
+              text="followings"
+              connections={followings}
+            ></ConnectionsKind>
+          </AccordionContent>
+        </AccordionItem>
 
-      <ConnectionsKind
-        isAllowActions={isSelf}
-        text="followers"
-        connections={followers}
-      ></ConnectionsKind>
+        <AccordionItem value="item-3">
+          <AccordionTrigger>
+            <h3>{followers.length} Followers</h3>
+          </AccordionTrigger>
+          <AccordionContent>
+            <ConnectionsKind
+              isAllowActions={true}
+              text="followers"
+              connections={followers}
+            ></ConnectionsKind>
+          </AccordionContent>
+        </AccordionItem>
 
-      <ConnectionsKind
-        isAllowActions={isSelf}
-        text="mayknows"
-        connections={mayknows}
-      ></ConnectionsKind>
+        <AccordionItem value="item-4">
+          <AccordionTrigger>
+            <h3>{mayknows.length} Mayknows</h3>
+          </AccordionTrigger>
+          <AccordionContent>
+            <ConnectionsKind
+              isAllowActions={true}
+              text="mayknows"
+              connections={mayknows}
+            ></ConnectionsKind>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 };

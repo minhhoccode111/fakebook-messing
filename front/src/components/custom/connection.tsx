@@ -50,7 +50,7 @@ const Connection = ({
       </div>
 
       <Link
-        className="flex-1 font-bold text-lg overflow-auto no-scrollbar whitespace-nowrap"
+        className="flex-1 font-bold text-lg overflow-auto whitespace-nowrap"
         to={`/fakebook/profile/${user.id}`}
       >
         {user.fullname}

@@ -10,6 +10,11 @@ import PostAddForm from "@/components/custom/post-add-form";
 import { ApiOrigin } from "@/shared/constants";
 import axios from "axios";
 import Post from "@/components/custom/post";
+import { Separator } from "@/components/ui/separator";
+import {
+  AiOutlineExclamationCircle,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
 
 const useUserPostsFetcher = () => {
   const { userid } = useParams();
@@ -52,11 +57,32 @@ const UserPosts = () => {
 
   const { isSelf, isError, userPosts, setUserPosts } = useUserPostsFetcher();
 
-  if (isError) return <div className="">error</div>;
-  if (!userPosts) return <div className="">loading</div>;
+  if (isError)
+    return (
+      <div className="h-full grid place-items-center">
+        <span className="text-red-500 animate-ping transition-all">
+          <AiOutlineExclamationCircle />
+        </span>
+      </div>
+    );
+
+  if (!userPosts)
+    return (
+      <div className="h-full grid place-items-center">
+        <span className="text-black animate-spin transition-all">
+          <AiOutlineLoading3Quarters />
+        </span>
+      </div>
+    );
 
   return (
-    <div className="">
+    <div className="max-w-screen-sm mx-auto">
+      <h3 className="font-bold text-2xl">
+        {isSelf ? "Your posts" : `${paramUser.fullname}'s posts`}
+      </h3>
+
+      <Separator className="my-4 bg-sky-50" />
+
       {/* pass down to update after a new post return */}
       {isSelf && (
         <PostAddForm
@@ -66,11 +92,14 @@ const UserPosts = () => {
       )}
 
       <ul className="">
-        {userPosts.length === 0 && <li className="">No posts yet</li>}
+        {userPosts.length === 0 && (
+          <li className="font-bold text-xl">No posts yet</li>
+        )}
         {userPosts.map((post, index: number) => (
           // get all posts of a user is not populated the creator field
           // because we already knew that user if the posts' creator
           <Post
+            className={""}
             key={index}
             isSelf={isSelf}
             allPostsState={userPosts}

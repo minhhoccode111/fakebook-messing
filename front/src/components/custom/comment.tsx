@@ -1,12 +1,14 @@
 import axios from "axios";
-import useAuthStore from "@/stores/auth";
-import { ApiOrigin } from "@/shared/constants";
+
 import { CommentType, PostType } from "@/shared/types";
+import { ApiOrigin } from "@/shared/constants";
+import useAuthStore from "@/stores/auth";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
-
 import DangerHtml from "@/components/custom/danger-html";
 import Connection from "@/components/custom/connection";
+
+import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
 type CommentPropsType = {
@@ -89,8 +91,6 @@ const Comment = ({
 
   return (
     <li className="">
-      <hr className="my-4 bg-sky-50" />
-
       <Connection isAllowActions={false} user={creator} />
 
       <div className="pl-12">
@@ -98,7 +98,7 @@ const Comment = ({
           <DangerHtml content={content}></DangerHtml>
         </div>
 
-        <p className="font-bold flex items-center">
+        <div className="font-bold flex items-center justify-end">
           <Button
             onClick={handleLikeComment}
             className=""
@@ -110,7 +110,7 @@ const Comment = ({
               {likes} likes
             </LoadingWrapper>
           </Button>
-        </p>
+        </div>
       </div>
     </li>
   );
