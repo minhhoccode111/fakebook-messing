@@ -142,7 +142,7 @@ const getFeed = asyncHandler(async (req, res) => {
         await Promise.all([
           Comment.find({ post }, "-post -__v")
             .populate("creator", "_id fullname status avatarLink") // security
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: 1 }) // latest at the bottom
             .limit(2)
             .exec(),
           Comment.countDocuments({ post }).exec(),
@@ -244,7 +244,7 @@ const getUserMessages = [
       },
       "-__v",
     )
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: 1 }) // lastest at the bottom
       .exec();
 
     // mark owned messages to display properly
@@ -324,7 +324,7 @@ const getUserPosts = [
     const creator = req.userParam;
 
     const userPosts = await Post.find({ creator }, "-creator -__v")
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 }) // latest at the top
       .exec();
 
     const posts = [];
@@ -334,7 +334,7 @@ const getUserPosts = [
         await Promise.all([
           Comment.find({ post }, "-post -__v")
             .populate("creator", "_id fullname status avatarLink") // security
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: 1 }) // latest at the bottom
             .limit(2)
             .exec(),
           Comment.countDocuments({ post }),
@@ -408,7 +408,7 @@ const getUserPost = [
       "-__v",
     )
       .populate("creator", "_id fullname status avatarLink")
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 }) // latest at the bottom
       .exec();
 
     const comments = [];
