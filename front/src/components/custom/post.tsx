@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 
 type PostPropsType = {
   post: PostType;
+  className: string;
   isSelf: boolean;
   allPostsState: PostType[];
   setAllPostsState: (newAllPostsState: PostType[]) => void;
@@ -23,6 +24,7 @@ type PostPropsType = {
 
 const Post = ({
   post,
+  className,
 
   // to show delete button
   isSelf,
@@ -162,107 +164,119 @@ const Post = ({
   // console.log(post);
 
   return (
-    <li className="">
-      <Connection isAllowActions={false} user={creator}></Connection>
+    <li className={"" + " " + className}>
+      <Connection
+        className={""}
+        isAllowActions={false}
+        user={creator}
+      ></Connection>
 
-      <div className="">
-        <DangerHtml content={content}></DangerHtml>
-        <button
-          onClick={() => {
-            setIsShowLess((state) => !state);
-            setWillFetchFull(true);
-          }}
-          className=""
-        >
-          {isShowLess ? (
-            <span className="">show more</span>
-          ) : (
-            <span className="">show less</span>
-          )}
-        </button>
-      </div>
+      <div className="pl-12">
+        <div className="flex flex-col gap-4 py-4">
+          <DangerHtml content={content}></DangerHtml>
+          <button
+            onClick={() => {
+              setIsShowLess((state) => !state);
+              setWillFetchFull(true);
+            }}
+            className="self-end"
+          >
+            {isShowLess ? (
+              <span className="">more...</span>
+            ) : (
+              <span className="">less</span>
+            )}
+          </button>
+        </div>
 
-      <div className="flex gap-2 items-center justify-evenly font-bold">
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
-          {/* click button to like post */}
+        <div className="flex gap-2 items-center justify-evenly font-bold">
           <Button
             onClick={handleLikePost}
             className=""
             variant={"outline"}
             size={"sm"}
+            disabled={isError || isLoading}
           >
-            {likes} likes
+            <LoadingWrapper isLoading={isLoading} isError={isError}>
+              {likes} likes
+            </LoadingWrapper>
           </Button>
-        </LoadingWrapper>
 
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
-          {/* click button to expand everything and fetch full post */}
           <Button
             onClick={() => {
               setWillFetchFull(true);
               setIsShowLess((state) => !state);
             }}
+            disabled={isError || isLoading}
             className=""
             variant={"outline"}
             size={"sm"}
           >
-            {commentsLength} comments
+            <LoadingWrapper isLoading={isLoading} isError={isError}>
+              {commentsLength} comments
+            </LoadingWrapper>
           </Button>
-        </LoadingWrapper>
 
-        {isSelf && (
-          <LoadingWrapper isLoading={isLoading} isError={isError}>
+          {isSelf && (
             <Button
               onClick={handleDeletePost}
               className="text-2xl"
               variant={"destructive"}
               size={"sm"}
             >
-              Delete
+              <LoadingWrapper isLoading={isLoading} isError={isError}>
+                Delete
+              </LoadingWrapper>
             </Button>
-          </LoadingWrapper>
+          )}
+        </div>
+
+        <h3 className="font-bold text-lg mt-4">Comments</h3>
+        <ul className="">
+          {comments.map((comment, index: number) => (
+            <Comment
+              key={index}
+              // comment to display itself
+              comment={comment}
+              // to like the right comment of a post of a usesr
+              creatorid={creator.id}
+              post={post}
+              // to display fetching state after user like a comment
+              isLoading={isLoading}
+              isError={isError}
+              setIsLoading={setIsLoading}
+              setIsError={setIsError}
+              // also expand and fetch full the post data after user like a comment
+              // because they can like the 2 preview comments when the post no expand yet
+              setIsShowLess={setIsShowLess}
+              setIsFetchedFull={setIsFetchedFull}
+              // to update all posts state after new data is returned
+              allPostsState={allPostsState}
+              setAllPostsState={setAllPostsState}
+            />
+          ))}
+        </ul>
+
+        {!isShowLess && (
+          <>
+            <hr className="my-4 bg-sky-50" />
+            <CommentAddForm
+              // send comment to the rigth post of a user
+              creatorid={creator.id}
+              post={post}
+              // to display fetching state when create a new comment
+              isLoading={isLoading}
+              isError={isError}
+              setIsLoading={setIsLoading}
+              setIsError={setIsError}
+              allPostsState={allPostsState}
+              setAllPostsState={setAllPostsState}
+            />
+          </>
         )}
       </div>
 
-      <ul className="">
-        {comments.map((comment, index: number) => (
-          <Comment
-            key={index}
-            // comment to display itself
-            comment={comment}
-            // to like the right comment of a post of a usesr
-            creatorid={creator.id}
-            post={post}
-            // to display fetching state after user like a comment
-            isLoading={isLoading}
-            isError={isError}
-            setIsLoading={setIsLoading}
-            setIsError={setIsError}
-            // also expand and fetch full the post data after user like a comment
-            // because they can like the 2 preview comments when the post no expand yet
-            setIsShowLess={setIsShowLess}
-            setIsFetchedFull={setIsFetchedFull}
-            // to update all posts state after new data is returned
-            allPostsState={allPostsState}
-            setAllPostsState={setAllPostsState}
-          />
-        ))}
-      </ul>
-
-      {!isShowLess && (
-        <CommentAddForm
-          // send comment to the rigth post of a user
-          creatorid={creator.id}
-          post={post}
-          // to display fetching state when create a new comment
-          isLoading={isLoading}
-          isError={isError}
-          setIsLoading={setIsLoading}
-          setIsError={setIsError}
-          allPostsState={allPostsState}
-          setAllPostsState={setAllPostsState}
-        />
-      )}
+      <hr className="bg-sky-50 my-8" />
     </li>
   );
 };

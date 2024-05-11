@@ -7,11 +7,17 @@ import FollowButton from "@/components/custom/follow-button";
 
 type ConnectionPropsType = {
   user: User;
+  className?: string;
   text?: ConnectionsText;
   isAllowActions: boolean;
 };
 
-const Connection = ({ user, text, isAllowActions }: ConnectionPropsType) => {
+const Connection = ({
+  user,
+  text,
+  isAllowActions,
+  className,
+}: ConnectionPropsType) => {
   const followButtonText =
     text === "friends" || text === "followings" ? "unfollow" : "follow";
 
@@ -32,21 +38,28 @@ const Connection = ({ user, text, isAllowActions }: ConnectionPropsType) => {
   }
 
   return (
-    <li className="flex gap-2 items-center justify-between my-2">
+    <div
+      className={
+        "flex gap-2 items-center justify-between my-2" + " " + className
+      }
+    >
       <MyAvatar src={user.avatarLink} fallback={user.fullname.charAt(0)} />
 
       <div className="">
         <div className={"w-2 h-2 rounded-full" + " " + bg}></div>
       </div>
 
-      <Link className="flex-1" to={`/fakebook/profile/${user.id}`}>
+      <Link
+        className="flex-1 font-bold text-lg overflow-auto no-scrollbar whitespace-nowrap"
+        to={`/fakebook/profile/${user.id}`}
+      >
         {user.fullname}
       </Link>
 
       {isAllowActions && (
         <FollowButton followButtonText={followButtonText} user={user} />
       )}
-    </li>
+    </div>
   );
 };
 

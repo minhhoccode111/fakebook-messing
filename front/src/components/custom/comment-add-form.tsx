@@ -123,11 +123,15 @@ const CommentAddForm = ({
               Clear
             </Button>
 
-            <LoadingWrapper isLoading={isLoading} isError={isError}>
-              <Button variant={"default"} type="submit">
+            <Button
+              variant={"default"}
+              type="submit"
+              disabled={isLoading || isError}
+            >
+              <LoadingWrapper isLoading={isLoading} isError={isError}>
                 Create
-              </Button>
-            </LoadingWrapper>
+              </LoadingWrapper>
+            </Button>
           </div>
         </form>
       </Form>

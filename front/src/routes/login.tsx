@@ -168,11 +168,15 @@ const Login = () => {
                 Clear
               </Button>
 
-              <LoadingWrapper isLoading={isLoading} isError={isError}>
-                <Button variant={"default"} type="submit">
+              <Button
+                variant={"default"}
+                type="submit"
+                disabled={isError || isLoading}
+              >
+                <LoadingWrapper isLoading={isLoading} isError={isError}>
                   Login
-                </Button>
-              </LoadingWrapper>
+                </LoadingWrapper>
+              </Button>
             </div>
           </div>
         </form>
@@ -187,11 +191,15 @@ const Login = () => {
       <form onSubmit={handleLoginRandom} className="my-2">
         <div className="flex gap-2 justify-end items-center">
           Or login
-          <LoadingWrapper isLoading={isLoading} isError={isError}>
-            <Button variant={"default"} type="submit">
+          <Button
+            variant={"default"}
+            type="submit"
+            disabled={isLoading || isError}
+          >
+            <LoadingWrapper isLoading={isLoading} isError={isError}>
               Random
-            </Button>
-          </LoadingWrapper>
+            </LoadingWrapper>
+          </Button>
         </div>
       </form>
     </div>

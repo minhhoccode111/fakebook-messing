@@ -57,7 +57,7 @@ const ConnectionsFeed = ({
   children,
 }: {
   className: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) => {
   const { isError } = useConnectionsFetch();
 
@@ -82,7 +82,7 @@ const ConnectionsFeed = ({
 
   return (
     <div className={"" + " " + className}>
-      {children}
+      <h2 className="text-xl font-bold my-8">Your Connections</h2>
 
       <Connection isAllowActions={false} user={self}></Connection>
 

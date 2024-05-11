@@ -46,7 +46,7 @@ const PostsFeed = ({
   children,
 }: {
   className: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) => {
   const { isError } = usePostsFetcher();
 
@@ -56,7 +56,7 @@ const PostsFeed = ({
 
   return (
     <div className={"" + " " + className}>
-      {children}
+      <h2 className="text-xl font-bold my-8">News Feed</h2>
 
       <LoadingWrapper isLoading={!postsFeed} isError={isError}>
         <ul className="">
@@ -65,6 +65,7 @@ const PostsFeed = ({
 
             return (
               <Post
+                className={""}
                 key={index}
                 post={post}
                 isSelf={isSelf}

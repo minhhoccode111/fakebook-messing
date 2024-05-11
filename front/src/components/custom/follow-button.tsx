@@ -50,16 +50,17 @@ const FollowButton = ({ user, followButtonText }: FollowButtonPropsType) => {
   const variant = followButtonText === "follow" ? "default" : "destructive";
 
   return (
-    <LoadingWrapper isLoading={isLoading} isError={isError}>
-      <Button
-        size={"sm"}
-        variant={variant}
-        type="button"
-        onClick={handleFollowClick}
-      >
+    <Button
+      size={"sm"}
+      variant={variant}
+      type="button"
+      onClick={handleFollowClick}
+      disabled={isError || isLoading}
+    >
+      <LoadingWrapper isLoading={isLoading} isError={isError}>
         {followButtonText}
-      </Button>
-    </LoadingWrapper>
+      </LoadingWrapper>
+    </Button>
   );
 };
 

@@ -23,6 +23,7 @@ import { ApiOrigin } from "@/shared/constants";
 import axios from "axios";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 import { domParser } from "@/shared/methods";
+import { Button } from "@/components/ui/button";
 
 type UpdateUserInfoDataType = {
   fullname: string;
@@ -305,14 +306,19 @@ const UserInfo = () => {
               className=""
               type="button"
             >
-              cancel
+              Cancel
             </button>
 
-            <LoadingWrapper isLoading={isLoading} isError={isError}>
-              <button type="submit" className="">
-                confirm
-              </button>
-            </LoadingWrapper>
+            <Button
+              type="submit"
+              className=""
+              disabled={isLoading || isError}
+              variant={"default"}
+            >
+              <LoadingWrapper isLoading={isLoading} isError={isError}>
+                Confirm
+              </LoadingWrapper>
+            </Button>
           </div>
         </form>
       )}

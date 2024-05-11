@@ -89,24 +89,29 @@ const Comment = ({
 
   return (
     <li className="">
+      <hr className="my-4 bg-sky-50" />
+
       <Connection isAllowActions={false} user={creator} />
 
-      <div className="">
-        <DangerHtml content={content}></DangerHtml>
-      </div>
+      <div className="pl-12">
+        <div className="py-4">
+          <DangerHtml content={content}></DangerHtml>
+        </div>
 
-      <p className="font-bold flex items-center">
-        <LoadingWrapper isLoading={isLoading} isError={isError}>
+        <p className="font-bold flex items-center">
           <Button
             onClick={handleLikeComment}
             className=""
             variant={"outline"}
             size={"sm"}
+            disabled={isError || isLoading}
           >
-            {likes} likes
+            <LoadingWrapper isLoading={isLoading} isError={isError}>
+              {likes} likes
+            </LoadingWrapper>
           </Button>
-        </LoadingWrapper>
-      </p>
+        </p>
+      </div>
     </li>
   );
 };
