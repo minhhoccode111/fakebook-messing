@@ -1,6 +1,6 @@
 import {
-  AiOutlineLoading3Quarters,
   AiOutlineExclamationCircle,
+  AiOutlineLoading3Quarters,
 } from "react-icons/ai";
 
 type LoadingWrapper = {

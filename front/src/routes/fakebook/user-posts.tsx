@@ -1,20 +1,22 @@
 import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+import {
+  AiOutlineExclamationCircle,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
 
 import useParamUserStore from "@/stores/param-user";
 import useAuthStore from "@/stores/auth";
 
 import { PostType, User } from "@/shared/types";
-import { useEffect, useState } from "react";
+import { ApiOrigin } from "@/shared/constants";
 
 import PostAddForm from "@/components/custom/post-add-form";
-import { ApiOrigin } from "@/shared/constants";
-import axios from "axios";
 import Post from "@/components/custom/post";
+
 import { Separator } from "@/components/ui/separator";
-import {
-  AiOutlineExclamationCircle,
-  AiOutlineLoading3Quarters,
-} from "react-icons/ai";
 
 const useUserPostsFetcher = () => {
   const { userid } = useParams();

@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 
 type CustomLinkPropsType = {
-  to: string;
   children: React.ReactNode;
   className?: string;
+  to: string;
 };
 
 const CustomLink = ({ to, children, className }: CustomLinkPropsType) => {

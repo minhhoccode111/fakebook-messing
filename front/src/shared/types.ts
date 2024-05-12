@@ -1,45 +1,45 @@
 export type UserStatus = "online" | "offline" | "busy" | "afk";
 
 export type User = {
+  id: string;
+  bio: string;
   fullname: string;
   status: UserStatus;
-  bio: string;
   avatarLink: string;
-  id: string;
+  dateOfBirthIso: string;
   createdAtFormatted: string;
   updatedAtFormatted: string;
   dateOfBirthFormatted: string;
-  dateOfBirthIso: string;
 };
 
 export type PostType = {
-  content: string;
-  creator: User;
-  comments: CommentType[];
-  commentsLength: number;
-  likes: number;
-  createdAtFormatted: string;
   id: string;
+  creator: User;
+  likes: number;
+  content: string;
+  commentsLength: number;
+  comments: CommentType[];
+  createdAtFormatted: string;
 };
 
 export type CommentType = {
+  id: string;
   creator: User;
   likes: number;
   content: string;
   createdAtFormatted: string;
-  id: string;
 };
 
 export type ConnectionsText =
+  | "mayknows"
   | "friends"
   | "followers"
-  | "followings"
-  | "mayknows";
+  | "followings";
 
 export type Connections = {
   self: User;
   friends: User[];
+  mayknows: User[];
   followers: User[];
   followings: User[];
-  mayknows: User[];
 };

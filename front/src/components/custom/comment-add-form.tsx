@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { z } from "zod";
 
-import useAuthStore from "@/stores/auth";
-import { PostType } from "@/shared/types";
-import { ApiOrigin } from "@/shared/constants";
 import { ContentFormData } from "@/shared/forms";
+import { ApiOrigin } from "@/shared/constants";
+import { PostType } from "@/shared/types";
+import useAuthStore from "@/stores/auth";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
@@ -20,9 +20,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "../ui/separator";
+import { Button } from "@/components/ui/button";
 
 type CommentAddFormPropsType = {
   creatorid: string;
@@ -30,25 +30,26 @@ type CommentAddFormPropsType = {
 
   isLoading: boolean;
   setIsLoading: (newState: boolean) => void;
+
   isError: boolean;
   setIsError: (newState: boolean) => void;
 
-  allPostsState: PostType[];
   setAllPostsState: (newAllPostsState: PostType[]) => void;
+  allPostsState: PostType[];
 };
 
 const CommentAddForm = ({
-  post,
   creatorid,
+  post,
 
-  // use the same loading state with post
-  isError,
   setIsError,
-  isLoading,
-  setIsLoading,
+  isError,
 
-  allPostsState,
+  setIsLoading,
+  isLoading,
+
   setAllPostsState,
+  allPostsState,
 }: CommentAddFormPropsType) => {
   const authData = useAuthStore((state) => state.authData);
 
@@ -77,7 +78,9 @@ const CommentAddForm = ({
       // console.log(res.data);
 
       const responsePost = res.data;
-      const newPost = Object.assign({}, post, responsePost); // merge
+      // merge responsed one with the old one
+      const newPost = Object.assign({}, post, responsePost);
+      // update old state with new one
       const newPostsFeed = allPostsState.map((p) =>
         p.id === post.id ? newPost : p,
       );
@@ -115,6 +118,7 @@ const CommentAddForm = ({
               </FormItem>
             )}
           />
+
           <div className="flex gap-2 items-center justify-end">
             <Button
               variant={"destructive"}

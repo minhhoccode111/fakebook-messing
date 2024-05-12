@@ -7,18 +7,19 @@ import { z } from "zod";
 
 import {
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
   FormItem,
   FormLabel,
+  FormField,
   FormMessage,
+  FormControl,
+  FormDescription,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { ApiOrigin, NumberRandomUsers } from "@/shared/constants";
 import { LoginFormData } from "@/shared/forms";
+
 import useAuthStore from "@/stores/auth";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";

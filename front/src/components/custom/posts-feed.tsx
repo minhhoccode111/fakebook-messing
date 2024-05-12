@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import { ApiOrigin } from "@/shared/constants";
-import { PostType, User } from "@/shared/types";
-import useAuthStore from "@/stores/auth";
-
-import Post from "@/components/custom/post";
-
-import usePostsFeedStore from "@/stores/posts-feed";
 import {
   AiOutlineExclamationCircle,
   AiOutlineLoading3Quarters,
 } from "react-icons/ai";
+
+import { PostType, User } from "@/shared/types";
+import { ApiOrigin } from "@/shared/constants";
+
+import usePostsFeedStore from "@/stores/posts-feed";
+import useAuthStore from "@/stores/auth";
+
+import Post from "@/components/custom/post";
 
 const usePostsFetcher = () => {
   const token = useAuthStore((state) => state.authData.token);

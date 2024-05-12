@@ -5,7 +5,7 @@ type DangerHtmlPropsType = {
 };
 
 const DangerHtml = ({ content }: DangerHtmlPropsType) => {
-  // TODO: ask Anh Duc Master about this
+  // TODO: ask someone else how they handle this kind or stuff
   return (
     <div
       // incase when a really long not break word destroy our layout

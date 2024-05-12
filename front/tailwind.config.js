@@ -17,11 +17,11 @@ export const theme = {
   },
   extend: {
     colors: {
-      "semi-transparent": "#ffffffef",
       link: "#0ea5e9",
-      danger: "#ef4444",
       warn: "#eab308",
+      danger: "#ef4444",
       success: "#22c55e",
+      "semi-transparent": "#ffffffef",
     },
     keyframes: {
       "accordion-down": {

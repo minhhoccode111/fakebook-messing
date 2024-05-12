@@ -1,3 +1,7 @@
+import {
+  AiOutlineExclamationCircle,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -12,8 +16,8 @@ import useAuthStore from "@/stores/auth";
 
 import {
   Accordion,
-  AccordionContent,
   AccordionItem,
+  AccordionContent,
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
@@ -52,13 +56,7 @@ const useConnectionsFetch = () => {
   return { isError };
 };
 
-const ConnectionsFeed = ({
-  className,
-  children,
-}: {
-  className: string;
-  children?: React.ReactNode;
-}) => {
+const ConnectionsFeed = ({ className }: { className: string }) => {
   const { isError } = useConnectionsFetch();
 
   // to user global connections store
@@ -66,17 +64,23 @@ const ConnectionsFeed = ({
     (state) => state.connectionsFeed,
   ) as Connections;
 
-  if (isError) return;
-  <div className={"" + " " + className}>
-    {children}
-    <p className="">error</p>
-  </div>;
+  if (isError)
+    return (
+      <div className={"h-full grid place-items-center" + " " + className}>
+        <span className="text-red-500 animate-ping transition-all">
+          <AiOutlineExclamationCircle />
+        </span>
+      </div>
+    );
 
-  if (!connectionsFeed) return;
-  <div className={"" + " " + className}>
-    {children}
-    <p className="">loading</p>
-  </div>;
+  if (!connectionsFeed)
+    return (
+      <div className={"h-full grid place-items-center" + " " + className}>
+        <span className="text-yellow-500 animate-spin transition-all">
+          <AiOutlineLoading3Quarters />
+        </span>
+      </div>
+    );
 
   const { self, friends, followers, followings, mayknows } = connectionsFeed;
 

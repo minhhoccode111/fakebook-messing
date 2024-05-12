@@ -1,6 +1,6 @@
-import { PostType } from "@/shared/types";
-
 import { create } from "zustand";
+
+import { PostType } from "@/shared/types";
 
 type StatePostsFeedStore = {
   postsFeed: undefined | PostType[];

@@ -1,7 +1,5 @@
 import axios from "axios";
 
-import { CommentType, PostType } from "@/shared/types";
-import { ApiOrigin } from "@/shared/constants";
 import useAuthStore from "@/stores/auth";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
@@ -10,22 +8,25 @@ import Connection from "@/components/custom/connection";
 
 import { Button } from "@/components/ui/button";
 
+import { CommentType, PostType } from "@/shared/types";
+import { ApiOrigin } from "@/shared/constants";
+
 type CommentPropsType = {
   comment: CommentType;
-
   creatorid: string;
   post: PostType;
 
-  isLoading: boolean;
   setIsLoading: (newState: boolean) => void;
-  isError: boolean;
+  isLoading: boolean;
+
   setIsError: (newState: boolean) => void;
+  isError: boolean;
 
-  setIsShowLess: (newState: boolean) => void;
   setIsFetchedFull: (newState: boolean) => void;
+  setIsShowLess: (newState: boolean) => void;
 
-  allPostsState: PostType[];
   setAllPostsState: (newAllPostsState: PostType[]) => void;
+  allPostsState: PostType[];
 };
 
 const Comment = ({
@@ -33,16 +34,17 @@ const Comment = ({
   comment,
   creatorid,
 
-  // use the same loading state with post
   isError,
   setIsError,
+
   isLoading,
   setIsLoading,
 
-  // only fetch all once
-  setIsFetchedFull,
   // toggle expand of a post
   setIsShowLess,
+
+  // only fetch all once
+  setIsFetchedFull,
 
   // update all post state when new data is returned based on the state pass
   // down by parent component for reusability
@@ -50,7 +52,7 @@ const Comment = ({
   allPostsState,
   setAllPostsState,
 }: CommentPropsType) => {
-  const { likes, creator, content } = comment;
+  const { likes, creator, content, createdAtFormatted } = comment;
 
   const authData = useAuthStore((state) => state.authData);
 
@@ -70,7 +72,9 @@ const Comment = ({
       // console.log(res.data);
 
       const responsePost = res.data;
-      const newPost = Object.assign({}, post, responsePost); // merge
+      // merge responsed one with the old one
+      const newPost = Object.assign({}, post, responsePost);
+      // update old state with new one
       const newPostsFeed = allPostsState.map((p) =>
         p.id === post.id ? newPost : p,
       );
@@ -93,8 +97,10 @@ const Comment = ({
       <Connection isAllowActions={false} user={creator} />
 
       <div className="pl-12">
-        <div className="py-4">
+        <div className="flex flex-col gap-4 py-4">
           <DangerHtml content={content}></DangerHtml>
+
+          <p className="self-end italic text-xs">{createdAtFormatted}</p>
         </div>
 
         <div className="font-bold flex items-center justify-end">

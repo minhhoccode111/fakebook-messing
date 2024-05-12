@@ -1,3 +1,4 @@
+import { MdOutlineExpandLess, MdOutlineExpandMore } from "react-icons/md";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -5,7 +6,6 @@ import { ApiOrigin } from "@/shared/constants";
 import { PostType } from "@/shared/types";
 import useAuthStore from "@/stores/auth";
 
-// NOTE: consider using index file to fast import everything in /custom dir
 import CommentAddForm from "@/components/custom/comment-add-form";
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 import DangerHtml from "@/components/custom/danger-html";
@@ -14,8 +14,6 @@ import Comment from "@/components/custom/comment";
 
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-
-import { MdOutlineExpandLess, MdOutlineExpandMore } from "react-icons/md";
 
 type PostPropsType = {
   post: PostType;
@@ -40,8 +38,8 @@ const Post = ({
   const authData = useAuthStore((state) => state.authData);
 
   // destruct variables
-  const { creator, likes, commentsLength } = post;
-  // this will be changed
+  const { creator, likes, commentsLength, createdAtFormatted } = post;
+  // this will be changed when toggle less or more
   let { content, comments } = post;
 
   // display everything in a post and display preview only
@@ -83,7 +81,9 @@ const Post = ({
         // console.log(res.data);
 
         const responsePost = res.data;
-        const newPost = Object.assign({}, post, responsePost); // merge
+        // merge the responsed one with old one
+        const newPost = Object.assign({}, post, responsePost);
+        // update new state with new one
         const newPostsFeed = allPostsState.map((p) =>
           p.id === post.id ? newPost : p,
         );
@@ -122,7 +122,9 @@ const Post = ({
       // console.log(res.data);
 
       const responsePost = res.data;
-      const newPost = Object.assign({}, post, responsePost); // merge
+      // merge responsed one with old one
+      const newPost = Object.assign({}, post, responsePost);
+      // update state with new one
       const newPostsFeed = allPostsState.map((p) =>
         p.id === post.id ? newPost : p,
       );
@@ -177,6 +179,9 @@ const Post = ({
       <div className="pl-12">
         <div className="flex flex-col gap-4 py-4">
           <DangerHtml content={content}></DangerHtml>
+
+          <p className="self-end italic text-xs">{createdAtFormatted}</p>
+
           <Button
             onClick={() => {
               setIsShowLess((state) => !state);
@@ -196,10 +201,10 @@ const Post = ({
 
         <div className="flex gap-2 items-center justify-end font-bold">
           <Button
-            onClick={handleLikePost}
+            size={"sm"}
             className=""
             variant={"outline"}
-            size={"sm"}
+            onClick={handleLikePost}
             disabled={isError || isLoading}
           >
             <LoadingWrapper isLoading={isLoading} isError={isError}>
@@ -212,14 +217,14 @@ const Post = ({
           </div>
 
           <Button
+            size={"sm"}
+            className=""
+            variant={"outline"}
+            disabled={isError || isLoading}
             onClick={() => {
               setWillFetchFull(true);
               setIsShowLess((state) => !state);
             }}
-            disabled={isError || isLoading}
-            className=""
-            variant={"outline"}
-            size={"sm"}
           >
             <LoadingWrapper isLoading={isLoading} isError={isError}>
               Comments
@@ -233,10 +238,10 @@ const Post = ({
               </div>
 
               <Button
-                onClick={handleDeletePost}
+                size={"sm"}
                 className=""
                 variant={"destructive"}
-                size={"sm"}
+                onClick={handleDeletePost}
               >
                 <LoadingWrapper isLoading={isLoading} isError={isError}>
                   Delete
@@ -254,15 +259,13 @@ const Post = ({
           {comments.map((comment, index: number) => (
             <li key={index} className="">
               <Comment
-                // comment to display itself
-                comment={comment}
-                // to like the right comment of a post of a usesr
                 creatorid={creator.id}
+                comment={comment}
                 post={post}
                 // to display fetching state after user like a comment
                 isLoading={isLoading}
-                isError={isError}
                 setIsLoading={setIsLoading}
+                isError={isError}
                 setIsError={setIsError}
                 // also expand and fetch full the post data after user like a comment
                 // because they can like the 2 preview comments when the post no expand yet
@@ -283,12 +286,12 @@ const Post = ({
             <Separator className="my-4"></Separator>
             <CommentAddForm
               // send comment to the rigth post of a user
-              creatorid={creator.id}
               post={post}
+              creatorid={creator.id}
               // to display fetching state when create a new comment
               isLoading={isLoading}
-              isError={isError}
               setIsLoading={setIsLoading}
+              isError={isError}
               setIsError={setIsError}
               allPostsState={allPostsState}
               setAllPostsState={setAllPostsState}

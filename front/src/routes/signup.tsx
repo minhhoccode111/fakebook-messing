@@ -5,20 +5,19 @@ import { useState } from "react";
 import axios from "axios";
 import { z } from "zod";
 
+import { SignupFormDataSchema } from "@/shared/forms";
 import { ApiOrigin } from "@/shared/constants";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
 
-import { SignupFormDataSchema } from "@/shared/forms";
-
 import {
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
   FormItem,
   FormLabel,
+  FormField,
   FormMessage,
+  FormControl,
+  FormDescription,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

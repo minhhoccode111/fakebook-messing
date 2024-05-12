@@ -1,5 +1,6 @@
-import { Fragment } from "react";
 import { Navigate } from "react-router-dom";
+import { Fragment } from "react";
+
 import useAuthStore from "@/stores/auth";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {

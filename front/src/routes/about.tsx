@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
-import CustomLink from "@/components/custom/custom-link";
+
 import { Button } from "@/components/ui/button";
+
+import CustomLink from "@/components/custom/custom-link";
 
 const About = () => {
   return (

@@ -1,6 +1,7 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import Router from "@/routes/router";
+import React from "react";
+
 import "@/css/index.css";
 import "@/css/app.css";
 

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+
 import { Connections } from "@/shared/types";
 
 type StateConnectionsFeedStore = {

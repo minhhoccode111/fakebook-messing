@@ -1,5 +1,7 @@
 import { Outlet } from "react-router-dom";
+
 import ThemeProvider from "@/components/theme-provider";
+
 import Header from "@/components/custom/header";
 import Footer from "@/components/custom/footer";
 

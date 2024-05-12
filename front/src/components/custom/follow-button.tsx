@@ -1,21 +1,24 @@
-import axios from "axios";
 import { useState } from "react";
+import axios from "axios";
 
+import useConnectionsFeedStore from "@/stores/connections-feed";
 import useAuthStore from "@/stores/auth";
-import { User } from "@/shared/types";
+
 import { ApiOrigin } from "@/shared/constants";
+import { User } from "@/shared/types";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
-import useConnectionsFeedStore from "@/stores/connections-feed";
+
 import { Button } from "@/components/ui/button";
 
 type FollowButtonPropsType = {
-  user: User;
   followButtonText: string;
+  user: User;
 };
 
 const FollowButton = ({ user, followButtonText }: FollowButtonPropsType) => {
   const token = useAuthStore((state) => state.authData.token);
+
   const setConnectionsFeed = useConnectionsFeedStore(
     (state) => state.setConnectionsFeed,
   );
@@ -52,11 +55,11 @@ const FollowButton = ({ user, followButtonText }: FollowButtonPropsType) => {
   return (
     <Button
       size={"sm"}
-      variant={variant}
       type="button"
+      variant={variant}
+      className="capitalize"
       onClick={handleFollowClick}
       disabled={isError || isLoading}
-      className="capitalize"
     >
       <LoadingWrapper isLoading={isLoading} isError={isError}>
         {followButtonText}

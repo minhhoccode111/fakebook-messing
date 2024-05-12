@@ -15,9 +15,10 @@ type ConnectionPropsType = {
 const Connection = ({
   user,
   text,
-  isAllowActions,
   className,
+  isAllowActions,
 }: ConnectionPropsType) => {
+  // proper text based on connection between self and other
   const followButtonText =
     text === "friends" || text === "followings" ? "unfollow" : "follow";
 

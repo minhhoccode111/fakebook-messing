@@ -1,10 +1,11 @@
-import { ConnectionsText, User } from "@/shared/types";
 import Connection from "@/components/custom/connection";
 
+import { ConnectionsText, User } from "@/shared/types";
+
 type ConnectionsKindPropsType = {
+  isAllowActions: boolean;
   text: ConnectionsText;
   connections: User[];
-  isAllowActions: boolean;
 };
 
 const ConnectionsKind = ({
@@ -13,18 +14,16 @@ const ConnectionsKind = ({
   isAllowActions,
 }: ConnectionsKindPropsType) => {
   return (
-    <div className="">
-      <ul className="">
-        {connections.map((user, index) => (
-          <Connection
-            isAllowActions={isAllowActions}
-            key={index}
-            user={user}
-            text={text}
-          ></Connection>
-        ))}
-      </ul>
-    </div>
+    <ul className="">
+      {connections.map((user, index) => (
+        <Connection
+          isAllowActions={isAllowActions}
+          key={index}
+          user={user}
+          text={text}
+        ></Connection>
+      ))}
+    </ul>
   );
 };
 

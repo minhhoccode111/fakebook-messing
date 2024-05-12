@@ -11,12 +11,12 @@ type ActionAuthStore = {
 };
 
 type AuthData = {
-  self?: {
-    fullname: string;
-    id: string;
-  };
-  isLogin?: boolean;
   token?: string;
+  isLogin?: boolean;
+  self?: {
+    id: string;
+    fullname: string;
+  };
 };
 
 const useAuthStore = create<StateAuthStore & ActionAuthStore>((set) => {

@@ -1,14 +1,19 @@
 import { useParams, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
+import {
+  AiOutlineExclamationCircle,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
+
+import useConnectionsFeedStore from "@/stores/connections-feed";
 import useAuthStore from "@/stores/auth";
 
-import { Connections } from "@/shared/types";
-import { useEffect, useState } from "react";
-
 import { ApiOrigin } from "@/shared/constants";
-import axios from "axios";
+import { Connections } from "@/shared/types";
+
 import ConnectionsKind from "@/components/custom/connections-kind";
-import useConnectionsFeedStore from "@/stores/connections-feed";
 import Connection from "@/components/custom/connection";
 
 import {
@@ -17,10 +22,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  AiOutlineExclamationCircle,
-  AiOutlineLoading3Quarters,
-} from "react-icons/ai";
 
 const useUserConnectionsFetcher = () => {
   const { userid } = useParams();
