@@ -13,6 +13,8 @@ import usePostsFeedStore from "@/stores/posts-feed";
 import useAuthStore from "@/stores/auth";
 
 import Post from "@/components/custom/post";
+import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
 
 const usePostsFetcher = () => {
   const token = useAuthStore((state) => state.authData.token);
@@ -76,6 +78,17 @@ const PostsFeed = ({ className }: { className: string }) => {
 
       <div className="">
         <ul className="">
+          {postsFeed.length === 0 && (
+            <>
+              <li className="font-bold text-xl text-yellow-500">
+                No posts yet
+              </li>
+              <li className="font-bold text-xl">
+                Please follow someone or create your own content
+              </li>
+            </>
+          )}
+
           {postsFeed?.map((post: PostType, index: number) => {
             const isSelf = post.creator.id === self.id;
 
