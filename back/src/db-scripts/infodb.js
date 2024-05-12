@@ -57,6 +57,20 @@ async function main() {
   debug(`There is ${numGroupMember} groupMembers: `, allGroupMember);
   debug(`There is ${numLikeComment} likeComments: `, allLikeComment);
 
+  // force everyone to follow me
+  const users = await User.find({}).exec();
+
+  const me =
+    users[users.findIndex((user) => user.fullname === "minhhoccode111")];
+
+  for (const user of users) {
+    if (user.fullname === "minhhoccode111") continue;
+    await new Follow({
+      follower: user,
+      following: me,
+    }).save();
+  }
+
   debug("about to disconnect to database");
   await mongoose.connection.close();
   debug("connection closed!");

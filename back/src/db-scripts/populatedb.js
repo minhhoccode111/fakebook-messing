@@ -76,16 +76,16 @@ async function main() {
   debug("connection closed");
 }
 
-const comments = [];
-const follows = [];
+const users = [];
+const posts = [];
 const groups = [];
-const membersEveryGroups = new Map(); // store messages being sent to each group
+const follows = [];
+const messages = [];
+const comments = [];
+const likePosts = [];
 const groupMembers = [];
 const likeComments = [];
-const likePosts = [];
-const messages = [];
-const posts = [];
-const users = [];
+const membersEveryGroups = new Map(); // store messages being sent to each group
 
 const PASSWORD = EnvVar.DummyPassword;
 const SALT = Number(EnvVar.Salt);
@@ -95,43 +95,25 @@ async function createUsers(number, username = "asd") {
   try {
     // create number of users
     for (let i = 0; i < number; i++) {
-      // script to create my account
-      let userDetail;
-      if (i === 0) {
-        const password = await bcrypt.hash("Bruh0!0!", 13); // TODO: hide this before pushing code to github
-        userDetail = {
-          // https://avatars.githubusercontent.com/u/107298518?v=4
-          username: "minhhoccode111@gmail.com",
-          password,
-          fullname: "minhhoccode111",
-          dateOfBirth: new Date("2001-01-01"),
-          bio: `I write code (sometimes)`,
-          status: "online",
-          avatarLink: "https://avatars.githubusercontent.com/u/107298518?v=4",
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
-        };
-      } else {
-        // password still get hashed
-        const password = await bcrypt.hash(PASSWORD, SALT);
-        userDetail = {
-          // username and password are something that we can control
-          username: username + i,
-          password,
-          fullname: faker.person.fullName(),
-          dateOfBirth: faker.date.past(),
-          bio: faker.lorem.paragraph(),
-          status: faker.helpers.arrayElement([
-            "online",
-            "offline",
-            "busy",
-            "afk",
-          ]),
-          avatarLink: escape(faker.image.avatar()),
-          createdAt: faker.date.recent(),
-          updatedAt: faker.date.recent(),
-        };
-      }
+      // password still get hashed
+      const password = await bcrypt.hash(PASSWORD, SALT);
+      const userDetail = {
+        // username and password are something that we can control
+        username: username + i,
+        password,
+        fullname: faker.person.fullName(),
+        dateOfBirth: faker.date.past(),
+        bio: faker.lorem.paragraph(),
+        status: faker.helpers.arrayElement([
+          "online",
+          "offline",
+          "busy",
+          "afk",
+        ]),
+        avatarLink: escape(faker.image.avatar()),
+        createdAt: faker.date.recent(),
+        updatedAt: faker.date.recent(),
+      };
 
       const user = new User(userDetail);
       await user.save();
@@ -299,18 +281,8 @@ async function createFollows(chanceSkip = 0) {
   try {
     // loop through each user
     for (let i = 0, len = users.length; i < len; i++) {
-      if (i === 0) continue; // i don't follow any one
       // loop through other user
       for (let j = 0, len = users.length; j < len; j++) {
-        // follow me (at index 1)
-        const followMe = new Follow({
-          follower: users[i],
-          following: users[0],
-          createdAt: faker.date.recent(),
-        });
-        await followMe.save();
-        follows.push(followMe);
-
         if (i === j) continue; // skip user-self
         if (faker.datatype.boolean(chanceSkip)) continue; // 50% skip
 
