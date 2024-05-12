@@ -1,3 +1,7 @@
 export default function Index() {
-  return <div className="">hello world</div>;
+  return (
+    <section className="max-w-[70ch] mx-auto font-bold text-4xl grid place-items-center h-full">
+      Welcome to Fakebook
+    </section>
+  );
 }

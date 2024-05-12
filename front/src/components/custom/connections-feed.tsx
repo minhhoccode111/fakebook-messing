@@ -87,7 +87,10 @@ const ConnectionsFeed = ({
       <Connection isAllowActions={false} user={self}></Connection>
 
       <Accordion type="single" collapsible>
-        <AccordionItem value="item-1">
+        <AccordionItem
+          value="item-1"
+          className="border-gray-900 dark:border-gray-100"
+        >
           <AccordionTrigger>
             <h3>{friends.length} Friends</h3>
           </AccordionTrigger>
@@ -100,7 +103,10 @@ const ConnectionsFeed = ({
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="item-2">
+        <AccordionItem
+          value="item-2"
+          className="border-gray-900 dark:border-gray-100"
+        >
           <AccordionTrigger>
             <h3>{followings.length} Followings</h3>
           </AccordionTrigger>
@@ -113,7 +119,10 @@ const ConnectionsFeed = ({
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="item-3">
+        <AccordionItem
+          value="item-3"
+          className="border-gray-900 dark:border-gray-100"
+        >
           <AccordionTrigger>
             <h3>{followers.length} Followers</h3>
           </AccordionTrigger>
@@ -126,7 +135,10 @@ const ConnectionsFeed = ({
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="item-4">
+        <AccordionItem
+          value="item-4"
+          className="border-gray-900 dark:border-gray-100"
+        >
           <AccordionTrigger>
             <h3>{mayknows.length} Mayknows</h3>
           </AccordionTrigger>

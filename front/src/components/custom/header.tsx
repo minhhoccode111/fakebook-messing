@@ -10,33 +10,33 @@ const Header = () => {
 
   return (
     <header className="flex gap-2 items-center justify-between">
-      <h1 className="font-bold">
+      <h1 className="font-bold text-2xl">
         <Link to={"/"}>Fakebook Messing</Link>
       </h1>
 
-      <div className="">
+      <div className="flex gap-8">
         <ThemeToggler />
+
+        <nav className="flex gap-4">
+          <MyNavLink to="/">home</MyNavLink>
+
+          <MyNavLink to="fakebook">fakebook</MyNavLink>
+
+          <MyNavLink to="messing">messing</MyNavLink>
+
+          <MyNavLink to="about">about</MyNavLink>
+
+          {!isLogin ? (
+            <>
+              <MyNavLink to="login">login</MyNavLink>
+
+              <MyNavLink to="signup">signup</MyNavLink>
+            </>
+          ) : (
+            <MyNavLink to="logout">logout</MyNavLink>
+          )}
+        </nav>
       </div>
-
-      <nav className="flex gap-4">
-        <MyNavLink to="/">home</MyNavLink>
-
-        <MyNavLink to="fakebook">fakebook</MyNavLink>
-
-        {/* <MyNavLink to="messing">messing</MyNavLink> */}
-
-        <MyNavLink to="about">about</MyNavLink>
-
-        {!isLogin ? (
-          <>
-            <MyNavLink to="login">login</MyNavLink>
-
-            <MyNavLink to="signup">signup</MyNavLink>
-          </>
-        ) : (
-          <MyNavLink to="logout">logout</MyNavLink>
-        )}
-      </nav>
     </header>
   );
 };
