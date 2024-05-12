@@ -27,8 +27,10 @@ const loginPost = [
   asyncHandler(async (req, res) => {
     // extract data from form
     const { username, password } = req.body;
+
     // check username existed
     const user = await User.findOne({ username }, "-__v").exec();
+
     if (user === null) {
       return res.sendStatus(401);
     } else {
@@ -63,10 +65,10 @@ const loginPost = [
       // return info for client to store on their localStorage and check of expire
       return res.json({
         token,
-        isLogin: true,
-        self: userInfo,
         expiresIn,
         expiresInDate,
+        isLogin: true,
+        self: userInfo,
         expiresInDateFormatted,
       });
     }
@@ -85,8 +87,8 @@ const signupPost = [
     await new User({
       fullname,
       username,
-      password: hashedPassword,
       isCreator: false,
+      password: hashedPassword,
     }).save();
 
     // debug(`the created user is: `, newUser);

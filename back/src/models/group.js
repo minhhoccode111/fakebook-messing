@@ -7,14 +7,14 @@ const Schema = mongoose.Schema;
 const GroupSchema = new Schema(
   {
     creator: {
-      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      type: Schema.Types.ObjectId,
     },
 
     name: {
-      type: String,
       required: true,
+      type: String,
       unique: true,
       trim: true,
       length: {

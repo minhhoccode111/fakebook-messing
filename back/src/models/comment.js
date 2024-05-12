@@ -7,15 +7,15 @@ const Schema = mongoose.Schema;
 const CommentSchema = new Schema(
   {
     creator: {
-      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      type: Schema.Types.ObjectId,
     },
 
     post: {
-      type: Schema.Types.ObjectId,
       ref: "Post",
       required: true,
+      type: Schema.Types.ObjectId,
     },
 
     // 1 must be null between content and imageLink

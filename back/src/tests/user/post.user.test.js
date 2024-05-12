@@ -133,29 +133,29 @@ describe(`User Post Testing`, () => {
           // debug(`the post in for...of test`, post);
           expect(post.likes).toEqual(2);
           // 2 comments/user/post
-          expect(post.commentsPreview.length).toEqual(2);
+          expect(post.comments.length).toEqual(2);
           expect(post.commentsLength).toEqual(4);
 
           // 1 like/user/comment
-          // debug(`post.commentsPreview belike: `, post.commentsPreview);
-          expect(
-            post.commentsPreview.every((comment) => comment.likes === 2),
-          ).toBe(true);
+          // debug(`post.comments belike: `, post.comments);
+          expect(post.comments.every((comment) => comment.likes === 2)).toBe(
+            true,
+          );
 
           //
           // debug(post.comments);
           expect(
-            post.commentsPreview.some(
+            post.comments.some(
               (comment) => comment.creator.fullname === qweBody.self.fullname,
             ) ||
-              post.commentsPreview.some(
+              post.comments.some(
                 (comment) => comment.creator.fullname === asdBody.self.fullname,
               ),
           ).toBe(true);
 
           expect(post.content).toBeDefined();
 
-          post.commentsPreview.forEach((comment) =>
+          post.comments.forEach((comment) =>
             expect(comment.content).toBeDefined(),
           );
         }
@@ -196,10 +196,7 @@ describe(`User Post Testing`, () => {
         // no need to test the res.body returned because
         // it will reuse GET /users/:userid/posts
 
-        const { posts, userParam } = res.body;
-        expect(posts.length).toBe(4);
-        expect(posts.some((post) => post.content === content)).toBe(true);
-        expect(userParam.fullname).toBe(asdBody.self.fullname);
+        expect(res.body.content).toBe(content);
       });
     });
   });
@@ -283,11 +280,6 @@ describe(`User Post Testing`, () => {
 
         // also reuse GET /users/:userid/posts after deletion
         expect(res.status).toBe(200);
-        expect(res.body.userParam.fullname).toBe(asdBody.self.fullname);
-        expect(res.body.posts.length).toBe(asdPosts.length - 1);
-
-        // debug(`the res.body.post: `, res.body.posts);
-        // debug(`the asdPosts: `, asdPosts);
       });
     });
   });

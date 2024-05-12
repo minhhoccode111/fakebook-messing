@@ -9,9 +9,9 @@ const statusEnum = ["online", "offline", "busy", "afk"];
 const UserSchema = new Schema(
   {
     fullname: {
+      trim: true,
       type: String,
       required: true,
-      trim: true,
       length: {
         min: 1,
         max: 50,
@@ -19,9 +19,9 @@ const UserSchema = new Schema(
     },
 
     username: {
+      trim: true,
       type: String,
       required: true,
-      trim: true,
       unique: true,
       length: {
         min: 8,

@@ -7,15 +7,15 @@ const Schema = mongoose.Schema;
 const FollowSchema = new Schema(
   {
     follower: {
-      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      type: Schema.Types.ObjectId,
     },
 
     following: {
-      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      type: Schema.Types.ObjectId,
     },
 
     createdAt: {

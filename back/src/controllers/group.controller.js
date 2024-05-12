@@ -8,8 +8,8 @@ const mongo = require("./../middleware/mongo");
 const authorize = require("./../middleware/authorize");
 
 // mongoose models
-const Message = require("./../models/message");
 const Group = require("./../models/group");
+const Message = require("./../models/message");
 const GroupMember = require("./../models/groupMember");
 
 // manually logging
@@ -45,10 +45,10 @@ const getAllGroups = asyncHandler(async (req, res) => {
   const privateGroups = notJoinedGroups.filter((gr) => !gr.public);
 
   res.json({
-    self: req.user,
     joinedGroups,
     publicGroups,
     privateGroups,
+    self: req.user,
   });
 });
 
@@ -300,14 +300,14 @@ const deleteGroupMember = [
 ];
 
 module.exports = {
-  getAllGroups,
-  postAllGroups,
   getGroup,
   putGroup,
   deleteGroup,
-  getGroupMessages,
-  postGroupMessages,
+  getAllGroups,
+  postAllGroups,
   getGroupMembers,
+  getGroupMessages,
   postGroupMembers,
+  postGroupMessages,
   deleteGroupMember,
 };

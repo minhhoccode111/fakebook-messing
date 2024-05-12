@@ -1,8 +1,8 @@
 // mongoose
 const User = require("./../models/user");
 const Post = require("./../models/post");
-const Comment = require("./../models/comment");
 const Group = require("./../models/group");
+const Comment = require("./../models/comment");
 const GroupMember = require("./../models/groupMember");
 
 const asyncHandler = require("express-async-handler");
@@ -82,7 +82,7 @@ const memberid = asyncHandler(async (req, res, next) => {
 module.exports = {
   userid,
   postid,
-  commentid,
   groupid,
   memberid,
+  commentid,
 };

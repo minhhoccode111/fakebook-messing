@@ -33,12 +33,6 @@ const joinedGroupid = asyncHandler(async (req, res, next) => {
   next();
 });
 
-// check memberid === self
-const memberid = (req, res, next) => {
-  if (req.params.memberis !== req.user.id) return res.sendStatus(404);
-  next();
-};
-
 module.exports = {
   userid,
   ownedGroupid,

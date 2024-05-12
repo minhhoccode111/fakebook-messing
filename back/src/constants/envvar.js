@@ -11,13 +11,13 @@ dotenv.config();
 const debug = require("./debug");
 
 const EnvVar = {
-  NodeEnv: process.env.NODE_ENV ?? "",
+  Salt: process.env.SALT ?? "",
   Port: process.env.PORT ?? 3000,
+  Secret: process.env.SECRET ?? "",
+  NodeEnv: process.env.NODE_ENV ?? "",
+  DummyPassword: process.env.PASSWORD ?? "",
   MongoString:
     process.env.PRODUCTION_MONGO || process.env.DEVELOPMENT_MONGO || "",
-  Salt: process.env.SALT ?? "",
-  Secret: process.env.SECRET ?? "",
-  DummyPassword: process.env.PASSWORD ?? "",
 };
 
 // debug(EnvVar);

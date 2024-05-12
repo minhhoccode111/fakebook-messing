@@ -5,15 +5,15 @@ const EnvVar = require("./../constants/envvar");
 const debug = require("./../constants/debug");
 
 // clear database
-const Comment = require("./../models/comment");
-const Follow = require("./../models/follow");
-const Group = require("./../models/group");
-const GroupMember = require("./../models/groupMember");
-const LikeComment = require("./../models/likeComment");
-const LikePost = require("./../models/likePost");
-const Message = require("./../models/message");
 const Post = require("./../models/post");
 const User = require("./../models/user");
+const Group = require("./../models/group");
+const Follow = require("./../models/follow");
+const Message = require("./../models/message");
+const Comment = require("./../models/comment");
+const LikePost = require("./../models/likePost");
+const GroupMember = require("./../models/groupMember");
+const LikeComment = require("./../models/likeComment");
 
 const MONGODB = process.argv.slice(2)[0] || EnvVar.MongoString;
 
@@ -31,15 +31,15 @@ async function main() {
 
   debug("about to clear database");
 
-  await Comment.deleteMany({});
-  await Follow.deleteMany({});
-  await Group.deleteMany({});
-  await GroupMember.deleteMany({});
-  await LikeComment.deleteMany({});
-  await LikePost.deleteMany({});
-  await Message.deleteMany({});
   await Post.deleteMany({});
   await User.deleteMany({});
+  await Group.deleteMany({});
+  await Follow.deleteMany({});
+  await Comment.deleteMany({});
+  await Message.deleteMany({});
+  await LikePost.deleteMany({});
+  await GroupMember.deleteMany({});
+  await LikeComment.deleteMany({});
 
   debug("database cleared");
 

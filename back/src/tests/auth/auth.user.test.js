@@ -20,7 +20,7 @@ describe(`POST /signup`, () => {
         fullname: "khong dieu kien",
         username: "cahoihoang@gmail.com",
         password: "Bruh0!0!",
-        "confirm-password": "Bruh0!0!",
+        confirmPassword: "Bruh0!0!",
       });
 
     expect(res.status).toEqual(200);
@@ -34,7 +34,7 @@ describe(`POST /signup`, () => {
         fullname: "some different fullname",
         username: "cahoihoang@gmail.com", // the same with above
         password: "Bruh0!0!",
-        "confirm-password": "Bruh0!0!",
+        confirmPassword: "Bruh0!0!",
       });
 
     expect(res.status).toEqual(409); // conflict

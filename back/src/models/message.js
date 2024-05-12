@@ -7,9 +7,9 @@ const Schema = mongoose.Schema;
 const MessageSchema = new Schema(
   {
     sender: {
-      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      type: Schema.Types.ObjectId,
     },
 
     // 1 must be null between userReceive and groupReceive

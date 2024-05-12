@@ -4,14 +4,14 @@ Content-Type: application/json
   "fullname": ".",
   "username": "valid@gmail.com",
   "password": "Bruh0!0!",
-  "confirm-password": "Bruh0!0!"
+  "confirmPassword": "Bruh0!0!"
 }
 
 
 POST {{url}}/auth/login
 Content-Type: application/json
 {
-  "username": "asd0",
+  "username": "asd1",
   "password": "asd"
 }
 

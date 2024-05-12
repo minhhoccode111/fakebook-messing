@@ -13,8 +13,6 @@ import usePostsFeedStore from "@/stores/posts-feed";
 import useAuthStore from "@/stores/auth";
 
 import Post from "@/components/custom/post";
-import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
 
 const usePostsFetcher = () => {
   const token = useAuthStore((state) => state.authData.token);
@@ -56,7 +54,7 @@ const PostsFeed = ({ className }: { className: string }) => {
 
   if (isError)
     return (
-      <div className="grid place-items-center">
+      <div className="w-full grid place-items-center">
         <span className="text-red-500 animate-ping transition-all">
           <AiOutlineExclamationCircle />
         </span>
@@ -65,8 +63,8 @@ const PostsFeed = ({ className }: { className: string }) => {
 
   if (!postsFeed)
     return (
-      <div className="grid place-items-center">
-        <span className="text-black animate-spin transition-all">
+      <div className="w-full grid place-items-center">
+        <span className="text-yellow-500 animate-spin transition-all">
           <AiOutlineLoading3Quarters />
         </span>
       </div>

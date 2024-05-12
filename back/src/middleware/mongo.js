@@ -38,7 +38,7 @@ const memberid = (req, res, next) => {
 module.exports = {
   userid,
   postid,
-  commentid,
   groupid,
   memberid,
+  commentid,
 };

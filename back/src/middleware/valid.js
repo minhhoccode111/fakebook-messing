@@ -166,12 +166,12 @@ const commentCreate = [
 module.exports = {
   login,
   signup,
-  signupUsername,
-  userUpdate,
   groupInfo,
-  groupNamePost,
+  userUpdate,
+  postCreate,
   groupNamePut,
+  groupNamePost,
   messageCreate,
   commentCreate,
-  postCreate,
+  signupUsername,
 };

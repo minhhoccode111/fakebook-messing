@@ -9,7 +9,7 @@ const IndexMessing = () => {
 
       <p className="">
         If you want to experience, please check out my{" "}
-        <CustomLink to="https://github.com/minhhoccode111/messaging-app-front">
+        <CustomLink to="https://messagingapptop.vercel.app">
           Messaging App Project.
         </CustomLink>
       </p>

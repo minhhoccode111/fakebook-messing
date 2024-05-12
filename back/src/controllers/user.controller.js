@@ -9,12 +9,12 @@ const authorize = require("./../middleware/authorize");
 
 // mongoose models
 const User = require("./../models/user");
-const Follow = require("./../models/follow");
 const Post = require("./../models/post");
+const Follow = require("./../models/follow");
 const Comment = require("./../models/comment");
+const Message = require("./../models/message");
 const LikePost = require("./../models/likePost");
 const LikeComment = require("./../models/likeComment");
-const Message = require("./../models/message");
 
 // manually logging
 const debug = require("./../constants/debug");
@@ -165,11 +165,11 @@ const getFeed = asyncHandler(async (req, res) => {
 
       // override post's creator because it's not populated
       posts.push({
-        ...post.toJSON(),
         creator,
+        comments,
+        ...post.toJSON(),
         likes: postLikes,
         commentsLength: postCommentsLength,
-        comments,
       });
     }
   }
@@ -261,9 +261,9 @@ const getUserMessages = [
     // debug(`the messages belike: `, messages);
 
     res.json({
+      messages,
       self: req.user,
       userParam: req.userParam,
-      messages,
     });
   }),
 ];
@@ -277,11 +277,11 @@ const postUserMessages = [
     const { imageLink, content } = req.body;
 
     await new Message({
-      sender: req.user,
-      userReceive: req.userParam,
-      group: null,
       content,
       imageLink,
+      group: null,
+      sender: req.user,
+      userReceive: req.userParam,
     }).save();
 
     next();
@@ -356,9 +356,9 @@ const getUserPosts = [
       }
 
       posts.push({
-        ...post.toJSON(),
         comments,
         commentsLength,
+        ...post.toJSON(),
         likes: postLikes,
       });
     }

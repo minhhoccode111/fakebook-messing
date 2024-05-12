@@ -13,15 +13,15 @@ const { faker } = require("@faker-js/faker");
 const bcrypt = require("bcrypt");
 
 // clear database
-const Comment = require("./../models/comment");
-const Follow = require("./../models/follow");
-const Group = require("./../models/group");
-const GroupMember = require("./../models/groupMember");
-const LikeComment = require("./../models/likeComment");
-const LikePost = require("./../models/likePost");
-const Message = require("./../models/message");
 const Post = require("./../models/post");
 const User = require("./../models/user");
+const Group = require("./../models/group");
+const Follow = require("./../models/follow");
+const Message = require("./../models/message");
+const Comment = require("./../models/comment");
+const LikePost = require("./../models/likePost");
+const GroupMember = require("./../models/groupMember");
+const LikeComment = require("./../models/likeComment");
 
 const MONGODB = process.argv.slice(2)[0] || EnvVar.MongoString;
 
@@ -37,45 +37,20 @@ async function main() {
   await mongoose.connect(MONGODB);
   debug("about to insert some documents");
 
-  await createUsers(15, "asd"); // number of users
+  await createUsers(25, "asd"); // number of users
   // await createUsers(5, "messing"); // number of users
   await createGroups(30); // number of groups
-  // await createMessages(1500); // number of messages, to other users and groups
-  await createMessages(150); // number of messages, to other users and groups
+  await createMessages(1500); // number of messages, to other users and groups
   // base on users send messages to groups
   // 50% messages will be sent to groups
   await createGroupMembers();
 
   // await createUsers(5, "fakebook"); // number of users
-  await createFollows(0.7); // chance that a user will follow other
-  await createPosts(5, 0.7); // max number of posts/user, chance
-  await createComments(2, 0.7); // max number of comments/user/post, chance
-  await createLikePosts(0.7); // chance that a user will like a post
+  await createFollows(0.5); // chance that a user will follow other
+  await createPosts(7, 0.5); // max number of posts/user, chance
+  await createComments(3, 0.5); // max number of comments/user/post, chance
+  await createLikePosts(0.3); // chance that a user will like a post
   await createLikeComments(0.95); // chance that a user will like a comment
-
-  // Total documents
-  // messing
-  // 100% users (users)
-  // 100% groups (groups)
-  // 100% messages + 100% groups (messages)
-  // ~ 100% groups + (50% messages / (100% groups / 100% users))
-  // // ~375 (group member ref)
-  // fakebook
-  // (100% users) ** 2 * followChance (follows)
-  // (100% users) * (postNum * postChance) (posts)
-  // (100% users) * (postNum * postChance) * (100% users * likePostChance) (likePosts)
-  // (100% users) * (postNum * postChance) * (commentNum * commentChance) (comments)
-  // (100% users) * (postNum * postChance) * (commentNum * commentChance) * (100% users * likeCommentChance) (likeComments)
-
-  // Comment models is having: 1136 documents +78ms
-  // Follow models is having: 143 documents +74ms
-  // Group models is having: 30 documents +74ms
-  // GroupMember models is having: 374 documents +75ms
-  // LikeComment models is having: 15365 documents +87ms
-  // LikePost models is having: 548 documents +75ms
-  // Message models is having: 1530 documents +75ms
-  // Post models is having: 54 documents +77ms
-  // User models is having: 15 documents +75ms
 
   const numComment = await Comment.countDocuments({}).exec();
   debug(`Comment models is having: ${numComment} documents`);
@@ -120,25 +95,43 @@ async function createUsers(number, username = "asd") {
   try {
     // create number of users
     for (let i = 0; i < number; i++) {
-      // password still get hashed
-      const password = await bcrypt.hash(PASSWORD, SALT);
-      const userDetail = {
-        // username and password are something that we can control
-        username: username + i,
-        password,
-        fullname: faker.person.fullName(),
-        dateOfBirth: faker.date.past(),
-        bio: faker.lorem.paragraph(),
-        status: faker.helpers.arrayElement([
-          "online",
-          "offline",
-          "busy",
-          "afk",
-        ]),
-        avatarLink: escape(faker.image.avatar()),
-        createdAt: faker.date.recent(),
-        updatedAt: faker.date.recent(),
-      };
+      // script to create my account
+      let userDetail;
+      if (i === 0) {
+        const password = await bcrypt.hash("Bruh0!0!", 13); // TODO: hide this before pushing code to github
+        userDetail = {
+          // https://avatars.githubusercontent.com/u/107298518?v=4
+          username: "minhhoccode111@gmail.com",
+          password,
+          fullname: "minhhoccode111",
+          dateOfBirth: new Date("2001-01-01"),
+          bio: `I write code (sometimes)`,
+          status: "online",
+          avatarLink: "https://avatars.githubusercontent.com/u/107298518?v=4",
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        };
+      } else {
+        // password still get hashed
+        const password = await bcrypt.hash(PASSWORD, SALT);
+        userDetail = {
+          // username and password are something that we can control
+          username: username + i,
+          password,
+          fullname: faker.person.fullName(),
+          dateOfBirth: faker.date.past(),
+          bio: faker.lorem.paragraph(),
+          status: faker.helpers.arrayElement([
+            "online",
+            "offline",
+            "busy",
+            "afk",
+          ]),
+          avatarLink: escape(faker.image.avatar()),
+          createdAt: faker.date.recent(),
+          updatedAt: faker.date.recent(),
+        };
+      }
 
       const user = new User(userDetail);
       await user.save();
@@ -306,8 +299,18 @@ async function createFollows(chanceSkip = 0) {
   try {
     // loop through each user
     for (let i = 0, len = users.length; i < len; i++) {
+      if (i === 0) continue; // i don't follow any one
       // loop through other user
       for (let j = 0, len = users.length; j < len; j++) {
+        // follow me (at index 1)
+        const followMe = new Follow({
+          follower: users[i],
+          following: users[0],
+          createdAt: faker.date.recent(),
+        });
+        await followMe.save();
+        follows.push(followMe);
+
         if (i === j) continue; // skip user-self
         if (faker.datatype.boolean(chanceSkip)) continue; // 50% skip
 
