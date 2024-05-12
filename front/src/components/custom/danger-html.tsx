@@ -9,7 +9,7 @@ const DangerHtml = ({ content }: DangerHtmlPropsType) => {
   return (
     <div
       // incase when a really long not break word destroy our layout
-      className="break-all p-4 rounded-lg bg-gray-200 w-full overflow-auto"
+      className="break-all p-4 rounded-lg bg-gray-200 text-gray-900 w-full overflow-auto max-h-[2000px]"
       dangerouslySetInnerHTML={{ __html: markdownParser(domParser(content)) }}
     ></div>
   );

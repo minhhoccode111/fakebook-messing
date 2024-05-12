@@ -15,7 +15,7 @@ const LoadingWrapper = ({ children, isLoading, isError }: LoadingWrapper) => {
       <AiOutlineExclamationCircle />
     </span>
   ) : isLoading ? (
-    <span className="text-black animate-spin transition-all">
+    <span className="text-yellow-500 animate-spin transition-all">
       <AiOutlineLoading3Quarters />
     </span>
   ) : (

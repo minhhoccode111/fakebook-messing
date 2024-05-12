@@ -222,7 +222,7 @@ const Post = ({
             size={"sm"}
           >
             <LoadingWrapper isLoading={isLoading} isError={isError}>
-              comments
+              Comments
             </LoadingWrapper>
           </Button>
 

@@ -56,6 +56,7 @@ const FollowButton = ({ user, followButtonText }: FollowButtonPropsType) => {
       type="button"
       onClick={handleFollowClick}
       disabled={isError || isLoading}
+      className="capitalize"
     >
       <LoadingWrapper isLoading={isLoading} isError={isError}>
         {followButtonText}
