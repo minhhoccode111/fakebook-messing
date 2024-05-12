@@ -17,11 +17,20 @@ export const markdownParser = (str: string) => {
   const rules = [
     //header rules
     // come on. who is going to use h6 h5 h4
-    { reg: /#{6}\s?([^\n]+)/g, string: "<h6>$1</h6>" },
+    {
+      reg: /#{6}\s?([^\n]+)/g,
+      string: '<h6 class="text-xs font-bold text-pink-400">$1</h6>',
+    },
 
-    { reg: /#{5}\s?([^\n]+)/g, string: "<h5>$1</h5>" },
+    {
+      reg: /#{5}\s?([^\n]+)/g,
+      string: '<h5 class="font-bold text-lime-400">$1</h5>',
+    },
 
-    { reg: /#{4}\s?([^\n]+)/g, string: "<h4>$1</h4>" },
+    {
+      reg: /#{4}\s?([^\n]+)/g,
+      string: '<h4 class="text-lg font-bold text-sky-400">$1</h4>',
+    },
 
     {
       reg: /#{3}\s?([^\n]+)/g,
