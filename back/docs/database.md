@@ -1,20 +1,20 @@
-# database design
-- `User`
+# database design 
+- `User` 
 	- username (email) (char: 8 - )
 	- password (char: 8 - 32)
 	- fullname (char: 1 - 50)
-	- date of birth
-	- bio
-	- status (online, offline, busy, afk)
-	- avatar link
-	- created at
+	- date of birth 
+	- bio 
+	- status (online, offline, busy, afk) 
+	- avatar link 
+	- created at 
 	- virtual
 		- created at formatted
 		- created at unix
 		- date of birth formatted
 		- date of birth unix
 		- date of birth iso (to update with html form)
-- `Message`
+- `Message` 
 	- creator (`User ObjectId`)
 	- user (`User ObjectId`)
 	- group (`Group ObjectId`)
@@ -24,49 +24,49 @@
 	- virtual
 		- created at formatted
 		- created at unix
-- `Group`
-	- creator (`User ObjectId`)
+- `Group` 
+	- creator (`User ObjectId`) 
 	- name (unique)
-	- public
-	- bio
-	- avatar link
+	- public 
+	- bio 
+	- avatar link 
 	- created at
 	- virtual
 		- created at formatted
 		- created at unix
-- `GroupMember`
-	- user (`User ObjectId`)
+- `GroupMember` 
+	- user (`User ObjectId`) 
 	- group (`Group ObjectId`)
-	- is creator
+	- is creator 
 	- created at
 	- virtual
 		- created at formatted
 		- created at unix
-- `Follow`
+- `Follow` 
 	- follower
 	- following
 	- created at
 	- virtual
 		- created at formatted
 		- created at unix
-- `Post`
+- `Post` 
 	- creator
 	- content
 	- created at
 	- virtual
 		- created at formatted
 		- created at unix
-- `Comment`
+- `Comment` 
 	- creator
 	- post
 	- content
-	- created at `
+	- created at
 	- virtual
 		- created at formatted
 		- created at unix
 - `LikePost`
 	- creator
-	- post
+	- post 
 - `LikeComment`
 	- creator
 	- comment

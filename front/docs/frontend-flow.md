@@ -1,0 +1,74 @@
+# How frontend flow
+
+- `/` 
+	- intro to the site
+- `/login` 
+	- `POST /login`
+	- change global login state
+	- change `localStorage` login state
+- `/signup` 
+	- `POST /signup`
+	- create new account
+- `/logout` 
+	- clear global login state
+	- clear `localStorage` login state
+- `/fakebook` 
+	- `/` - redirect to `/feed`
+	- `/feed` 
+		- all connections 
+		- all posts
+	- `/profile` - layout
+		- `/` - redirect to `/:userid/info` (self)
+		- `/:userid` - layout
+			- `/` - redirect to `/info` 
+			- `/info` - user info 
+			- `/posts` - user posts
+			- `/connections` - user connections
+- `/messing` 
+	- `/`
+	- `/users/:userid`
+	- `/groups/:groupid`
+- `/about` 
+	- project's info 
+	- my info
+- `/404` 
+	- handle every `NotFound` 
+
+- components specific
+	- `post` 
+		- [x] comment on post
+		- [x] like post
+		- [x] markdown parser
+	- `comment` 
+		- [x] like comment
+		- [x] markdown parser
+	- `Profile`
+		- [x] `NewPost`
+- `/feed` 
+	- all post
+		- [x] view all `posts` preview
+		- [x] view `post` detail
+	- all connections
+		- [x] view all `connections`
+			- [x] store on global store to access from any where
+			- [x] navigate to `/profile/:userid/info`
+		- [x] `follow` or `unfollow` a `connection`
+- `/profile` 
+	- `/info`
+		- [x] view info
+		- [x] allow update info for `self` only
+		- [x] allow `follow` and `unfollow` if not `self`
+			- [x] base on `connections` global store
+	- `/posts`
+		- [x] view all user's `posts`
+			- [x] like user's `post`
+			- [x] comment on user's `post` 
+			- [x] like comment on `post` 
+		- [x] allow create `post` for `self` only
+		- [x] allow delete `post` for `self` only
+	- `/connections`
+		- [x] view all user's `connections`
+		- [x] allow `follow` and `unfollow`  based on global `connections` store
+
+
+

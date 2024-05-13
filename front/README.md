@@ -7,11 +7,13 @@
 ## **Outcome**
 
 - Used **TypeScript**
+- Used **React Router DOM**
+- Used **Axios**
+- Used a custom markdown parser
 - Learn **Shadcn**
 - Learn **Zustand**
 - Learn **React Hook Form**
 - Learn **Zod**
-- Learn markdown parser
 - Learn light and dark theme with **Shadcn** 
 - and more
 

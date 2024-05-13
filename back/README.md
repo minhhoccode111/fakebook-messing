@@ -24,14 +24,12 @@
 Some scripts I created so that you can tweak the development database however you want
 
 ```bash
-# clear database
-node src/db-scripts/cleardb.js
-# get info
-node src/db-scripts/infodb.js
-# populate db with fake data
-node src/db-scripts/populatedb.js
-# or provide your mongodb string as 3rd Command line argument
-# node db-scripts/populatedb.js <some string here>
+node src/db-scripts/cleardb.js # clear
+node src/db-scripts/infodb.js # info
+node src/db-scripts/populatedb.js # populate
+
+# call the script with another db string
+# node db-scripts/populatedb.js <some string here> 
 ```
 
 Start the project `back`

@@ -3,13 +3,14 @@
 ### `POST /auth/login`
 Login, response with a `token` to create a login state (fake session) on the client
 ```js
-return res.status(200).json({
-token,
-self: userInfo,
-expiresIn,
-expiresInDate,
-expiresInDateFormatted,
-});
+return  res.json({
+        token,
+        expiresIn,
+        expiresInDate,
+        isLogin: true,
+        self: userInfo,
+        expiresInDateFormatted,
+      })
 ```
 
 ### `POST /auth/signup`
@@ -22,7 +23,19 @@ return res.sendStatus(200);
 ### `GET /users`
 Get all connections with self (`req.user`)
 ```js
-return res.json({ self, followers, followings, mayknows });
+return res.json({ self, followers, followings, mayknows, friends });
+```
+
+### `GET /users/:userid/connections`
+Get all connections with `:userid`
+```js
+return res.json({ self, followers, followings, mayknows, friends });
+```
+
+`GET /feed`
+Get all posts of all users that self is following
+```js
+return res.json(posts.sort((a, b) => b.createdAt - a.createdAt));
 ```
 
 ### `GET /users/:userid`
@@ -32,41 +45,35 @@ return res.json(req.userParam);
 ```
 
 ### `PUT /users/:userid`
-Update a user's info, then response with new user's info
+Update a user's info, return new info 
 ```js
-return res.json(user);
-```
-
-### `GET /users/:userid/connections`
-Get all connections with self (`:userid`)
-```js
-return res.json({ self, followers, followings, mayknows });
+return res.json(req.userParam);
 ```
 
 ### `POST /users/:userid/follows`
-Follow a user, then response with all user connections
+Follow a user, return all connections
 ```js
-return res.json({ self, followers, followings, mayknows });
+return res.json({ self, followers, followings, mayknows, friends });
 ```
 
 ### `GET /users/:userid/messages`
 Get all messages with a user 
 ```js
 res.json({
-self: req.user,
-userParam: req.userParam,
-messages,
-})
+      messages,
+      self: req.user,
+      userParam: req.userParam,
+    })
 ```
 
 ### `POST /users/:userid/messages`
-Send new message to a user, response all messages
+Send new message to a user, return all messages (?)
 ```js
 res.json({
-self: req.user,
-userParam: req.userParam,
-messages,
-})
+      messages,
+      self: req.user,
+      userParam: req.userParam,
+    })
 ```
 
 ### `GET /users/:userid/posts`
@@ -76,33 +83,39 @@ return res.json({ userParam: req.userParam, posts });
 ```
 
 ### `POST /users/:userid/posts`
-Create a new post (self), response all posts
+Create a new post (self), return that post
 ```js
-return res.json({ userParam: req.userParam, posts });
+return res.json(post);
 ```
 
 ### `DELETE /users/:userid/posts/:postid`
-Delete a post (self), response all posts
+Delete a post (self)
 ```js
-return res.json({ userParam: req.userParam, posts });
+return res.sendStatus(200);
+```
+
+### `GET /users/:userid/posts/:postid`
+Get a post 
+```js
+return res.json({ ...post, likes, comments });
 ```
 
 ### `POST /users/:userid/posts/:postid/likes`
-Like a post of a user, response all interactions with that post
+Like a post of a user, return that post
 ```js
-return res.json({ post, likes, comments });
+return res.json({ ...post, likes, comments });
 ```
 
 ### `POST /users/:userid/posts/:postid/comments`
-Comment on a post of a specific user, response all interactions with that post
+Comment on a post of a specific user, return that post
 ```js
-return res.json({ post, likes, comments });
+return res.json({ ...post, likes, comments });
 ```
 
 ### `POST /users/:userid/posts/:postid/comments/:commentid/likes`
-Like a comment on a post of a user, response all interactions with that post
+Like a comment on a post of a user, return that post
 ```js
-return res.json({ post, likes, comments });
+return res.json({ ...post, likes, comments });
 ```
 
 ## Groups
