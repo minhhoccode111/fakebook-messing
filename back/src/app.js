@@ -24,7 +24,7 @@ const app = express();
 app.disable("x-powered-by");
 
 // rate limit // TODO: change to 120 in production
-const limiter = RateLimit({ windowMs: 1 * 60 * 1000, max: 1600 }); // max 160/min
+const limiter = RateLimit({ windowMs: 1 * 60 * 1000, max: 160 }); // max 160/min
 app.use(limiter);
 
 // compress responses for performance
@@ -35,14 +35,14 @@ app.use(helmet());
 
 // setup CORS (Cross-origin Resources Sharing) to allow request from any origin
 const cors = require("cors");
-// app.use(cors()); // TODO is used for development
+// app.use(cors()); // TODO: is used for development
 app.use(
   cors({
     origin: [
       "http://localhost:5173", // development frontend
       "http://localhost:4173", // development frontend preview
       "http://localhost:3000", // development postman
-      "https://messagingapptop.vercel.app", // production
+      "https://fakebookmessing.vercel.app", // production
     ],
     methods: "GET,POST,PUT,DELETE", // simple CRUD actions
   }),
