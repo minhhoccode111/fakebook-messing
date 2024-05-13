@@ -4,7 +4,7 @@ The **Fakebook Messing** application is created according to the assignment from
 <br>
 <br>
 
-## **Demo** [here](https://fakebook.vercel.app)
+## **Demo** [here](https://fakebookmessing.vercel.app)
 
 ## **Features**
 * Follow and Unfollow
