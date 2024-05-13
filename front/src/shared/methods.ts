@@ -61,7 +61,7 @@ export const markdownParser = (str: string) => {
       string: '<a class="bg-gray-300 text-slate-900 rounded-md px-1">$2</a>',
     },
 
-    //Lists, only * and + because - will mess every else
+    //Lists, only * and + because - will mess everything else
     {
       reg: /([^\n]+)(\+)([^\n]+)/g,
       string: '<ul class="ml-6 list-disc"><li>$3</li></ul>',

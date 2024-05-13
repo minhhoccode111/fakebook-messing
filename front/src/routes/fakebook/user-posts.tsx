@@ -80,7 +80,7 @@ const UserPosts = () => {
   return (
     <div className="max-w-screen-sm mx-auto">
       <h3 className="font-bold text-2xl">
-        {isSelf ? "Your posts" : `${paramUser.fullname}'s posts`}
+        {isSelf ? "My posts" : `${paramUser.fullname}'s posts`}
       </h3>
 
       <Separator className="my-4 bg-sky-50" />

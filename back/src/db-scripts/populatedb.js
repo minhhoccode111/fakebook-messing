@@ -46,11 +46,11 @@ async function main() {
   await createGroupMembers();
 
   // await createUsers(5, "fakebook"); // number of users
-  await createFollows(0.5); // chance that a user will follow other
-  await createPosts(7, 0.5); // max number of posts/user, chance
-  await createComments(3, 0.5); // max number of comments/user/post, chance
-  await createLikePosts(0.3); // chance that a user will like a post
-  await createLikeComments(0.95); // chance that a user will like a comment
+  await createFollows(0.5); // chance that a user will skip follow other
+  await createPosts(7, 0.75); // max number of posts/user, chance skip
+  await createComments(3, 0.75); // max number of comments/user/post, chance skip
+  await createLikePosts(0.65); // chance that a user will skip like a post
+  await createLikeComments(0.9); // chance that a user will skip like a comment
 
   const numComment = await Comment.countDocuments({}).exec();
   debug(`Comment models is having: ${numComment} documents`);

@@ -59,10 +59,8 @@ async function main() {
 
   // force everyone to follow me
   const users = await User.find({}).exec();
-
   const me =
     users[users.findIndex((user) => user.fullname === "minhhoccode111")];
-
   for (const user of users) {
     if (user.fullname === "minhhoccode111") continue;
     await new Follow({

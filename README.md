@@ -60,7 +60,7 @@ then navigate [here](http://localhost:5173)
 <details>
     <summary>Some screenshots</summary>
 
-![Preview](public/fakebook-home.pnd)
+![Preview](public/fakebook-home.png)
 ![Preview](public/fakebook-feed.png)
 ![Preview](public/fakebook-info-view.png)
 ![Preview](public/fakebook-info-edit.png)

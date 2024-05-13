@@ -100,7 +100,7 @@ const UserConnections = () => {
     <div className="max-w-[70ch] mx-auto">
       <h2 className="text-xl font-bold my-8">
         {isSelf
-          ? "Your connections"
+          ? "My connections"
           : `${userConnections.self.fullname}'s connections`}
       </h2>
 

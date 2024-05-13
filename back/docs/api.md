@@ -1,7 +1,7 @@
 # APIs design
 ## Auth
 ### `POST /auth/login`
-Login, response with a `token` to create a login state (fake session) on the client
+Login, response with a `token` to create a login state on the client
 ```js
 return  res.json({
         token,
@@ -205,7 +205,7 @@ A member leave group (or get kicked), response all member of that group
 res.json({ self: req.user, groupMembers });
 ```
 
-## Some invalid response
+## Some invalid responses
 ```js
 return res.sendStatus(400) // invalid data
 return res.sendStatus(403) // not allow

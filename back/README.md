@@ -6,10 +6,10 @@
 
 ## **Outcome**
 
-- Learn **supertest**, **bun** and **mongodb-memory-server** to implement this API using TDD
+- Used **supertest**, **bun** and **mongodb-memory-server** to implement this API using TDD
+- Used **Faker** to create extensive fake data
+- Used **escape-html** 
 - Learn **Rest.nvim** (replacement of **Postman**)
-- Learn **Faker** to create extensive fake data
-- Learn **escape-html** 
 - and more
 
 ## **Idea to implement**
