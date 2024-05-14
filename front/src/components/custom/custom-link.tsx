@@ -1,17 +1,18 @@
-import { Button } from "@/components/ui/button";
-
 type CustomLinkPropsType = {
   children: React.ReactNode;
   className?: string;
   to: string;
 };
 
-const CustomLink = ({ to, children, className }: CustomLinkPropsType) => {
+const CustomLink = ({ to, children }: CustomLinkPropsType) => {
   return (
-    <a href={to} target="_blank" rel="noopener noreferrer" className="">
-      <Button variant={"link"} size={"sm"} className={className}>
-        {children}
-      </Button>
+    <a
+      href={to}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-sky-500 underline-offset-2 hover:underline"
+    >
+      {children}
     </a>
   );
 };

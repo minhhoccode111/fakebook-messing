@@ -12,6 +12,7 @@ import { ApiOrigin } from "@/shared/constants";
 import usePostsFeedStore from "@/stores/posts-feed";
 import useAuthStore from "@/stores/auth";
 
+import RouteHeader from "@/components/custom/route-header";
 import Post from "@/components/custom/post";
 
 const usePostsFetcher = () => {
@@ -72,7 +73,7 @@ const PostsFeed = ({ className }: { className: string }) => {
 
   return (
     <div className={"" + " " + className}>
-      <h2 className="text-xl font-bold my-8">News Feed</h2>
+      <RouteHeader>News Feed</RouteHeader>
 
       <div className="">
         <ul className="">

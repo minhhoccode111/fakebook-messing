@@ -9,6 +9,7 @@ import { SignupFormDataSchema } from "@/shared/forms";
 import { ApiOrigin } from "@/shared/constants";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
+import RouteHeader from "@/components/custom/route-header";
 
 import {
   Form,
@@ -73,6 +74,8 @@ const Signup = () => {
 
   return (
     <div className="w-full max-w-screen-sm mx-auto">
+      <RouteHeader>Signup</RouteHeader>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSignup)} className="space-y-8">
           <FormField
@@ -148,16 +151,16 @@ const Signup = () => {
           )}
 
           <div className="flex gap-2 items-center justify-between">
-            <Link to={"/login"}>
-              <Button
-                type="button"
-                className=""
-                variant={"default"}
-                size={"sm"}
+            <p className="">
+              Already have an account?{" "}
+              <Link
+                to={"/login"}
+                className="text-sky-500 underline-offset-2 hover:underline"
               >
                 Login
-              </Button>
-            </Link>
+              </Link>{" "}
+              now.
+            </p>
 
             <div className="flex gap-2 items-center justify-between">
               <Button

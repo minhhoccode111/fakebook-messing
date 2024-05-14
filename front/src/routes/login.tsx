@@ -23,6 +23,7 @@ import { LoginFormData } from "@/shared/forms";
 import useAuthStore from "@/stores/auth";
 
 import LoadingWrapper from "@/components/custom/loading-wrapper";
+import RouteHeader from "@/components/custom/route-header";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -115,6 +116,8 @@ const Login = () => {
 
   return (
     <div className="w-full max-w-screen-sm mx-auto">
+      <RouteHeader>Login</RouteHeader>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-8">
           <FormField
@@ -154,12 +157,13 @@ const Login = () => {
           <div className="flex gap-2 items-center justify-between">
             <div className="">
               No account?{" "}
-              <Link to={"/signup"}>
-                <Button variant={"default"} type="button" size={"sm"}>
-                  Signup
-                </Button>{" "}
-              </Link>
-              now
+              <Link
+                to={"/signup"}
+                className="text-sky-500 underline-offset-2 hover:underline"
+              >
+                Signup
+              </Link>{" "}
+              now.
             </div>
 
             <div className="flex gap-2 items-center justify-between">
@@ -194,19 +198,18 @@ const Login = () => {
       )}
 
       <form onSubmit={handleLoginRandom} className="my-2">
-        <div className="flex gap-2 justify-end items-center">
-          Or login
-          <Button
-            variant={"default"}
+        <p className={"flex items-center gap-2"}>
+          Or login as{" "}
+          <button
             type="submit"
+            className="text-sky-500 underline-offset-2 hover:underline inline-flex items-center justify-center"
             disabled={isLoading || isError}
-            size={"sm"}
           >
             <LoadingWrapper isLoading={isLoading} isError={isError}>
-              Random
+              guess
             </LoadingWrapper>
-          </Button>
-        </div>
+          </button>
+        </p>
       </form>
     </div>
   );

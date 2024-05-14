@@ -1,9 +1,10 @@
+import RouteHeader from "@/components/custom/route-header";
 import CustomLink from "@/components/custom/custom-link";
 
 const IndexMessing = () => {
   return (
     <section className="flex-1 max-w-[70ch] mx-auto">
-      <h2 className="text-xl font-bold my-8">Messing</h2>
+      <RouteHeader>Messing</RouteHeader>
 
       <p className="font-bold text-red-700">Under maintained!</p>
 

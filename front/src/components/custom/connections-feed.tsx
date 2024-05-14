@@ -9,6 +9,7 @@ import { ApiOrigin } from "@/shared/constants";
 import { Connections } from "@/shared/types";
 
 import ConnectionsKind from "@/components/custom/connections-kind";
+import RouteHeader from "@/components/custom/route-header";
 import Connection from "@/components/custom/connection";
 
 import useConnectionsFeedStore from "@/stores/connections-feed";
@@ -86,7 +87,7 @@ const ConnectionsFeed = ({ className }: { className: string }) => {
 
   return (
     <div className={"" + " " + className}>
-      <h2 className="text-xl font-bold my-8">Your Connections</h2>
+      <RouteHeader>Your Connections</RouteHeader>
 
       <Connection isAllowActions={false} user={self}></Connection>
 
