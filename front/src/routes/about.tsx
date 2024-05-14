@@ -30,10 +30,10 @@ const About = () => {
           To showcase the{" "}
           <CustomLink to="https://www.theodinproject.com/lessons/nodejs-odin-book">
             {" "}
-            Messaging App Back{" "}
+            Odin Book Project{" "}
           </CustomLink>{" "}
           developed for{" "}
-          <CustomLink to="https://www.theodinproject.com/lessons/nodejs-messaging-app">
+          <CustomLink to="https://www.theodinproject.com/paths/full-stack-javascript/courses/nodejs">
             {" "}
             The Odin Project&apos;s NodeJS course{" "}
           </CustomLink>
